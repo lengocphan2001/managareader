@@ -16,11 +16,8 @@ export class UrlUtils {
   getBackendUrl() {
     if (typeof window !== "undefined") {
       if (window.location.hostname !== "localhost") {
-        const hostname = window.location.hostname;
-        const domain = hostname.substring(
-          hostname.lastIndexOf(".", hostname.lastIndexOf(".") - 1) + 1,
-        );
-        return `https://api.${domain}`;
+        // Use the same domain with /api path for production
+        return `${window.location.protocol}//${window.location.hostname}/api`;
       }
     }
     // For localhost development, use backend server

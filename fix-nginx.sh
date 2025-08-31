@@ -1,23 +1,17 @@
-# Nginx configuration for TruyenDex
-# This file will be created at /etc/nginx/sites-available/truyendex during deployment
+#!/bin/bash
 
+# Fix nginx configuration by removing SSL server block temporarily
+
+echo "🔧 Fixing nginx configuration..."
+
+# Backup current config
+sudo cp /etc/nginx/sites-available/truyendex /etc/nginx/sites-available/truyendex.backup
+
+# Create HTTP-only configuration
+sudo tee /etc/nginx/sites-available/truyendex << 'EOF'
 server {
     listen 80;
     server_name ninetails.site www.ninetails.site;
-
-    # Redirect HTTP to HTTPS
-    return 301 https://$server_name$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    server_name ninetails.site www.ninetails.site;
-
-    # SSL configuration will be added by certbot
-    # ssl_certificate /etc/letsencrypt/live/ninetails.site/fullchain.pem;
-    # ssl_certificate_key /etc/letsencrypt/live/ninetails.site/privkey.pem;
-    # include /etc/letsencrypt/options-ssl-nginx.conf;
-    # ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     # Security headers
     add_header X-Frame-Options "SAMEORIGIN" always;
@@ -60,45 +54,37 @@ server {
         proxy_cache_bypass $http_upgrade;
     }
 
-    # Static files with caching
+    # Static files
     location /_next/static/ {
         proxy_pass http://localhost:3000;
         proxy_cache_valid 200 1y;
         add_header Cache-Control "public, immutable";
     }
 
-    # Images with caching
+    # Images
     location /images/ {
         proxy_pass http://localhost:3000;
         proxy_cache_valid 200 1d;
         add_header Cache-Control "public";
     }
-
-    # Service Worker
-    location /sw.js {
-        proxy_pass http://localhost:3000;
-        add_header Cache-Control "no-cache, no-store, must-revalidate";
-        add_header Pragma "no-cache";
-        add_header Expires "0";
-    }
-
-    # Favicon
-    location /favicon.ico {
-        proxy_pass http://localhost:3000;
-        proxy_cache_valid 200 1d;
-        add_header Cache-Control "public";
-    }
-
-    # Robots.txt
-    location /robots.txt {
-        proxy_pass http://localhost:3000;
-        proxy_cache_valid 200 1d;
-        add_header Cache-Control "public";
-    }
-
-    # Health check endpoint
-    location /health {
-        proxy_pass http://localhost:8000/health;
-        access_log off;
-    }
 }
+EOF
+
+# Test nginx configuration
+echo "🧪 Testing nginx configuration..."
+sudo nginx -t
+
+if [ $? -eq 0 ]; then
+    echo "✅ Nginx configuration is valid!"
+    echo "🔄 Reloading nginx..."
+    sudo systemctl reload nginx
+    echo "✅ Nginx reloaded successfully!"
+    echo ""
+    echo "🚀 Now you can run certbot to add SSL:"
+    echo "sudo certbot --nginx -d ninetails.site -d www.ninetails.site --non-interactive --agree-tos --email admin@ninetails.site"
+else
+    echo "❌ Nginx configuration test failed!"
+    echo "🔄 Restoring backup..."
+    sudo cp /etc/nginx/sites-available/truyendex.backup /etc/nginx/sites-available/truyendex
+    exit 1
+fi

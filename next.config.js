@@ -39,8 +39,8 @@ module.exports = async (phase) => {
     compress: true,
     // Optimize bundle
     swcMinify: true,
-    // Use standalone output for Docker
-    output: "standalone",
+    // Remove standalone for PM2 - use regular mode
+    // output: "standalone",
     // Disable static generation completely
     trailingSlash: false,
     // Disable client-side rendering bailout warnings

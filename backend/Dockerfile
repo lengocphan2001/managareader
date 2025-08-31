@@ -25,8 +25,8 @@ FROM node:22-alpine AS production
 # Set working directory
 WORKDIR /app
 
-# Install PostgreSQL client for migrations
-RUN apk add --no-cache postgresql-client
+# Install PostgreSQL client and SSL libraries for Prisma
+RUN apk add --no-cache postgresql-client openssl libssl1.1
 
 # Copy package files
 COPY package*.json ./
@@ -38,6 +38,8 @@ RUN npm install --only=production && npm cache clean --force
 COPY --from=builder /app/src ./src
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
 # Create logs directory
 RUN mkdir -p logs

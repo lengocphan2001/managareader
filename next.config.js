@@ -34,15 +34,19 @@ module.exports = async (phase) => {
     experimental: {
       missingSuspenseWithCSRBailout: false,
       optimizePackageImports: ["@iconify/react", "lucide-react"],
+      // Force all pages to be dynamic
+      staticPageGenerationTimeout: 0,
     },
     // Enable compression
     compress: true,
     // Optimize bundle
     swcMinify: true,
-    // Remove standalone for PM2 - use regular mode
-    // output: "standalone",
-    // Disable static generation completely
+    // Force dynamic rendering for all pages
     trailingSlash: false,
+    // Disable static generation
+    generateStaticParams: false,
+    // Force dynamic rendering
+    dynamic: "force-dynamic",
     // Disable client-side rendering bailout warnings
     onDemandEntries: {
       maxInactiveAge: 25 * 1000,

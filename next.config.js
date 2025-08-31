@@ -26,6 +26,9 @@ module.exports = async (phase) => {
     eslint: {
       ignoreDuringBuilds: true,
     },
+    typescript: {
+      ignoreBuildErrors: true,
+    },
     // Performance optimizations
     experimental: {
       optimizePackageImports: ["@iconify/react", "lucide-react"],

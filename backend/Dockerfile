@@ -25,14 +25,15 @@ FROM node:22-alpine AS production
 # Set working directory
 WORKDIR /app
 
-# Install PostgreSQL client and SSL libraries for Prisma
-RUN apk add --no-cache postgresql-client openssl libssl1.1
+# Install PostgreSQL client and required libraries for Prisma
+RUN apk add --no-cache postgresql-client openssl
 
 # Copy package files
 COPY package*.json ./
 
-# Install only production dependencies
+# Install production dependencies including Prisma
 RUN npm install --only=production && npm cache clean --force
+RUN npx prisma generate
 
 # Copy source code from builder stage
 COPY --from=builder /app/src ./src

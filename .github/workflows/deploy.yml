@@ -23,7 +23,7 @@ jobs:
         run: corepack enable
 
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: npm install --frozen-lockfile
 
       - name: Create .env File from Secrets
         run: |
@@ -73,7 +73,7 @@ jobs:
             rm -rf build.tar.gz
 
             # Install dependencies
-            yarn install
+            npm install
 
             # Restart app (use pm2 or a similar process manager)
             pm2 delete truyendex || true

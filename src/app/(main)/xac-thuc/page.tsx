@@ -21,7 +21,7 @@ export default function VerifyEmailPage() {
                 <div className="px-6 py-12 text-center">
                   <p className="text-slate-400">
                     Please check your email (including spam folder) to verify
-                    your email and continue using TruyenDex! Usually the email
+                    your email and continue using this site! Usually the email
                     will be sent within 1 ~ 10 minutes after registration. If
                     you still don't receive it, please choose to resend below.
                   </p>

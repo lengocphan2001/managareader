@@ -20,10 +20,6 @@ export default function FollowingSync() {
   const [source, setSource] = useState<string>("");
   return (
     <div>
-      <div>
-        Guide to sync followed manga list from CManga, MangaDex, CuuTruyen to
-        TruyenDex
-      </div>
       <div className="text-base text-gray-300">
         <b>Note:</b> The operations below can only be performed on
         desktop/laptop devices.

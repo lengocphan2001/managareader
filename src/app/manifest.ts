@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "TruyenDex App",
-    short_name: "TruyenDex",
-    description: "TruyenDex",
+    name: "Manga App",
+    short_name: "MangaApp",
+    description: "MangaApp",
     start_url: "/",
     display: "standalone",
     background_color: "#fff",

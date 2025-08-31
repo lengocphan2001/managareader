@@ -13,11 +13,11 @@ RUN yarn install
 # Copy the rest of the application files to the working directory
 COPY . .
 
-# Set environment variables from the .env file
-COPY .env.docker.local .env
+# Set environment variables from the .env file (if it exists)
+COPY .env.docker.local* .env
 
 # Build the Next.js application
-RUN yarn build
+RUN run build
 
 # Expose the port that the app runs on
 EXPOSE 3000

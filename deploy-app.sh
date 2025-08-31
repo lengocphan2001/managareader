@@ -36,7 +36,7 @@ cd /var/www/truyendex
 # Clone or update repository
 if [ -d ".git" ]; then
     print_status "Updating repository..."
-    git pull origin main
+    git pull origin develop
 else
     print_error "Repository not found. Please clone your repository first:"
     print_warning "git clone <your-repo-url> /var/www/truyendex"
@@ -46,6 +46,16 @@ fi
 # Copy environment file
 print_status "Setting up environment..."
 cp .env.production .env
+
+# Create .env.docker.local for Docker build
+print_status "Creating Docker environment file..."
+cat > .env.docker.local << EOF
+# Docker environment file for production build
+NODE_ENV=production
+NEXT_PUBLIC_API_URL=https://ninetails.site/api
+NEXT_PUBLIC_MANGADEX_API_URL=https://api.mangadex.org
+TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY}
+EOF
 
 # Build and start with Docker Compose
 print_status "Building and starting services..."

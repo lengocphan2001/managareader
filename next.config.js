@@ -32,11 +32,15 @@ module.exports = async (phase) => {
     // Performance optimizations
     experimental: {
       optimizePackageImports: ["@iconify/react", "lucide-react"],
+      // Disable static optimization for pages that use cookies
+      staticPageGenerationTimeout: 1000,
     },
     // Enable compression
     compress: true,
     // Optimize bundle
     swcMinify: true,
+    // Force dynamic rendering for all pages (prevents static generation issues)
+    output: 'standalone',
   };
 
   // You may want to use a more robust revision to cache

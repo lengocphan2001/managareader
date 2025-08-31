@@ -21,7 +21,9 @@ export class UrlUtils {
       }
     }
     // For localhost development, use backend server without /api
-    return Constants.BACKEND_URL?.replace('/api', '') || "http://localhost:8000";
+    return (
+      Constants.BACKEND_URL?.replace("/api", "") || "http://localhost:8000"
+    );
   }
 
   getGoogleAuthUrl() {

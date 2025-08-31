@@ -49,27 +49,49 @@ module.exports = async (phase) => {
     // Additional dynamic rendering options
     skipTrailingSlashRedirect: true,
     skipMiddlewareUrlNormalize: true,
-    
+
     // Security headers
     async headers() {
+      const isDevelopment = process.env.NODE_ENV === 'development';
+      
+      // Skip CSP in development to avoid localhost issues
+      if (isDevelopment) {
+        return [
+          {
+            source: "/(.*)",
+            headers: [
+              {
+                key: "X-Frame-Options",
+                value: "SAMEORIGIN",
+              },
+              {
+                key: "X-Content-Type-Options",
+                value: "nosniff",
+              },
+            ],
+          },
+        ];
+      }
+      
+      // Production CSP
       return [
         {
-          source: '/(.*)',
+          source: "/(.*)",
           headers: [
             {
-              key: 'Content-Security-Policy',
-              value: "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.ninetails.site; style-src 'self' 'unsafe-inline' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; object-src 'none'; base-uri 'self';"
+              key: "Content-Security-Policy",
+              value: "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.ninetails.site https://api.iconify.design; style-src 'self' 'unsafe-inline' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' data: https: blob: https://resizer.f-ck.me https://mangadex.org; font-src 'self' data: https:; object-src 'none'; base-uri 'self';",
             },
             {
-              key: 'X-Frame-Options',
-              value: 'SAMEORIGIN'
+              key: "X-Frame-Options",
+              value: "SAMEORIGIN",
             },
             {
-              key: 'X-Content-Type-Options',
-              value: 'nosniff'
-            }
-          ]
-        }
+              key: "X-Content-Type-Options",
+              value: "nosniff",
+            },
+          ],
+        },
       ];
     },
   };

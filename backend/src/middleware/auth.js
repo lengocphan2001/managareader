@@ -1,78 +1,78 @@
-const jwt = require('jsonwebtoken');
-const { PrismaClient } = require('@prisma/client');
+const jwt = require("jsonwebtoken");
+const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
 const auth = async (req, res, next) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '') || 
-                  req.cookies?.token;
+    const token =
+      req.header("Authorization")?.replace("Bearer ", "") || req.cookies?.token;
 
     if (!token) {
-      return res.status(401).json({ 
-        success: false, 
-        message: 'Access denied. No token provided.' 
+      return res.status(401).json({
+        success: false,
+        message: "Access denied. No token provided.",
       });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       include: {
         roles: {
           include: {
-            role: true
-          }
-        }
-      }
+            role: true,
+          },
+        },
+      },
     });
 
     if (!user) {
-      return res.status(401).json({ 
-        success: false, 
-        message: 'Invalid token. User not found.' 
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token. User not found.",
       });
     }
 
     // Add user to request object
     req.user = {
       ...user,
-      display_roles: user.roles.map(ur => ur.role.name)
+      display_roles: user.roles.map((ur) => ur.role.name),
     };
 
     next();
   } catch (error) {
-    res.status(401).json({ 
-      success: false, 
-      message: 'Invalid token.' 
+    res.status(401).json({
+      success: false,
+      message: "Invalid token.",
     });
   }
 };
 
 const optionalAuth = async (req, res, next) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '') || 
-                  req.cookies?.token;
+    const token =
+      req.header("Authorization")?.replace("Bearer ", "") || req.cookies?.token;
 
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      
+
       const user = await prisma.user.findUnique({
         where: { id: decoded.userId },
         include: {
           roles: {
             include: {
-              role: true
-            }
-          }
-        }
+              role: true,
+            },
+          },
+        },
       });
 
       if (user) {
         req.user = {
           ...user,
-          display_roles: user.roles.map(ur => ur.role.name)
+          display_roles: user.roles.map((ur) => ur.role.name),
         };
       }
     }

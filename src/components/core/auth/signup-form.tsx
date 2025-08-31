@@ -9,8 +9,6 @@ import { toast } from "react-toastify";
 import { useAuth } from "@/hooks/useAuth";
 import { Constants } from "@/constants";
 // import TurnstileWidget from "@/components/turnstile-widget";
-import { Utils } from "@/utils";
-import Iconify from "@/components/iconify";
 import TurnstileWidget from "@/components/turnstile-widget";
 
 // Define the form input types

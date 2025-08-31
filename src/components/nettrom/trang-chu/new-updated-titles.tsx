@@ -78,14 +78,11 @@ export default function LastestChapters({
 
   return (
     <div className="Module Module-163" id="new-updates">
-      
       <div className="ModuleContent">
-      <h1 className="my-0 flex items-center gap-3 text-[20px] text-web-title mb-4">
+        <h1 className="my-0 mb-4 flex items-center gap-3 text-[20px] text-web-title">
           <FaClock />
-          <span>
-            Latest Manga Updates
-          </span>
-      </h1>
+          <span>Latest Manga Updates</span>
+        </h1>
         <div className="items">
           {title && (
             <div className="relative">

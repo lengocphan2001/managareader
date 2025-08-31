@@ -53,7 +53,7 @@ export default function useLastUpdates(options: {
   const chapters = (data?.data.data || []) as ExtendChapter[];
   const prioritizedChapters = Utils.Mangadex.prioritizeChaptersByGroupLanguage(
     chapters,
-    options.filteredLanguages || ["en", "ja-ro"]
+    options.filteredLanguages || ["en", "ja-ro"],
   );
 
   return {

@@ -90,8 +90,8 @@ export default function Manga({
         <div className="flex flex-col justify-center">
           <FaExclamationTriangle className="mx-auto text-[100px] text-red-600" />
           <p className="text-center">
-            This manga may contain sensitive content and you have set up filtering
-            for manga with "adult" content
+            This manga may contain sensitive content and you have set up
+            filtering for manga with "adult" content
           </p>
         </div>
         <div className="mt-4 flex justify-center">
@@ -139,11 +139,7 @@ export default function Manga({
                 </Link>
                 <meta itemProp="position" content={item.position.toString()} />
               </li>
-              {!isLast && (
-                <li className="text-muted-foreground">
-                  /
-                </li>
-              )}
+              {!isLast && <li className="text-muted-foreground">/</li>}
             </React.Fragment>
           );
         })}
@@ -227,7 +223,8 @@ export default function Manga({
                 {altTitles.length > 0 && (
                   <li className="">
                     <p className="name mb-2 text-muted-foreground lg:mb-0">
-                      <i className="fa fa-plus-square mr-2"></i> Alternative Names
+                      <i className="fa fa-plus-square mr-2"></i> Alternative
+                      Names
                     </p>
                     <p className="other-name inline-flex flex-wrap gap-4 pl-10 lg:pl-0">
                       {altTitles.map((altTitle, idx) => {
@@ -345,9 +342,7 @@ export default function Manga({
                     variant={"outline"}
                     onClick={followManga}
                   >
-                    <span>
-                      {seriesInfo.followed ? "Unfollow" : "Follow"}
-                    </span>
+                    <span>{seriesInfo.followed ? "Unfollow" : "Follow"}</span>
                   </Button>
                 ) : (
                   <Button

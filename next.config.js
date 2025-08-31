@@ -28,7 +28,7 @@ module.exports = async (phase) => {
     },
     // Performance optimizations
     experimental: {
-      optimizePackageImports: ['@iconify/react', 'lucide-react'],
+      optimizePackageImports: ["@iconify/react", "lucide-react"],
     },
     // Enable compression
     compress: true,

@@ -5,11 +5,13 @@
 Follow these steps to deploy your TruyenDex site to ninetails.site:
 
 ### 1. Prepare Your VPS
+
 - Get a VPS with Ubuntu 20.04+ (recommended: 2GB RAM, 2 CPU cores)
 - Point your domain `ninetails.site` to your VPS IP address
 - SSH into your VPS: `ssh root@your-vps-ip`
 
 ### 2. Upload Your Code
+
 ```bash
 # Clone your repository
 git clone <your-repo-url> /var/www/truyendex
@@ -17,6 +19,7 @@ cd /var/www/truyendex
 ```
 
 ### 3. Configure Environment
+
 ```bash
 # Copy and edit the environment file
 cp env.production.example .env.production
@@ -24,12 +27,14 @@ nano .env.production
 ```
 
 **Required values to fill in:**
+
 - `POSTGRES_PASSWORD`: A strong password for your database
 - `JWT_SECRET`: A random secret key for JWT tokens
 - `SMTP_USER` & `SMTP_PASS`: Email credentials for user registration
 - `TURNSTILE_SECRET_KEY` & `TURNSTILE_SITE_KEY`: Cloudflare Turnstile keys
 
 ### 4. Deploy Everything
+
 ```bash
 # Make scripts executable and run deployment
 chmod +x deploy.sh deploy-app.sh
@@ -47,17 +52,20 @@ cd /var/www/truyendex
 ### 5. Get API Keys
 
 #### Cloudflare Turnstile (Required)
+
 1. Go to [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/)
 2. Create a new site
 3. Add domain: `ninetails.site`
 4. Copy Site Key and Secret Key to your `.env.production`
 
 #### Gmail App Password (For Email)
+
 1. Enable 2FA on your Gmail account
 2. Generate an App Password
 3. Use your Gmail and the app password in `.env.production`
 
 ### 6. Verify Deployment
+
 - Visit: https://ninetails.site
 - Check logs: `docker-compose -f docker-compose.prod.yml logs -f`
 
@@ -117,21 +125,25 @@ docker-compose -f docker-compose.prod.yml ps
 ## 🆘 Troubleshooting
 
 **Site not loading?**
+
 ```bash
 docker-compose -f docker-compose.prod.yml logs frontend
 ```
 
 **API not working?**
+
 ```bash
 docker-compose -f docker-compose.prod.yml logs backend
 ```
 
 **Database issues?**
+
 ```bash
 docker-compose -f docker-compose.prod.yml logs postgres
 ```
 
 **SSL problems?**
+
 ```bash
 sudo certbot renew --dry-run
 ```

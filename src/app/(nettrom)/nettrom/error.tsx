@@ -3,8 +3,6 @@
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect } from "react";
 
-import { Constants } from "@/constants";
-
 export default function Error({
   error,
   reset,

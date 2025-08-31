@@ -39,10 +39,12 @@ npm run dev
 ## Troubleshooting
 
 ### Lỗi "Access denied. No token provided"
+
 - Đảm bảo backend đang chạy trên port 8000
 - Kiểm tra file .env.local có đúng không
 - Restart cả frontend và backend
 
 ### Lỗi CORS
+
 - Kiểm tra FRONTEND_URL trong backend .env
 - Đảm bảo frontend chạy trên port 3000

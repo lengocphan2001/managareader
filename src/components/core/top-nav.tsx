@@ -170,7 +170,6 @@ export default function TopNav() {
                 Đăng nhập
               </Link>
             </li>
-
           </ul>
           {/*end navigation menu*/}
         </div>

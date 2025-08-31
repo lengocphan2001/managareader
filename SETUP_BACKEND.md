@@ -5,7 +5,7 @@
 Tôi đã tạo một backend hoàn chỉnh cho TruyenDex với các tính năng:
 
 - ✅ **Authentication System** (JWT)
-- ✅ **User Management** 
+- ✅ **User Management**
 - ✅ **Comment System** (với replies)
 - ✅ **Follow System**
 - ✅ **Read List Management**
@@ -111,7 +111,7 @@ Xóa các file mock API routes đã tạo trước đó:
 
 ```bash
 rm src/app/api/user/route.ts
-rm src/app/api/series/homepage/route.ts  
+rm src/app/api/series/homepage/route.ts
 rm src/app/api/comment/recent/route.ts
 ```
 
@@ -169,12 +169,14 @@ npm run dev
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - Đăng ký
-- `POST /api/auth/login` - Đăng nhập  
+- `POST /api/auth/login` - Đăng nhập
 - `POST /api/auth/logout` - Đăng xuất
 - `GET /api/auth/me` - Thông tin user
 
 ### User Management
+
 - `GET /api/user` - Thông tin user
 - `GET /api/user/read-list` - Danh sách đã đọc
 - `POST /api/user/read-list/sync` - Đồng bộ danh sách
@@ -182,6 +184,7 @@ npm run dev
 - `POST /api/user/change-name` - Đổi tên
 
 ### Comments
+
 - `GET /api/comment/recent` - Bình luận gần đây
 - `GET /api/comment/list` - Danh sách bình luận
 - `POST /api/comment/store` - Tạo bình luận
@@ -189,6 +192,7 @@ npm run dev
 - `POST /api/comment/delete` - Xóa bình luận
 
 ### Series
+
 - `GET /api/series/homepage` - Truyện trang chủ
 - `POST /api/series/follow` - Theo dõi truyện
 - `POST /api/series/check-info` - Thông tin truyện
@@ -196,22 +200,27 @@ npm run dev
 ## Database Schema
 
 ### Users Table
+
 - id, email, name, password, avatar_path
 - email_verified_at, created_at, updated_at
 
-### Comments Table  
+### Comments Table
+
 - id, content, user_id, commentable_type, commentable_id
 - parent_id (for replies), created_at, updated_at
 
 ### Follows Table
+
 - id, user_id, series_id, created_at
 
 ### ReadList Table
+
 - id, user_id, series_id, chapter_id, created_at, updated_at
 
 ## Troubleshooting
 
 ### Database Connection Error
+
 ```bash
 # Kiểm tra PostgreSQL đang chạy
 sudo service postgresql status
@@ -221,18 +230,21 @@ createdb truyendex
 ```
 
 ### Port Already in Use
+
 ```bash
 # Kill process on port 8000
 lsof -ti:8000 | xargs kill -9
 ```
 
 ### CORS Error
+
 - Kiểm tra `FRONTEND_URL` trong `.env`
 - Đảm bảo frontend chạy trên port 3000
 
 ## Production Deployment
 
 ### Docker
+
 ```bash
 cd backend
 docker build -t truyendex-backend .
@@ -240,6 +252,7 @@ docker run -p 8000:8000 truyendex-backend
 ```
 
 ### Environment Variables
+
 - `DATABASE_URL`: PostgreSQL production URL
 - `JWT_SECRET`: Strong secret key
 - `NODE_ENV`: production

@@ -20,7 +20,7 @@ async function detectSettings() {
     const settingsStore = cookieStore.get(Constants.Settings.COOKIE_KEY);
     return settingsStore ? JSON.parse(settingsStore.value) : null;
   } catch (error) {
-    console.warn('Failed to parse settings cookie:', error);
+    console.warn("Failed to parse settings cookie:", error);
     return null;
   }
 }
@@ -47,7 +47,7 @@ export const LayoutWrapper = async ({
 
         <link rel="dns-prefetch" href="https://www.google.com" />
         <link rel="dns-prefetch" href="https://www.gstatic.com" />
-        
+
         {/* Preload critical routes */}
         <link rel="prefetch" href="/nettrom" />
         <link rel="prefetch" href="/login" />

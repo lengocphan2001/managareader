@@ -21,7 +21,8 @@ export default function FollowingList() {
     useMangadex();
   const [page, setPage] = useState(1);
   const { data, mutate, isLoading, error } = useReadList(page);
-  const { modalState, showConfirm, hideConfirm, handleConfirm } = useConfirmModal();
+  const { modalState, showConfirm, hideConfirm, handleConfirm } =
+    useConfirmModal();
 
   const unfollow = useCallback(
     async (mangaId: string) => {
@@ -36,8 +37,8 @@ export default function FollowingList() {
         {
           confirmText: "Unfollow",
           cancelText: "Cancel",
-          type: "danger"
-        }
+          type: "danger",
+        },
       );
     },
     [mutate, showConfirm],
@@ -122,7 +123,7 @@ export default function FollowingList() {
           />
         </div>
       )}
-      
+
       <ConfirmModal
         isOpen={modalState.isOpen}
         onClose={hideConfirm}

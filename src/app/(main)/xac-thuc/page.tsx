@@ -1,8 +1,5 @@
-import Link from "next/link";
-
 import Iconify from "@/components/iconify";
 import Buttons from "@/components/core/auth/verify-email-buttons";
-import { Constants } from "@/constants";
 
 export default function VerifyEmailPage() {
   return (
@@ -23,10 +20,10 @@ export default function VerifyEmailPage() {
                 </div>
                 <div className="px-6 py-12 text-center">
                   <p className="text-slate-400">
-                    Please check your email (including spam folder) to verify your email and
-                    continue using TruyenDex! Usually the email will be sent within 1 ~
-                    10 minutes after registration. If you still don't receive it, please
-                    choose to resend below.
+                    Please check your email (including spam folder) to verify
+                    your email and continue using TruyenDex! Usually the email
+                    will be sent within 1 ~ 10 minutes after registration. If
+                    you still don't receive it, please choose to resend below.
                   </p>
                   <p>
                     Note: Use your <b>current browser</b> to open the link

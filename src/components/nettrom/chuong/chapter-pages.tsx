@@ -5,7 +5,6 @@ import { useChapterContext } from "@/contexts/chapter";
 import { DataLoader } from "@/components/DataLoader";
 import { Button } from "../Button";
 import CommentSection from "../binh-luan/comment-section";
-import { Alert } from "../Alert";
 import ScanlationGroupInformation from "./scanlation-group-information";
 import Link from "next/link";
 import Iconify from "@/components/iconify";
@@ -25,7 +24,9 @@ export default function ChapterPages() {
     <div>
       {error ? (
         <div className="container flex flex-col items-center justify-center gap-2">
-          <div className="text-2xl font-bold">This chapter has been deleted</div>
+          <div className="text-2xl font-bold">
+            This chapter has been deleted
+          </div>
           <Link href={Constants.Routes.nettrom.manga(manga?.id || "")}>
             <Button icon={<Iconify icon="fa:arrow-left" />}>
               Back to manga page
@@ -59,15 +60,16 @@ export default function ChapterPages() {
             Previous Chapter
           </Button>
         </div>
-        <DataLoader isLoading={!group} loadingText="Loading scanlation group...">
+        <DataLoader
+          isLoading={!group}
+          loadingText="Loading scanlation group..."
+        >
           {group && (
             <ScanlationGroupInformation group={group} canNext={canNext} />
           )}
         </DataLoader>
         <DataLoader isLoading={!chapter} loadingText="Loading comments...">
-          {chapterId && (
-            <CommentSection type="chapter" typeId={chapterId} />
-          )}
+          {chapterId && <CommentSection type="chapter" typeId={chapterId} />}
         </DataLoader>
       </div>
     </div>

@@ -78,7 +78,9 @@ export default function UserDashboardLayoutView({
                         <span className="mb-0 me-2 text-[18px]">
                           <Iconify icon="uil-dashboard" />
                         </span>
-                        <h6 className="mb-0 font-semibold">General Information</h6>
+                        <h6 className="mb-0 font-semibold">
+                          General Information
+                        </h6>
                       </Link>
                     </li>
                     <li

@@ -1,6 +1,11 @@
 import { MangadexApi } from "@/api";
 import { LocalizedString } from "@/types/mangadex";
-import { Chapter, ExtendChapter, ExtendManga, Relationship } from "@/types/mangadex";
+import {
+  Chapter,
+  ExtendChapter,
+  ExtendManga,
+  Relationship,
+} from "@/types/mangadex";
 import axios from "axios";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -77,28 +82,32 @@ export class MangaDexUtils {
    */
   prioritizeChaptersByGroupLanguage(
     chapters: ExtendChapter[],
-    preferredLanguages: string[] = ["en", "ja-ro"]
+    preferredLanguages: string[] = ["en", "ja-ro"],
   ): ExtendChapter[] {
     return chapters.sort((a, b) => {
       const aGroup = a.scanlation_group;
       const bGroup = b.scanlation_group;
-      
+
       // If no scanlation groups, maintain original order
       if (!aGroup && !bGroup) return 0;
       if (!aGroup) return 1;
       if (!bGroup) return -1;
-      
+
       const aFocusedLanguages = aGroup.attributes.focusedLanguages || [];
       const bFocusedLanguages = bGroup.attributes.focusedLanguages || [];
-      
+
       // Check if groups focus on preferred languages
-      const aHasPreferred = aFocusedLanguages.some(lang => preferredLanguages.includes(lang));
-      const bHasPreferred = bFocusedLanguages.some(lang => preferredLanguages.includes(lang));
-      
+      const aHasPreferred = aFocusedLanguages.some((lang) =>
+        preferredLanguages.includes(lang),
+      );
+      const bHasPreferred = bFocusedLanguages.some((lang) =>
+        preferredLanguages.includes(lang),
+      );
+
       // Prioritize groups with preferred languages
       if (aHasPreferred && !bHasPreferred) return -1;
       if (!aHasPreferred && bHasPreferred) return 1;
-      
+
       // If both have or don't have preferred languages, maintain original order
       return 0;
     });
@@ -116,30 +125,33 @@ export class MangaDexUtils {
     latestUpdate: string;
   }> {
     const grouped = new Map<string, ExtendChapter[]>();
-    
+
     // Group chapters by volume and chapter number
-    chapters.forEach(chapter => {
+    chapters.forEach((chapter) => {
       const volume = chapter.attributes.volume || "none";
       const chapterNum = chapter.attributes.chapter || "none";
       const key = `${volume}-${chapterNum}`;
-      
+
       if (!grouped.has(key)) {
         grouped.set(key, []);
       }
       grouped.get(key)!.push(chapter);
     });
-    
+
     // Convert to array and sort
     return Array.from(grouped.entries())
       .map(([key, chapterList]) => {
         // Sort chapters within each group by scanlation group language preference
-        const sortedChapters = this.prioritizeChaptersByGroupLanguage(chapterList);
-        
+        const sortedChapters =
+          this.prioritizeChaptersByGroupLanguage(chapterList);
+
         // Get the latest update time
         const latestUpdate = Math.max(
-          ...chapterList.map(c => new Date(c.attributes.readableAt).getTime())
+          ...chapterList.map((c) =>
+            new Date(c.attributes.readableAt).getTime(),
+          ),
         );
-        
+
         return {
           volume: chapterList[0].attributes.volume,
           chapter: chapterList[0].attributes.chapter,
@@ -152,14 +164,14 @@ export class MangaDexUtils {
         // Sort by volume first, then by chapter number
         const aVolume = a.volume === "none" ? "999" : a.volume;
         const bVolume = b.volume === "none" ? "999" : b.volume;
-        
+
         if (aVolume !== bVolume) {
           return parseFloat(bVolume) - parseFloat(aVolume); // Descending order
         }
-        
+
         const aChapter = a.chapter === "none" ? "0" : a.chapter;
         const bChapter = b.chapter === "none" ? "0" : b.chapter;
-        
+
         return parseFloat(bChapter) - parseFloat(aChapter); // Descending order
       });
   }

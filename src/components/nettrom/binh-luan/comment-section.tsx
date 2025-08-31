@@ -219,7 +219,9 @@ export function CommentItem({
             </div>
             <div className="comment-content">
               {userBanned ? (
-                <div className="text-muted-foreground">Comment has been deleted</div>
+                <div className="text-muted-foreground">
+                  Comment has been deleted
+                </div>
               ) : (
                 <ReadMore>
                   <Markdown content={comment.content} />

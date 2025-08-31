@@ -52,7 +52,10 @@ export default function SettingsDialog() {
           <Switch
             checked={filteredLanguages.includes("en")}
             onCheckedChange={(value) =>
-              onUpdateField("filteredLanguages", value ? ["en", "ja-ro"] : ["en", "ja-ro"])
+              onUpdateField(
+                "filteredLanguages",
+                value ? ["en", "ja-ro"] : ["en", "ja-ro"],
+              )
             }
           />
         </div>

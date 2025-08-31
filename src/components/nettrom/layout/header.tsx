@@ -4,11 +4,8 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
   FaBook,
-  FaBug,
   FaCaretDown,
-  FaCat,
   FaCog,
-  FaGithub,
   FaHistory,
   FaHome,
   FaList,
@@ -70,7 +67,7 @@ export default function Header() {
             >
               <i className="fa fa-search"></i>
             </Link>
-            
+
             <button
               type="button"
               className="navbar-toggle block md:hidden"
@@ -177,7 +174,7 @@ function AuthDropdown({ desktop }: { desktop?: boolean }) {
                 History
               </Link>
             </MenuItem>
-            
+
             <MenuItem>
               <button className={menuItemClassName} onClick={onToggleDrawer}>
                 <FaCog /> Settings

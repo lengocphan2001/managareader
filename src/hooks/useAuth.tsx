@@ -25,33 +25,37 @@ export const useAuth = ({
     daysUntilExpiration: 1,
   });
 
-  const { data: user, mutate } = useSWR("/api/user", async () => {
-    try {
-      const { data } = await axios.get<GetUserResponse>("/api/user");
-      if (data?.user) {
-        userIdValues.setState(data.user.id);
-        return data.user;
-      } else {
-        userIdValues.resetState();
+  const { data: user, mutate } = useSWR(
+    "/api/user",
+    async () => {
+      try {
+        const { data } = await axios.get<GetUserResponse>("/api/user");
+        if (data?.user) {
+          userIdValues.setState(data.user.id);
+          return data.user;
+        } else {
+          userIdValues.resetState();
+          return null;
+        }
+      } catch (error: any) {
+        // If 401 (unauthorized), user is not logged in
+        if (error?.response?.status === 401) {
+          userIdValues.resetState();
+          return null;
+        }
+        // For other errors, still return null but don't reset state
         return null;
       }
-    } catch (error: any) {
-      // If 401 (unauthorized), user is not logged in
-      if (error?.response?.status === 401) {
-        userIdValues.resetState();
-        return null;
-      }
-      // For other errors, still return null but don't reset state
-      return null;
-    }
-  }, {
-    // Don't retry on 401 errors
-    shouldRetryOnError: (error) => {
-      return error?.response?.status !== 401;
     },
-    // Don't fetch on focus if we got 401
-    revalidateOnFocus: false,
-  });
+    {
+      // Don't retry on 401 errors
+      shouldRetryOnError: (error) => {
+        return error?.response?.status !== 401;
+      },
+      // Don't fetch on focus if we got 401
+      revalidateOnFocus: false,
+    },
+  );
 
   const csrf = () => axios.get("/sanctum/csrf-cookie");
 
@@ -70,7 +74,7 @@ export const useAuth = ({
 
     // Store token in localStorage for Authorization header
     if (response.data?.user && response.data?.token) {
-      localStorage.setItem('auth_token', response.data.token);
+      localStorage.setItem("auth_token", response.data.token);
     }
 
     await mutate();
@@ -94,7 +98,7 @@ export const useAuth = ({
 
     // Store token in localStorage for Authorization header
     if (response.data?.user && response.data?.token) {
-      localStorage.setItem('auth_token', response.data.token);
+      localStorage.setItem("auth_token", response.data.token);
     }
 
     await mutate();
@@ -138,8 +142,8 @@ export const useAuth = ({
     await axios.post("/api/auth/logout");
 
     // Clear token from localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('auth_token');
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("auth_token");
     }
 
     toast("Logged out successfully");

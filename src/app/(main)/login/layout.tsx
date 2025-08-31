@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import Iconify from "@/components/iconify";
-import { Constants } from "@/constants";
 
 export default function AuthLayout({
   children,
@@ -25,7 +24,7 @@ export default function AuthLayout({
                     />
                   </Link>
                 </div>
-                
+
                 <div className="title-heading my-20 text-center md:my-auto">
                   {children}
                 </div>
@@ -47,7 +46,8 @@ export default function AuthLayout({
                     <div className="relative mx-auto max-w-xl text-start">
                       <div className="relative rounded-[30px] border-2 border-indigo-600 p-8 before:absolute before:-bottom-1 before:start-16 before:z-2 before:w-28 before:border-[6px] before:border-white before:content-[''] after:absolute after:-bottom-[80px] after:start-[60px] after:z-3 after:h-20 after:w-20 after:rounded-none after:rounded-e-[50px] after:border-2 after:border-b-0 after:border-s-0 after:border-indigo-600 after:content-[''] dark:before:border-slate-900">
                         <span className="font-semibold leading-normal">
-                          Create an account now to join the most civilized manga community in East Laos!
+                          Create an account now to join the most civilized manga
+                          community in East Laos!
                         </span>
                         <div className="absolute -top-0 start-4 -z-1 text-8xl text-indigo-600/10 dark:text-indigo-600/20">
                           <Iconify icon="mdi:format-quote-open" />

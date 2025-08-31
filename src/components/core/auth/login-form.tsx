@@ -10,7 +10,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { Constants } from "@/constants";
 import TurnstileWidget from "@/components/turnstile-widget";
 import { Utils } from "@/utils";
-import Iconify from "@/components/iconify";
 
 // Define the form input types
 interface ILoginForm {
@@ -22,10 +21,7 @@ interface ILoginForm {
 
 // Define the validation schema using yup
 const loginSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email("Invalid email")
-    .required("Please enter email"),
+  email: yup.string().email("Invalid email").required("Please enter email"),
   password: yup
     .string()
     .min(6, "Password must be at least 6 characters")

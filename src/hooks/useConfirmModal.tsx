@@ -19,29 +19,32 @@ export function useConfirmModal() {
     message: "",
   });
 
-  const showConfirm = useCallback((
-    title: string,
-    message: string,
-    onConfirm: () => void,
-    options?: {
-      confirmText?: string;
-      cancelText?: string;
-      type?: "danger" | "warning" | "info";
-    }
-  ) => {
-    setModalState({
-      isOpen: true,
-      title,
-      message,
-      onConfirm,
-      confirmText: options?.confirmText,
-      cancelText: options?.cancelText,
-      type: options?.type || "danger",
-    });
-  }, []);
+  const showConfirm = useCallback(
+    (
+      title: string,
+      message: string,
+      onConfirm: () => void,
+      options?: {
+        confirmText?: string;
+        cancelText?: string;
+        type?: "danger" | "warning" | "info";
+      },
+    ) => {
+      setModalState({
+        isOpen: true,
+        title,
+        message,
+        onConfirm,
+        confirmText: options?.confirmText,
+        cancelText: options?.cancelText,
+        type: options?.type || "danger",
+      });
+    },
+    [],
+  );
 
   const hideConfirm = useCallback(() => {
-    setModalState(prev => ({ ...prev, isOpen: false }));
+    setModalState((prev) => ({ ...prev, isOpen: false }));
   }, []);
 
   const handleConfirm = useCallback(() => {

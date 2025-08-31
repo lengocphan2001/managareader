@@ -19,10 +19,7 @@ interface ISignupForm {
 
 // Define the validation schema using yup
 const signupSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email("Invalid email")
-    .required("Please enter an email"),
+  email: yup.string().email("Invalid email").required("Please enter an email"),
   password: yup
     .string()
     .min(8, "Password must be at least 8 characters")

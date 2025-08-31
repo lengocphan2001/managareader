@@ -13,10 +13,10 @@ export default function useChapterList(
   // Don't restrict by translatedLanguage at API level - fetch all available chapters
   // and prioritize by scanlation group language focus instead
   const apiOptions = { ...options };
-  
+
   // Remove translatedLanguage filter to fetch all available chapters
   delete apiOptions.translatedLanguage;
-  
+
   apiOptions.includes = [
     MangadexApi.Static.Includes.SCANLATION_GROUP,
     MangadexApi.Static.Includes.USER,
@@ -52,7 +52,7 @@ export default function useChapterList(
   const chapters = (data?.data.data || []) as ExtendChapter[];
   const prioritizedChapters = Utils.Mangadex.prioritizeChaptersByGroupLanguage(
     chapters,
-    options.translatedLanguage || ["en", "ja-ro"]
+    options.translatedLanguage || ["en", "ja-ro"],
   );
 
   return {

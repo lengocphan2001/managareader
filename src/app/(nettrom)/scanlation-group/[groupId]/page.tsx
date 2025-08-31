@@ -83,7 +83,9 @@ export default async function ScanlationGroupPage({
     <div className="row">
       <div id="ctl00_divCenter" className="center-side col-md-8">
         <article id="item-detail">
-          <h1 className="title-detail">Scanlation Group: {group.attributes.name}</h1>
+          <h1 className="title-detail">
+            Scanlation Group: {group.attributes.name}
+          </h1>
           {group.attributes.focusedLanguages && (
             <time className="small">
               Languages:{" "}

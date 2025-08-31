@@ -8,7 +8,6 @@ import { twMerge } from "tailwind-merge";
 import { LayoutWrapper } from "@/components/LayoutWrapper";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { Alert } from "@/components/nettrom/Alert";
 import NextTopLoader from "nextjs-toploader";
 import SettingsDialog from "@/components/nettrom/settings-dialog";
 import VerifyMailAlert from "@/components/nettrom/verify-mail-alert";

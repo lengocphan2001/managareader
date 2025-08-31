@@ -61,12 +61,14 @@ npm start
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - Đăng ký
 - `POST /api/auth/login` - Đăng nhập
 - `POST /api/auth/logout` - Đăng xuất
 - `GET /api/auth/me` - Lấy thông tin user hiện tại
 
 ### User
+
 - `GET /api/user` - Lấy thông tin user
 - `GET /api/user/read-list` - Lấy danh sách đã đọc
 - `POST /api/user/read-list/sync` - Đồng bộ danh sách đã đọc
@@ -75,6 +77,7 @@ npm start
 - `POST /api/user/change-avatar` - Đổi avatar
 
 ### Comments
+
 - `GET /api/comment/recent` - Lấy bình luận gần đây
 - `GET /api/comment/list` - Lấy danh sách bình luận
 - `POST /api/comment/store` - Tạo bình luận mới
@@ -83,6 +86,7 @@ npm start
 - `POST /api/comment/fetch-reply` - Lấy replies
 
 ### Series
+
 - `GET /api/series/homepage` - Lấy truyện trang chủ
 - `POST /api/series/follow` - Theo dõi/bỏ theo dõi truyện
 - `POST /api/series/check-info` - Kiểm tra thông tin truyện
@@ -90,17 +94,21 @@ npm start
 ## Database Schema
 
 ### Users
+
 - Thông tin người dùng cơ bản
 - Hệ thống role (admin, mod, user)
 
 ### Comments
+
 - Bình luận cho truyện/chương
 - Hỗ trợ reply (nested comments)
 
 ### Follows
+
 - Theo dõi truyện yêu thích
 
 ### ReadList
+
 - Danh sách truyện đã đọc
 - Hỗ trợ đồng bộ từ các nguồn khác
 

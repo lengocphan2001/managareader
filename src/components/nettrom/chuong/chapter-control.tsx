@@ -8,7 +8,6 @@ import { ChapterControlBar } from "./chapter-control-bar";
 import { useMemo } from "react";
 import { FaClock } from "react-icons/fa";
 
-
 export default function ChapterControl() {
   const { manga, chapter, others, group } = useChapterContext();
 
@@ -20,7 +19,10 @@ export default function ChapterControl() {
   }, [chapter]);
 
   return (
-    <DataLoader isLoading={!chapter} loadingText="Loading chapter information...">
+    <DataLoader
+      isLoading={!chapter}
+      loadingText="Loading chapter information..."
+    >
       <div className="flex flex-col gap-0">
         {/* <ul
           className="mb-2 inline-flex items-center gap-4"
@@ -81,7 +83,7 @@ export default function ChapterControl() {
           </p>
         </h1>
         <p className="mb-2 md:mb-5">
-                      <span className="text-[14px] text-muted-foreground">
+          <span className="text-[14px] text-muted-foreground">
             <FaClock className="mr-2 inline" />
             Updated at:{" "}
             <span className="">

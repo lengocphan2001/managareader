@@ -6,7 +6,6 @@ import { Constants } from "@/constants";
 import { useAuth } from "@/hooks/useAuth";
 
 import FollowingList from "./following-list";
-import FollowingSync from "./following-sync";
 
 export default function FollowingView() {
   useAuth({
@@ -36,7 +35,6 @@ export default function FollowingView() {
               >
                 <a>Following</a>
               </li>
-              
             </ul>
           </div>
           {tab === "following" && <FollowingList />}

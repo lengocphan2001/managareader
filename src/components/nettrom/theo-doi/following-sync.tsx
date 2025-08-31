@@ -21,11 +21,12 @@ export default function FollowingSync() {
   return (
     <div>
       <div>
-        Guide to sync followed manga list from CManga, MangaDex, CuuTruyen
-        to TruyenDex
+        Guide to sync followed manga list from CManga, MangaDex, CuuTruyen to
+        TruyenDex
       </div>
       <div className="text-base text-gray-300">
-        <b>Note:</b> The operations below can only be performed on desktop/laptop devices.
+        <b>Note:</b> The operations below can only be performed on
+        desktop/laptop devices.
       </div>
       <div className={headingClassName}>Step 1:</div>
 
@@ -44,8 +45,8 @@ export default function FollowingSync() {
       </div>
 
       <div className="text-base text-gray-300">
-        <b>Note:</b> You can sync NetTruyen, TruyenQQ to CManga, then
-        sync CManga to TruyenDex.
+        <b>Note:</b> You can sync NetTruyen, TruyenQQ to CManga, then sync
+        CManga to TruyenDex.
       </div>
 
       <div className={headingClassName}>Step 2:</div>
@@ -86,8 +87,8 @@ function Step2({ source }: { source: string }) {
       {source === "cmanga" && (
         <>
           <div>
-            After logging into CManga, you can sync manga from NetTruyen
-            and TruyenQQ to CManga first.
+            After logging into CManga, you can sync manga from NetTruyen and
+            TruyenQQ to CManga first.
           </div>
           <Image className="mt-1" src={CMangaSyncImage} alt="CManga" />
         </>
@@ -132,7 +133,8 @@ function Step4({ source }: { source: string }) {
   return (
     <div>
       <div>
-        Open the Console tab, copy the script below, paste it into Console and press Enter.
+        Open the Console tab, copy the script below, paste it into Console and
+        press Enter.
       </div>
       <pre className="whitespace-pre-wrap break-words rounded bg-gray-800 p-4 text-white">
         <code className="whitespace-pre-wrap break-words">{script}</code>

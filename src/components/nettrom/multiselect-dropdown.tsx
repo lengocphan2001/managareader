@@ -181,9 +181,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
                 ))}
               </div>
             )}
-            {loading && (
-              <div className="pt-4 text-center">Searching...</div>
-            )}
+            {loading && <div className="pt-4 text-center">Searching...</div>}
             <ul
               className="pb-2 text-neutral-700 dark:text-neutral-200"
               aria-labelledby="states-button"

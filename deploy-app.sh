@@ -54,7 +54,13 @@ cat > .env.docker.local << EOF
 NODE_ENV=production
 NEXT_PUBLIC_API_URL=https://ninetails.site/api
 NEXT_PUBLIC_MANGADEX_API_URL=https://api.mangadex.org
-TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY}
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY}
+NEXT_PUBLIC_CORS_URL=https://ninetails.site
+NEXT_PUBLIC_CORS_V2_URL=https://ninetails.site
+NEXT_PUBLIC_APP_URL=https://ninetails.site
+NEXT_PUBLIC_BACKEND_URL=https://ninetails.site/api
+NEXT_PUBLIC_APP_IMAGE_URL=https://ninetails.site
+NEXT_PUBLIC_GTM_ID=
 EOF
 
 # Build and start with Docker Compose

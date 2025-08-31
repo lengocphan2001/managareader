@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
@@ -59,10 +59,10 @@ export default function Manga({
   const followManga = useCallback(async () => {
     try {
       const { followed } = await AppApi.Series.followOrUnfollow(mangaId);
-      toast(followed ? "Theo dõi thành công" : "Bỏ theo dõi thành công");
+      toast(followed ? "Followed successfully" : "Unfollowed successfully");
       await mutate();
     } catch {
-      toast("Đã có lỗi xảy ra");
+      toast("An error occurred");
     }
   }, [mutate, mangaId]);
 
@@ -90,13 +90,13 @@ export default function Manga({
         <div className="flex flex-col justify-center">
           <FaExclamationTriangle className="mx-auto text-[100px] text-red-600" />
           <p className="text-center">
-            Truyện có thể có nội dung phản cảm và bạn đang thiết lập cài đặt lọc
-            những bộ truyện có nội dung "bùng lổ"
+            This manga may contain sensitive content and you have set up filtering
+            for manga with "adult" content
           </p>
         </div>
         <div className="mt-4 flex justify-center">
           <Button onClick={handleConfirmPorngraphic}>
-            Tôi chịu trách nhiệm với quyết định của mình
+            I take responsibility for my decision
           </Button>
         </div>
       </div>
@@ -105,7 +105,7 @@ export default function Manga({
   return (
     <DataLoader
       isLoading={!manga}
-      loadingText="Đang tải thông tin truyện..."
+      loadingText="Loading manga information..."
       error={error}
     >
       <ul
@@ -115,20 +115,19 @@ export default function Manga({
         {[
           {
             href: Constants.Routes.nettrom.index,
-            name: "Trang chủ",
+            name: "Home",
             position: 1,
           },
           {
             href: Constants.Routes.nettrom.search,
-            name: "Truyện Tranh",
+            name: "Manga",
             position: 2,
           },
         ].map((item, index, arr) => {
           const isLast = index === arr.length - 1;
           return (
-            <>
+            <React.Fragment key={index}>
               <li
-                key={index}
                 itemProp="itemListElement"
                 itemType="http://schema.org/ListItem"
               >
@@ -141,11 +140,11 @@ export default function Manga({
                 <meta itemProp="position" content={item.position.toString()} />
               </li>
               {!isLast && (
-                <li className="text-muted-foreground" key={"divider_" + index}>
+                <li className="text-muted-foreground">
                   /
                 </li>
               )}
-            </>
+            </React.Fragment>
           );
         })}
         {/* <li itemProp="itemListElement" itemType="http://schema.org/ListItem">
@@ -194,14 +193,14 @@ export default function Manga({
             <span className="text-muted-foreground">
               <i className="fa fa-clock mr-2" />
               <span className="block sm:inline">
-                <span className="hidden lg:inline">Cập nhật lúc: </span>
+                <span className="hidden lg:inline">Updated: </span>
                 <span className="text-foreground">
                   {manga?.attributes?.updatedAt
                     ? Utils.Date.formatNowDistance(
                         new Date(manga?.attributes?.updatedAt),
                       )
                     : ""}{" "}
-                  trước
+                  ago
                 </span>
               </span>
             </span>
@@ -228,7 +227,7 @@ export default function Manga({
                 {altTitles.length > 0 && (
                   <li className="">
                     <p className="name mb-2 text-muted-foreground lg:mb-0">
-                      <i className="fa fa-plus-square mr-2"></i> Tên khác
+                      <i className="fa fa-plus-square mr-2"></i> Alternative Names
                     </p>
                     <p className="other-name inline-flex flex-wrap gap-4 pl-10 lg:pl-0">
                       {altTitles.map((altTitle, idx) => {
@@ -239,7 +238,7 @@ export default function Manga({
                 )}
                 <li className="author">
                   <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-user mr-2"></i> Tác giả
+                    <i className="fa fa-user mr-2"></i> Author
                   </p>
                   <p className="pl-10 lg:pl-0">
                     {manga?.author?.attributes
@@ -253,7 +252,7 @@ export default function Manga({
                 </li>
                 <li className="status">
                   <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-rss mr-2"></i> Tình trạng
+                    <i className="fa fa-rss mr-2"></i> Status
                   </p>
                   <p className="pl-10 lg:pl-0">
                     {manga?.attributes.year
@@ -264,7 +263,7 @@ export default function Manga({
                 </li>
                 <li className="kind">
                   <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-exclamation-triangle mr-2"></i> Nội dung
+                    <i className="fa fa-exclamation-triangle mr-2"></i> Content
                   </p>
                   <p className="pl-10 lg:pl-0">
                     {Utils.Mangadex.translateContentRating(
@@ -274,7 +273,7 @@ export default function Manga({
                 </li>
                 <li className="kind">
                   <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-tags mr-2"></i> Thể loại
+                    <i className="fa fa-tags mr-2"></i> Genres
                   </p>
                   <p className="pl-10 lg:pl-0">
                     {manga?.attributes.tags.map((tag, idx) => (
@@ -300,7 +299,7 @@ export default function Manga({
                 </li>
                 <li className="">
                   <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-globe mr-2"></i> Ngôn ngữ gốc
+                    <i className="fa fa-globe mr-2"></i> Original Language
                   </p>
                   <p className="flex items-center gap-2 pl-10 lg:pl-0">
                     <Iconify
@@ -316,7 +315,7 @@ export default function Manga({
                 </li>
                 <li className="">
                   <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-chain mr-2"></i> Nguồn
+                    <i className="fa fa-chain mr-2"></i> Source
                   </p>
                   {manga && (
                     <ExternalLinks
@@ -347,7 +346,7 @@ export default function Manga({
                     onClick={followManga}
                   >
                     <span>
-                      {seriesInfo.followed ? "Bỏ theo dõi" : "Theo dõi"}
+                      {seriesInfo.followed ? "Unfollow" : "Follow"}
                     </span>
                   </Button>
                 ) : (
@@ -357,7 +356,7 @@ export default function Manga({
                     variant={"outline"}
                     onClick={handleLogin}
                   >
-                    Đăng nhập để theo dõi
+                    Login to follow
                   </Button>
                 ))}
             </div>
@@ -366,7 +365,7 @@ export default function Manga({
         <div className="detail-content mb-10">
           <h2 className="mb-4 flex items-center gap-4 text-[20px] font-medium text-web-title">
             <i className="fa fa-pen"></i>
-            <span>Nội dung</span>
+            <span>Content</span>
           </h2>
           <div className="w-full">
             {
@@ -379,22 +378,22 @@ export default function Manga({
               />
             }
             <p className="text-muted-foreground">
-              Truyện tranh{" "}
+              Manga{" "}
               <Link
                 href={url}
                 className="text-web-title transition hover:text-web-titleLighter"
               >
                 {title}
               </Link>{" "}
-              được cập nhật nhanh và đầy đủ nhất tại{" "}
+              is updated quickly and completely at{" "}
               <Link
                 href={"/"}
                 className="text-web-title transition hover:text-web-titleLighter"
               >
                 {Constants.APP_NAME}
               </Link>
-              . Bạn đọc đừng quên để lại bình luận và chia sẻ, ủng hộ{" "}
-              {Constants.APP_NAME} ra các chương mới nhất của truyện{" "}
+              . Don't forget to leave comments and share, support{" "}
+              {Constants.APP_NAME} to release the latest chapters of{" "}
               <Link
                 href={url}
                 className="text-web-title transition hover:text-web-titleLighter"

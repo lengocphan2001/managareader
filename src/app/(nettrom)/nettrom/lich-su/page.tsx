@@ -4,7 +4,7 @@ import TopTitles from "@/components/nettrom/common/top-titles-table";
 import { Constants } from "@/constants";
 
 export const metadata: Metadata = {
-  title: `Lịch sử đọc truyện tại ${Constants.APP_NAME}`,
+  title: `Reading History at ${Constants.APP_NAME}`,
 };
 
 export default function History() {
@@ -19,7 +19,7 @@ export default function History() {
               itemProp="item"
               itemType="http://schema.org/Thing"
             >
-              <span itemProp="name">Trang chủ</span>
+              <span itemProp="name">Home</span>
             </a>
             <meta itemProp="position" content={"1"} />
           </li>
@@ -30,7 +30,7 @@ export default function History() {
               itemProp="item"
               itemType="http://schema.org/Thing"
             >
-              <span itemProp="name">Lịch sử</span>
+              <span itemProp="name">History</span>
             </a>
             <meta itemProp="position" content={"2"} />
           </li>
@@ -41,7 +41,7 @@ export default function History() {
           <div className="mrb10 Module Module-233">
             <div className="ModuleContent">
               <h1 className="page-title">
-                Lịch sử đọc truyện <em className="fa fa-angle-right" />
+                Reading History <em className="fa fa-angle-right" />
               </h1>
               <div className="mrt15 visited-tab">
                 <ul
@@ -49,7 +49,7 @@ export default function History() {
                   style={{ fontSize: 16, marginBottom: 15 }}
                 >
                   <li className="active">
-                    <a>Từ thiết bị</a>
+                    <a>From Device</a>
                   </li>
                 </ul>
               </div>

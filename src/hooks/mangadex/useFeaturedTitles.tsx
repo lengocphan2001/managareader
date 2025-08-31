@@ -17,7 +17,7 @@ export default function useFeaturedTitles() {
     },
     contentRating: filteredContent as MangadexApi.Static.MangaContentRating[],
     hasAvailableChapters: "true",
-    availableTranslatedLanguage: filteredLanguages,
+    // Don't filter by language - get all available manga
     originalLanguage: originLanguages,
     createdAtSince: createdAtSince.toISOString().slice(0, -13) + "00:00:00",
     limit: 12,

@@ -17,7 +17,7 @@ export const ErrorDisplay = (props: { error?: any; refresh?: Function }) => {
     errorMessage = error.response?.data?.message || error.message;
   } else if (error instanceof MangadexApi.Utils.MangaDexError) {
     errorMessage = error.response?.data?.message || error.message;
-  } else errorMessage = "Đã có lỗi xảy ra khi tải dữ liệu này";
+  } else errorMessage = "An error occurred while loading this data";
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 text-center text-muted-foreground">

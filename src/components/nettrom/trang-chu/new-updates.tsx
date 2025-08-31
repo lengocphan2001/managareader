@@ -16,7 +16,7 @@ export default function NewUpdates() {
         <h1 className="my-0 flex items-center gap-3 text-[20px] text-web-title">
           <FaClock />
           <span>
-            {filtered ? "Chương mới lọc theo cài đặt" : "Truyện mới cập nhật"}
+            {filtered ? "New chapters filtered by settings" : "Latest manga updates"}
           </span>
         </h1>
         <button
@@ -25,7 +25,7 @@ export default function NewUpdates() {
             "rounded-full border-2 border-orange-500 p-3",
             filtered ? "text-web-title" : "text-muted-foreground",
           )}
-          title="Lọc theo cài đặt"
+          title="Filter by settings"
         >
           <FaFilter />
         </button>

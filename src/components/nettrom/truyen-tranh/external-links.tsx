@@ -89,17 +89,16 @@ export default function ExternalLinks({
       {parsedLinks.map((i, idx) => {
         if (!i) return null;
         return (
-          <>
+          <span key={idx}>
             {idx !== 0 && ", "}
             <a
-              key={idx}
               href={i.url}
               target="_blank"
               className="text-web-title transition hover:text-web-titleLighter"
             >
               {i.name}
             </a>
-          </>
+          </span>
         );
       })}
     </p>

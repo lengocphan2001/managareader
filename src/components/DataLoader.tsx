@@ -14,7 +14,7 @@ export const DataLoader = (props: {
     return (
       <div className="flex min-h-[100px] flex-col items-center justify-center gap-2 text-center text-muted-foreground">
         <Loader2 className="h-[40px] w-[40px] animate-spin" />
-        <span>{props.loadingText || "Đang tải..."}</span>
+        <span>{props.loadingText || "Loading..."}</span>
       </div>
     );
   }

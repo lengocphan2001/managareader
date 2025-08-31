@@ -170,15 +170,7 @@ export default function TopNav() {
                 Đăng nhập
               </Link>
             </li>
-            <li>
-              <a
-                href={Constants.Routes.hako}
-                className="sub-menu-item"
-                target="_blank"
-              >
-                Light Novel
-              </a>
-            </li>
+
           </ul>
           {/*end navigation menu*/}
         </div>

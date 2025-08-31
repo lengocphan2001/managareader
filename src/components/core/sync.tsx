@@ -16,16 +16,16 @@ export default function SyncView() {
   const [result, setResult] = useState(null);
 
   const [message, isLoading] = useMemo(() => {
-    if (!ids || !source) return ["Không tìm thấy thông tin đồng bộ!", false];
+    if (!ids || !source) return ["Sync information not found!", false];
     if (["mangadex", "cuutruyen", "cmanga"].includes(source) === false) {
-      return ["Nguồn đồng bộ không hợp lệ!", false];
+      return ["Invalid sync source!", false];
     }
 
-    if (user === undefined) return ["Đang đăng nhập...", true];
-    if (user === null) return ["Vui lòng đăng nhập để đồng bộ dữ liệu!", false];
-    if (result === null) return [`Đang đồng bộ ${ids.length} manga...`, true];
+    if (user === undefined) return ["Logging in...", true];
+    if (user === null) return ["Please log in to sync data!", false];
+    if (result === null) return [`Syncing ${ids.length} manga...`, true];
     return [
-      "Bạn đã đồng bộ thành công! Bạn có thể đóng cửa sổ này để tiếp tục.",
+      "Sync completed successfully! You can close this window to continue.",
       false,
     ];
   }, [user, ids, source]);

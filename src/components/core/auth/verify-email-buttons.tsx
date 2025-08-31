@@ -15,15 +15,15 @@ export default function VerifyEmailButtons() {
 
   const handleResendClick = useCallback(async () => {
     if (!token) {
-      toast.error("Vui lòng hoàn thành captcha trước khi gửi lại email");
+      toast.error("Please complete the captcha before resending email");
       return;
     }
     setLoading(true);
     try {
       await resendEmailVerification({ "cf-turnstile-response": token });
-      toast("Gửi email thành công");
+      toast("Email sent successfully");
     } catch (error) {
-      Utils.Error.handleError(error, "Gửi email thất bại");
+      Utils.Error.handleError(error, "Failed to send email");
     }
     setLoading(false);
   }, [resendEmailVerification]);
@@ -37,13 +37,13 @@ export default function VerifyEmailButtons() {
         className="hover:border-indigobg-indigo-700 flex items-center justify-center gap-2 rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base tracking-wide text-white duration-500 hover:bg-indigo-700"
       >
         {loading ? <Iconify icon="uil:spinner" /> : null}
-        Gửi lại email xác nhận
+        Resend email
       </button>
       <button
         onClick={logout}
         className="hover:border-indigobg-indigo-700 inline-block rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base tracking-wide text-white duration-500 hover:bg-indigo-700"
       >
-        Đăng xuất
+        Logout
       </button>
     </div>
   );

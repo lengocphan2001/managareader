@@ -49,13 +49,13 @@ export default function Header() {
             <div className="navbar-brand">
               <Link
                 className="logo !flex !items-center"
-                title="Truyện tranh online"
+                title="Online manga"
                 href={Constants.Routes.nettrom.index}
               >
                 <img
                   alt="Logo NetTrom"
                   src={"/images/logo.png"}
-                  className="my-auto w-[150px]"
+                  className="my-auto w-[110px]"
                 />
               </Link>
             </div>
@@ -70,16 +70,7 @@ export default function Header() {
             >
               <i className="fa fa-search"></i>
             </Link>
-            <div className="toggle-dark">
-              <a
-                title="MangaDex"
-                className="text-white"
-                href="https://mangadex.org/"
-                target="_blank"
-              >
-                <FaCat />
-              </a>
-            </div>
+            
             <button
               type="button"
               className="navbar-toggle block md:hidden"
@@ -142,7 +133,7 @@ function AuthDropdown({ desktop }: { desktop?: boolean }) {
                     className={menuItemClassName}
                   >
                     <FaHome />
-                    Trang cá nhân
+                    Personal Page
                   </Link>
                 </MenuItem>
                 <MenuItem>
@@ -151,7 +142,7 @@ function AuthDropdown({ desktop }: { desktop?: boolean }) {
                     href={Constants.Routes.nettrom.following}
                   >
                     <FaBook />
-                    Truyện theo dõi
+                    Following
                   </Link>
                 </MenuItem>
               </>
@@ -163,7 +154,7 @@ function AuthDropdown({ desktop }: { desktop?: boolean }) {
                     href={Constants.Routes.login}
                   >
                     <FaUser />
-                    Đăng nhập
+                    Login
                   </Link>
                 </MenuItem>
                 <MenuItem>
@@ -172,7 +163,7 @@ function AuthDropdown({ desktop }: { desktop?: boolean }) {
                     href={Constants.Routes.signup}
                   >
                     <FaPencilAlt />
-                    Đăng ký
+                    Sign Up
                   </Link>
                 </MenuItem>
               </>
@@ -183,32 +174,13 @@ function AuthDropdown({ desktop }: { desktop?: boolean }) {
                 href={Constants.Routes.nettrom.history}
               >
                 <FaHistory />
-                Lịch sử
+                History
               </Link>
             </MenuItem>
-            <MenuItem>
-              <Link
-                className={menuItemClassName}
-                href={Constants.Routes.report}
-                target="_blank"
-              >
-                <FaBug />
-                Báo lỗi
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <Link
-                className={menuItemClassName}
-                href={Constants.Routes.github}
-                target="_blank"
-              >
-                <FaGithub />
-                GitHub
-              </Link>
-            </MenuItem>
+            
             <MenuItem>
               <button className={menuItemClassName} onClick={onToggleDrawer}>
-                <FaCog /> Cài đặt
+                <FaCog /> Settings
               </button>
             </MenuItem>
             {/* Divider */}
@@ -220,7 +192,7 @@ function AuthDropdown({ desktop }: { desktop?: boolean }) {
                 <MenuItem>
                   <a className={menuItemClassName} onClick={logout}>
                     <FaSignOutAlt />
-                    Đăng xuất
+                    Logout
                   </a>
                 </MenuItem>
               </>

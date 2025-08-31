@@ -20,7 +20,7 @@ export default function RecentComments() {
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="flex items-center gap-4 text-[20px] font-medium text-web-title">
           <FaComment />
-          Bình luận gần đây
+          Recent Comments
         </h2>
       </div>
 
@@ -72,19 +72,8 @@ function Comment({ comment }: { comment: RecentCommentResponse }) {
     <div key={comment.id}>
       <div className="mb-2">
         <div className="line-clamp-2 font-bold">
-          <Link
-            href={
-              type === "chapter"
-                ? Constants.Routes.nettrom.chapter(comment.commentable.uuid)
-                : Constants.Routes.nettrom.manga(comment.commentable.uuid)
-            }
-            className="font-bold"
-          >
-            {comment.commentable.title}
-          </Link>
           {comment.commentable.series && (
             <>
-              {" - "}
               <Link
                 href={Constants.Routes.nettrom.manga(
                   comment.commentable.series.uuid,
@@ -99,7 +88,7 @@ function Comment({ comment }: { comment: RecentCommentResponse }) {
       </div>
       <div className="overflow-hidden">
         {userBanned ? (
-          <div className="text-muted-foreground">Bình luận đã bị xoá</div>
+          <div className="text-muted-foreground">Comment has been deleted</div>
         ) : (
           <ReadMore maxHeight={150}>
             <Markdown content={comment.content} />
@@ -122,7 +111,7 @@ function Comment({ comment }: { comment: RecentCommentResponse }) {
           </div>
         </div>
         <div className="whitespace-nowrap text-lg text-gray-500">
-          {Utils.Date.formatNowDistance(new Date(comment.created_at))} trước
+          {Utils.Date.formatNowDistance(new Date(comment.created_at))} ago
         </div>
       </div>
       <div className="mb-2 mt-3 w-full border-b border-gray-700"></div>

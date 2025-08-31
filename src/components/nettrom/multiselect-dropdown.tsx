@@ -25,7 +25,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
   options = [],
   selectedValues,
   onChange,
-  anyLabel = "Tất cả",
+  anyLabel = "All",
   onSearch,
   language = false,
 }) => {
@@ -140,7 +140,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
             {onSearch && (
               <Input
                 type="search"
-                placeholder="Tìm kiếm..."
+                placeholder="Search..."
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 icon={<FaSearch />}
@@ -182,7 +182,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
               </div>
             )}
             {loading && (
-              <div className="pt-4 text-center">Đang tìm kiếm...</div>
+              <div className="pt-4 text-center">Searching...</div>
             )}
             <ul
               className="pb-2 text-neutral-700 dark:text-neutral-200"
@@ -220,7 +220,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
                 );
               })}
               {!loading && resultOptions.length === 0 && (
-                <div className="pt-4 text-center">Không có kết quả nào</div>
+                <div className="pt-4 text-center">No results found</div>
               )}
             </ul>
           </div>

@@ -1,6 +1,6 @@
 import { MangadexApi } from "@/api";
 import { LocalizedString } from "@/types/mangadex";
-import { Chapter, ExtendManga, Relationship } from "@/types/mangadex";
+import { Chapter, ExtendChapter, ExtendManga, Relationship } from "@/types/mangadex";
 import axios from "axios";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -14,14 +14,16 @@ export class MangaDexUtils {
 
   transLocalizedStr(localizedString: LocalizedString) {
     if (!localizedString) return "";
-    return localizedString.vi || localizedString.en || "";
+    return localizedString.en || localizedString["ja-ro"] || "";
   }
 
   getMangaTitle(manga: ExtendManga | null | undefined) {
     if (!manga) return "";
     return (
-      manga.attributes.altTitles.find((t) => t["vi"])?.["vi"] ||
       manga.attributes.title?.["en"] ||
+      manga.attributes.title?.["ja-ro"] ||
+      manga.attributes.altTitles.find((t) => t["en"])?.["en"] ||
+      manga.attributes.altTitles.find((t) => t["ja-ro"])?.["ja-ro"] ||
       Object.values(manga.attributes.title)?.[0] ||
       "No title"
     );
@@ -60,13 +62,106 @@ export class MangaDexUtils {
       );
     if (chapter.attributes.volume) {
       if (chapter.attributes.chapter) {
-        return `Chương ${chapter.attributes.chapter} Tập ${chapter.attributes.volume}`;
+        return `Chapter ${chapter.attributes.chapter} Volume ${chapter.attributes.volume}`;
       }
-      return `Oneshot Tập ${chapter.attributes.volume}`;
+      return `Oneshot Volume ${chapter.attributes.volume}`;
     }
     if (chapter.attributes.chapter)
-      return `Chương ${chapter.attributes.chapter}`;
+      return `Chapter ${chapter.attributes.chapter}`;
     return "Oneshot";
+  }
+
+  /**
+   * Filter and prioritize chapters based on scanlation group focused languages
+   * Prioritizes groups that focus on English/Japanese over Vietnamese
+   */
+  prioritizeChaptersByGroupLanguage(
+    chapters: ExtendChapter[],
+    preferredLanguages: string[] = ["en", "ja-ro"]
+  ): ExtendChapter[] {
+    return chapters.sort((a, b) => {
+      const aGroup = a.scanlation_group;
+      const bGroup = b.scanlation_group;
+      
+      // If no scanlation groups, maintain original order
+      if (!aGroup && !bGroup) return 0;
+      if (!aGroup) return 1;
+      if (!bGroup) return -1;
+      
+      const aFocusedLanguages = aGroup.attributes.focusedLanguages || [];
+      const bFocusedLanguages = bGroup.attributes.focusedLanguages || [];
+      
+      // Check if groups focus on preferred languages
+      const aHasPreferred = aFocusedLanguages.some(lang => preferredLanguages.includes(lang));
+      const bHasPreferred = bFocusedLanguages.some(lang => preferredLanguages.includes(lang));
+      
+      // Prioritize groups with preferred languages
+      if (aHasPreferred && !bHasPreferred) return -1;
+      if (!aHasPreferred && bHasPreferred) return 1;
+      
+      // If both have or don't have preferred languages, maintain original order
+      return 0;
+    });
+  }
+
+  /**
+   * Group chapters by volume and chapter number, like MangaDex
+   * Each group contains all translations for the same chapter
+   */
+  groupChaptersByVolumeAndChapter(chapters: ExtendChapter[]): Array<{
+    volume: string | null;
+    chapter: string | null;
+    title: string | null;
+    chapters: ExtendChapter[];
+    latestUpdate: string;
+  }> {
+    const grouped = new Map<string, ExtendChapter[]>();
+    
+    // Group chapters by volume and chapter number
+    chapters.forEach(chapter => {
+      const volume = chapter.attributes.volume || "none";
+      const chapterNum = chapter.attributes.chapter || "none";
+      const key = `${volume}-${chapterNum}`;
+      
+      if (!grouped.has(key)) {
+        grouped.set(key, []);
+      }
+      grouped.get(key)!.push(chapter);
+    });
+    
+    // Convert to array and sort
+    return Array.from(grouped.entries())
+      .map(([key, chapterList]) => {
+        // Sort chapters within each group by scanlation group language preference
+        const sortedChapters = this.prioritizeChaptersByGroupLanguage(chapterList);
+        
+        // Get the latest update time
+        const latestUpdate = Math.max(
+          ...chapterList.map(c => new Date(c.attributes.readableAt).getTime())
+        );
+        
+        return {
+          volume: chapterList[0].attributes.volume,
+          chapter: chapterList[0].attributes.chapter,
+          title: chapterList[0].attributes.title,
+          chapters: sortedChapters,
+          latestUpdate: new Date(latestUpdate).toISOString(),
+        };
+      })
+      .sort((a, b) => {
+        // Sort by volume first, then by chapter number
+        const aVolume = a.volume === "none" ? "999" : a.volume;
+        const bVolume = b.volume === "none" ? "999" : b.volume;
+        
+        if (aVolume !== bVolume) {
+          return parseFloat(bVolume) - parseFloat(aVolume); // Descending order
+        }
+        
+        const aChapter = a.chapter === "none" ? "0" : a.chapter;
+        const bChapter = b.chapter === "none" ? "0" : b.chapter;
+        
+        return parseFloat(bChapter) - parseFloat(aChapter); // Descending order
+      });
   }
 
   normalizeParams(
@@ -127,7 +222,7 @@ export class MangaDexUtils {
     result.availableTranslatedLanguage =
       availableTranslatedLanguage.length > 0
         ? availableTranslatedLanguage
-        : ["vi"];
+        : ["en", "ja-ro"];
     const includedTagsMode = params.get("includedTagsMode");
     if (includedTagsMode) {
       result.includedTagsMode = includedTagsMode === "AND" ? "AND" : "OR";
@@ -196,65 +291,65 @@ export class MangaDexUtils {
   translateStatus(status: string) {
     switch (status) {
       case "cancelled":
-        return "Bị huỷ";
+        return "Cancelled";
       case "completed":
-        return "Đã kết thúc";
+        return "Completed";
       case "hiatus":
-        return "Tạm ngưng";
+        return "Hiatus";
       default:
-        return "Đang tiến hành";
+        return "Ongoing";
     }
   }
 
   translateContentRating(rating: string) {
     switch (rating) {
       case "safe":
-        return "An toàn";
+        return "Safe";
       case "suggestive":
-        return "16+";
+        return "Suggestive";
       case "erotica":
-        return "18+";
+        return "Erotica";
       case "pornographic":
-        return "18+++";
+        return "Pornographic";
       default:
-        return "Không";
+        return "Unknown";
     }
   }
 
   translateISOLanguage(isoLanguage: string) {
     switch (isoLanguage) {
       case "ja":
-        return "Nhật Bản";
+        return "Japanese";
       case "en":
-        return "Tiếng Anh";
+        return "English";
       case "vi":
-        return "Việt Nam";
+        return "Vietnamese";
       case "ko":
-        return "Hàn Quốc";
+        return "Korean";
       case "zh":
-        return "Trung Quốc";
+        return "Chinese";
       case "fr":
-        return "Pháp";
+        return "French";
       case "de":
-        return "Đức";
+        return "German";
       case "es":
-        return "Tây Ban Nha";
+        return "Spanish";
       case "it":
-        return "Ý";
+        return "Italian";
       case "ru":
-        return "Nga";
+        return "Russian";
       case "pt":
-        return "Bồ Đào Nha";
+        return "Portuguese";
       case "id":
-        return "Indonesia";
+        return "Indonesian";
       case "th":
-        return "Thái Lan";
+        return "Thai";
       case "ms":
-        return "Mã Lai";
+        return "Malay";
       case "hi":
         return "Hindi";
       case "ar":
-        return "Ả Rập";
+        return "Arabic";
       case "bn":
         return "Bengali";
       case "pa":
@@ -388,13 +483,13 @@ export class MangaDexUtils {
     // "content" | "format" | "genre" | "theme"
     switch (format) {
       case "content":
-        return "Cảnh báo nội dung";
+        return "Content Warning";
       case "format":
-        return "Định dạng";
+        return "Format";
       case "genre":
-        return "Thể loại";
+        return "Genre";
       case "theme":
-        return "Chủ đề";
+        return "Theme";
       default:
         return format;
     }

@@ -231,13 +231,24 @@ async function customFetch(url: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     let errorData;
-    try {
-      errorData = await response.json();
-    } catch {
-      errorData = await response.text();
+    const contentType = response.headers.get('content-type');
+    
+    if (contentType && contentType.includes('application/json')) {
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { message: 'Failed to parse error response' };
+      }
+    } else {
+      try {
+        errorData = await response.text();
+      } catch {
+        errorData = 'Failed to read error response';
+      }
     }
+    
     throw new MangaDexError({
-      message: `Yêu cầu thất bại - Lỗi ${response.status}: ${response.statusText}`,
+      message: `Request failed - Error ${response.status}: ${response.statusText}`,
       status: response.status,
       response: {
         data: errorData,

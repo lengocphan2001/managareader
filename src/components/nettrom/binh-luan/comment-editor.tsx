@@ -70,7 +70,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             className={
               editor.isActive("bold") ? activedButtonClassName : buttonClassName
             }
-            title="Đậm"
+            title="Bold"
           >
             <svg
               className="h-5 w-5"
@@ -98,7 +98,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 ? activedButtonClassName
                 : buttonClassName
             }
-            title="Nghiêng"
+            title="Italic"
           >
             <svg
               className="h-5 w-5"
@@ -126,7 +126,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 ? activedButtonClassName
                 : buttonClassName
             }
-            title="Gạch ngang"
+            title="Strikethrough"
           >
             <svg
               className="h-5 w-5"
@@ -151,7 +151,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             className={
               editor.isActive("link") ? activedButtonClassName : buttonClassName
             }
-            title="Chèn liên kết"
+            title="Insert link"
           >
             <svg
               className="h-5 w-5"
@@ -172,7 +172,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
               editor.isActive("link") ? activedButtonClassName : buttonClassName
             }
             disabled={!editor.isActive("link")}
-            title="Xoá liên kết"
+            title="Remove link"
           >
             <svg
               className="h-5 w-5"
@@ -193,7 +193,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             className={
               editor.isActive("code") ? activedButtonClassName : buttonClassName
             }
-            title="Mã"
+            title="Code"
           >
             <svg
               className="h-5 w-5"
@@ -216,7 +216,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
           <button
             onClick={() => editor.chain().focus().unsetAllMarks().run()}
             className={buttonClassName}
-            title="Xóa định dạng"
+            title="Clear formatting"
           >
             <Iconify icon="lucide:x" />
           </button>
@@ -227,7 +227,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 ? activedButtonClassName
                 : buttonClassName
             }
-            title="Danh sách"
+            title="Bullet list"
           >
             <svg
               className="h-5 w-5"
@@ -253,7 +253,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 ? activedButtonClassName
                 : buttonClassName
             }
-            title="Danh sách số"
+            title="Numbered list"
           >
             <svg
               className="h-5 w-5"
@@ -277,7 +277,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             onClick={() => editor.chain().focus().undo().run()}
             disabled={!editor.can().chain().focus().undo().run()}
             className={buttonClassName}
-            title="Hoàn tác"
+            title="Undo"
           >
             <Iconify icon="lucide:undo" />
           </button>
@@ -285,7 +285,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
             onClick={() => editor.chain().focus().redo().run()}
             disabled={!editor.can().chain().focus().redo().run()}
             className={buttonClassName}
-            title="Hủy hoàn tác"
+            title="Redo"
           >
             <Iconify icon="lucide:redo" />
           </button>
@@ -398,11 +398,11 @@ const CommentEditor = ({
     if (!editor) return;
     const content = editor.getHTML();
     if (content.length <= 10) {
-      toast("Bình luận ít nhất 10 ký tự");
+      toast("Comment must be at least 10 characters");
       return;
     }
     if (content.length >= 5000) {
-      toast("Bình luận quá 5000 ký tự rồi");
+      toast("Comment is too long (max 5000 characters)");
       return;
     }
     try {
@@ -426,7 +426,7 @@ const CommentEditor = ({
             className="btn btn-warning"
             onClick={submitCommentClick}
           >
-            Gửi
+            Send
           </button>
         </div>
       </div>

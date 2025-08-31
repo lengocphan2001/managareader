@@ -31,17 +31,17 @@ export default function NotFound() {
       <div className="mb-8">
         <div className="mb-4 text-8xl font-bold text-red-500">404</div>
         <h1 className="mb-4 text-3xl font-bold text-gray-500">
-          Không tìm thấy truyện/chương
+          Manga/Chapter Not Found
         </h1>
         <p className="mb-6 max-w-md text-gray-200">
-          Trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển. Có thể
-          truyện/chương này đã bị MangaDex xóa.
+          The page you are looking for does not exist or has been moved. This
+          manga/chapter may have been removed from MangaDex.
         </p>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
         <Button onClick={handleGoBack} icon={<ArrowLeft className="size-6" />}>
-          Quay lại trang trước
+          Go Back
         </Button>
 
         <Button
@@ -49,7 +49,7 @@ export default function NotFound() {
           variant="outline"
           icon={<Home className="size-6" />}
         >
-          Về trang chủ
+          Go Home
         </Button>
 
         <Button
@@ -57,22 +57,22 @@ export default function NotFound() {
           variant="ghost"
           icon={<Search className="size-6" />}
         >
-          Tìm truyện khác
+          Search Other Manga
         </Button>
       </div>
 
       <div className="mt-8 text-sm text-gray-500">
         <p>
-          Nếu bạn nghĩ đây là lỗi, vui lòng{" "}
+          If you think this is an error, please{" "}
           <a
             href={Constants.Routes.report}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:underline"
           >
-            báo cáo
+            report
           </a>{" "}
-          cho chúng tôi.
+          to us.
         </p>
       </div>
     </div>

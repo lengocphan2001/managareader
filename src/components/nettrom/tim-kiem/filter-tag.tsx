@@ -79,7 +79,7 @@ export default function FilterTag({
 
   return (
     <div>
-      <label>Thể loại</label>
+      <label>Genres</label>
 
       <div className="relative" ref={dropdownRef}>
         <button
@@ -89,22 +89,22 @@ export default function FilterTag({
         >
           <div className="line-clamp-1 capitalize">
             {values.includedTags?.length ? (
-              <span>chọn {values.includedTags.length} tag</span>
+              <span>select {values.includedTags.length} tags</span>
             ) : (
               ""
             )}
             {values.includedTags?.length && values.excludedTags?.length ? (
-              <span> và </span>
+              <span> and </span>
             ) : (
               ""
             )}
             {values.excludedTags?.length ? (
-              <span>loại {values.excludedTags.length} tag</span>
+              <span>exclude {values.excludedTags.length} tags</span>
             ) : (
               ""
             )}
             {!values.includedTags?.length && !values.excludedTags?.length && (
-              <span>Tất cả</span>
+              <span>All</span>
             )}
           </div>
           <svg
@@ -151,7 +151,7 @@ export default function FilterTag({
                     type="search"
                     id="tag-search"
                     className="form-control block w-full rounded-lg border-2 border-neutral-300 bg-neutral-50 p-6 py-3 ps-[40px] text-xl text-neutral-900 focus:border-purple-500 focus:ring-purple-500 focus-visible:ring-purple-500 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white dark:placeholder-neutral-400 dark:focus:border-purple-500 dark:focus:ring-purple-500"
-                    placeholder="Tìm kiếm thể loại"
+                    placeholder="Search genres"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                   />
@@ -164,7 +164,7 @@ export default function FilterTag({
                 classNames={{
                   alert: "[&>svg]:text-blue-500 text-blue-500 bg-blue-100",
                 }}
-                title="Nhấn 1 lần để lựa chọn, nhấn 2 lần để loại trừ"
+                title="Click once to select, click twice to exclude"
               />
               <div>
                 {Object.entries(

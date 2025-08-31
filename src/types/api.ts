@@ -1,17 +1,19 @@
 export type ReadListResponse = {
-  current_page: number;
-  from: number;
-  last_page: number;
-  per_page: number;
-  total: number;
-  to: number;
+  success: boolean;
   data: {
-    series_uuid: string;
-    chapter_updated_at: string;
-    latest_chapter_uuid: string;
-    title: string;
-    chapter_title: string;
+    id: number;
+    user_id: number;
+    series_id: string;
+    chapter_id: string | null;
+    created_at: string;
+    updated_at: string;
   }[];
+  pagination: {
+    current_page: number;
+    per_page: number;
+    total: number;
+    last_page: number;
+  };
 };
 
 export type UserResponse = {
@@ -33,11 +35,9 @@ export type CommentListResponse = {
   comments: {
     current_page: number;
     data: CommentResponse[];
-    from: number;
-    to: number;
-    last_page: number;
-    total: number;
     per_page: number;
+    total: number;
+    last_page: number;
   };
 };
 

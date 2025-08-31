@@ -32,7 +32,7 @@ export default function FeaturedTitles() {
     <div className="flex flex-col gap-5">
       <h2 className="flex items-center gap-4 text-[20px] font-medium text-web-title">
         <FaFire />
-        Truyện đề cử
+        Featured Manga
       </h2>
       <div>
         {isLoading ? (
@@ -128,7 +128,7 @@ export default function FeaturedTitles() {
                             {Utils.Date.formatNowDistance(
                               new Date(manga.attributes.updatedAt),
                             )}{" "}
-                            trước
+                            ago
                           </span>
                         </p>
                       </div>

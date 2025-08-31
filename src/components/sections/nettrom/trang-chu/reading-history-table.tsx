@@ -10,9 +10,9 @@ export default function ReadingHistory() {
     <div className="visited-comics">
       <div className="box darkBox">
         <h2>
-          Lịch sử đọc truyện
+          Reading History
           <Link className="view-all" href={Constants.Routes.nettrom.history}>
-            Xem tất cả
+            View All
           </Link>
         </h2>
         <ul className="list-unstyled">

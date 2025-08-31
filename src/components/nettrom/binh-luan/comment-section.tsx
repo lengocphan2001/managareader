@@ -42,7 +42,7 @@ export default function CommentSection({
           typeId,
           parentId: 0,
         });
-        toast("Bình luận thành công!");
+        toast("Comment posted successfully!");
         mutate();
       } catch (error) {
         Utils.Error.handleError(error);
@@ -64,7 +64,7 @@ export default function CommentSection({
         <li className="active">
           <a data-toggle="tab" href="#nt_comments">
             <Iconify className="mr-2 inline" icon="fa:comments" />
-            Bình luận
+            Comments
           </a>
         </li>
       </ul>
@@ -130,7 +130,7 @@ export function CommentItem({
           typeId: comment.commentable.uuid,
           parentId: comment.id,
         });
-        toast("Trả lời bình luận thành công!");
+        toast("Reply posted successfully!");
         refresh();
         setOpenReply(false);
       } catch (error) {
@@ -145,7 +145,7 @@ export function CommentItem({
       await AppApi.Comment.deleteComment({
         id: comment.id,
       });
-      toast("Xoá lời bình luận thành công!");
+      toast("Comment deleted successfully!");
       refresh();
     } catch (error) {
       Utils.Error.handleError(error);
@@ -159,7 +159,7 @@ export function CommentItem({
           content,
           id: comment.id,
         });
-        toast("Sửa lời bình luận thành công!");
+        toast("Comment updated successfully!");
         refresh();
         setEditMode(false);
       } catch (error) {
@@ -206,7 +206,7 @@ export function CommentItem({
                 comment.commentable_type === "App\\Models\\Chapter" &&
                 comment.parent_id === 0 && (
                   <div className="truncate">
-                    tại chương{" "}
+                    at chapter{" "}
                     <Link
                       href={Constants.Routes.nettrom.chapter(
                         comment.commentable.uuid,
@@ -219,7 +219,7 @@ export function CommentItem({
             </div>
             <div className="comment-content">
               {userBanned ? (
-                <div className="text-muted-foreground">Bình luận đã bị xoá</div>
+                <div className="text-muted-foreground">Comment has been deleted</div>
               ) : (
                 <ReadMore>
                   <Markdown content={comment.content} />
@@ -250,7 +250,7 @@ export function CommentItem({
                       onClick={() => setEditMode(!editMode)}
                       className="cursor-pointer bg-white px-4 py-2 text-black hover:bg-slate-100"
                     >
-                      {editMode ? "Thoát sửa" : "Sửa"}
+                      {editMode ? "Cancel edit" : "Edit"}
                     </div>
                   </MenuItem>
                   <MenuItem>
@@ -268,7 +268,7 @@ export function CommentItem({
           <li>
             <abbr>
               <i className="fa fa-clock-o"> </i>
-              {Utils.Date.formatNowDistance(new Date(comment.created_at))} trước
+              {Utils.Date.formatNowDistance(new Date(comment.created_at))} ago
             </abbr>
           </li>
         </ul>
@@ -303,7 +303,7 @@ export function CommentItem({
                 }
                 className="text-base font-bold text-orange-500"
               >
-                {isLoading ? "Đang tải..." : "Xem thêm"}
+                {isLoading ? "Loading..." : "Load more"}
               </div>
             </div>
           )}

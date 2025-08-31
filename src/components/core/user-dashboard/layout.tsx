@@ -78,7 +78,7 @@ export default function UserDashboardLayoutView({
                         <span className="mb-0 me-2 text-[18px]">
                           <Iconify icon="uil-dashboard" />
                         </span>
-                        <h6 className="mb-0 font-semibold">Thông tin chung</h6>
+                        <h6 className="mb-0 font-semibold">General Information</h6>
                       </Link>
                     </li>
                     <li
@@ -96,7 +96,7 @@ export default function UserDashboardLayoutView({
                         <span className="mb-0 me-2 text-[18px]">
                           <Iconify icon="uil-setting" />
                         </span>
-                        <h6 className="mb-0 font-semibold">Cài đặt</h6>
+                        <h6 className="mb-0 font-semibold">Settings</h6>
                       </Link>
                     </li>
                     <li className={"navbar-item account-menu"}>
@@ -107,7 +107,7 @@ export default function UserDashboardLayoutView({
                         <span className="mb-0 me-2 text-[18px]">
                           <Iconify icon="uil-home" />
                         </span>
-                        <h6 className="mb-0 font-semibold">Trang chủ</h6>
+                        <h6 className="mb-0 font-semibold">Home</h6>
                       </Link>
                     </li>
                     <li className="navbar-item account-menu">
@@ -118,7 +118,7 @@ export default function UserDashboardLayoutView({
                         <span className="mb-0 me-2 text-[18px]">
                           <Iconify icon="uil-power" />
                         </span>
-                        <h6 className="mb-0 font-semibold">Đăng xuất</h6>
+                        <h6 className="mb-0 font-semibold">Logout</h6>
                       </button>
                     </li>
                   </ul>

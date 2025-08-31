@@ -1,5 +1,5 @@
 import { format, formatDistance as dateFnsFormatDistance } from "date-fns";
-import vi from "date-fns/locale/vi";
+import en from "date-fns/locale/en-US";
 
 export class DateUtils {
   formatNowDistance(
@@ -11,7 +11,7 @@ export class DateUtils {
       locale?: Locale;
     },
   ): string {
-    return dateFnsFormatDistance(date, new Date(), { locale: vi, ...options });
+    return dateFnsFormatDistance(date, new Date(), { locale: en, ...options });
   }
 
   formatDateTime(date: Date | number, options?: { locale?: Locale }) {

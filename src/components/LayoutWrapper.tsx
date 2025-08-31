@@ -15,11 +15,14 @@ import { SettingsProvider } from "@/contexts/settings";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 async function detectSettings() {
-  const cookieStore = cookies();
-
-  const settingsStore = cookieStore.get(Constants.Settings.COOKIE_KEY);
-
-  return settingsStore ? JSON.parse(settingsStore.value) : null;
+  try {
+    const cookieStore = cookies();
+    const settingsStore = cookieStore.get(Constants.Settings.COOKIE_KEY);
+    return settingsStore ? JSON.parse(settingsStore.value) : null;
+  } catch (error) {
+    console.warn('Failed to parse settings cookie:', error);
+    return null;
+  }
 }
 
 export const LayoutWrapper = async ({
@@ -30,8 +33,10 @@ export const LayoutWrapper = async ({
 }) => {
   const settings = await detectSettings();
   return (
-    <html lang="vi" className="dark" suppressHydrationWarning>
-      <GoogleTagManager gtmId={Constants.GTM_ID} />
+    <html lang="en" className="dark" suppressHydrationWarning>
+      {Constants.GTM_ID && Constants.GTM_ID !== "GTM-XXXXXXX" && (
+        <GoogleTagManager gtmId={Constants.GTM_ID} />
+      )}
       <head>
         <link rel="dns-prefetch" href="https://mangadex.org" />
         <link rel="dns-prefetch" href="https://api.truyendex.xyz" />
@@ -42,6 +47,11 @@ export const LayoutWrapper = async ({
 
         <link rel="dns-prefetch" href="https://www.google.com" />
         <link rel="dns-prefetch" href="https://www.gstatic.com" />
+        
+        {/* Preload critical routes */}
+        <link rel="prefetch" href="/nettrom" />
+        <link rel="prefetch" href="/login" />
+        <link rel="prefetch" href="/profile" />
       </head>
       <body data-layout-id={props.id}>
         <SettingsProvider settings={settings}>

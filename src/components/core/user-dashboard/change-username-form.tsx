@@ -11,9 +11,9 @@ import { useAuth } from "@/hooks/useAuth";
 const changePasswordSchema = yup.object().shape({
   name: yup
     .string()
-    .required("Vui lòng nhập tên")
-    .min(6, "Tên ít nhất 6 ký tự")
-    .max(25, "Tên không quá 25 ký tự"),
+    .required("Please enter a name")
+    .min(6, "Name must be at least 6 characters")
+    .max(25, "Name cannot exceed 25 characters"),
 });
 
 interface IChangePasswordForm {
@@ -37,7 +37,7 @@ export default function UsernameUpdate() {
         name: data.name,
       });
       await mutate();
-      toast.success("Đã cập nhật tên mới");
+      toast.success("Username updated successfully");
     } catch (error) {
       Utils.Error.handleError(error);
     }
@@ -45,10 +45,10 @@ export default function UsernameUpdate() {
 
   return (
     <div className="mt-5 rounded-md bg-white p-6 shadow dark:bg-slate-900 dark:shadow-gray-800">
-      <h6 className="mb-4 text-lg font-semibold">Đổi tên người dùng</h6>
+      <h6 className="mb-4 text-lg font-semibold">Change Username</h6>
       <div>
         <label className="form-label font-medium">
-          Tên mới : <span className="text-red-600">*</span>
+          New Name : <span className="text-red-600">*</span>
         </label>
         <div className="form-icon relative my-2">
           <Iconify
@@ -58,7 +58,7 @@ export default function UsernameUpdate() {
           <input
             type="text"
             className="form-input h-10 w-full rounded border border-gray-200 bg-transparent px-3 py-2 ps-12 outline-none focus:border-indigo-600 focus:ring-0 dark:border-gray-800 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-indigo-600"
-            placeholder="Tên mới"
+            placeholder="New name"
             id="name"
             {...register("name")}
           />
@@ -72,7 +72,7 @@ export default function UsernameUpdate() {
           onClick={handleSubmit(onSubmit)}
           className="mt-5 inline-block rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base font-semibold tracking-wide text-white duration-500 hover:border-indigo-700 hover:bg-indigo-700"
         >
-          {isSubmitting ? "Đang cập nhật" : "Lưu"}
+          {isSubmitting ? "Updating..." : "Save"}
         </button>
       </div>
     </div>

@@ -23,7 +23,7 @@ export default function AuthorSearchInput({
   }, []);
   return (
     <div>
-      <label>{type === "author" ? "Tác giả" : "Hoạ sĩ"}</label>
+      <label>{type === "author" ? "Author" : "Artist"}</label>
       <MultiSelectDropdown
         onChange={(authors) => {
           setValue(type === "author" ? "authors" : "artists", authors);
@@ -31,7 +31,7 @@ export default function AuthorSearchInput({
         options={[]}
         selectedValues={values[type === "author" ? "authors" : "artists"] || []}
         onSearch={handleAuthorSearch}
-        anyLabel={type === "author" ? "Tất cả tác giả" : "Tất cả hoạ sĩ"}
+        anyLabel={type === "author" ? "All authors" : "All artists"}
       />
     </div>
   );

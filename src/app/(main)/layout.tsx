@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   applicationName: Constants.APP_NAME,
   authors: [{ name: "TruyenDex", url: "https://github.com/zennomi/truyendex" }],
   keywords: [
-    "truyện tranh",
+    "manga",
     "manga",
     "manhwa",
     "manhua",
@@ -46,7 +46,7 @@ export default function CoreLayout({
       <NextTopLoader
         zIndex={1000}
         easing="ease-in-out"
-        speed={400}
+        speed={200}
         height={4}
         showSpinner={false}
         template={`

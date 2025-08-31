@@ -131,12 +131,12 @@ export default function SearchMangaForm() {
               htmlFor="default-search"
               className="sr-only mb-2 font-medium text-neutral-900 dark:text-white"
             >
-              Tựa đề
+              Title
             </label>
             <Input
               type="search"
               id="default-search"
-              placeholder="Tìm kiếm truyện"
+              placeholder="Search manga"
               icon={<FaSearch />}
             />
           </div>
@@ -146,7 +146,7 @@ export default function SearchMangaForm() {
             onClick={toggle}
             icon={showFilter ? <FaArrowUp /> : <FaArrowDown />}
           >
-            Hiển thị bộ lọc
+            Show Filters
           </Button>
         </div>
         <div
@@ -160,7 +160,7 @@ export default function SearchMangaForm() {
               <FilterTag values={values} setValue={setValue} />
             </div>
             <div>
-              <label>Nội dung</label>
+              <label>Content</label>
               <MultiSelectDropdown
                 options={Object.values(
                   MangadexApi.Static.MangaContentRating,
@@ -177,7 +177,7 @@ export default function SearchMangaForm() {
               />
             </div>
             <div>
-              <label>Đối tượng</label>
+              <label>Demographic</label>
               <MultiSelectDropdown
                 options={Object.values(
                   MangadexApi.Static.MangaPublicationDemographic,
@@ -192,7 +192,7 @@ export default function SearchMangaForm() {
               />
             </div>
             <div>
-              <label>Tình trạng</label>
+              <label>Status</label>
               <MultiSelectDropdown
                 options={Object.values(
                   MangadexApi.Static.MangaPublicationStatus,
@@ -208,11 +208,11 @@ export default function SearchMangaForm() {
             </div>
 
             <div>
-              <label>Năm phát hành</label>
+              <label>Release Year</label>
               <Input
                 type="number"
                 {...register("year")}
-                placeholder="Năm phát hành"
+                placeholder="Release year"
               />
             </div>
             <div>
@@ -230,7 +230,7 @@ export default function SearchMangaForm() {
               />
             </div>
             <div>
-              <label>Quốc gia</label>
+              <label>Country</label>
               <MultiSelectDropdown
                 options={Constants.Nettrom.languages.map((v) => ({
                   value: v.code,
@@ -241,20 +241,20 @@ export default function SearchMangaForm() {
                   setValue("originalLanguage", newValue);
                 }}
                 language
-                anyLabel="Tất cả quốc gia"
+                anyLabel="All Countries"
               />
             </div>
             <div>
-              <label>Ngôn ngữ bản dịch</label>
+              <label>Translation Language</label>
               <MultiSelectDropdown
                 options={[
                   {
                     value: "vi",
-                    label: "Tiếng Việt",
+                    label: "Vietnamese",
                   },
                   {
                     value: "en",
-                    label: "Tiếng Anh",
+                    label: "English",
                   },
                 ]}
                 selectedValues={values.availableTranslatedLanguage || []}
@@ -262,11 +262,11 @@ export default function SearchMangaForm() {
                   setValue("availableTranslatedLanguage", newValue);
                 }}
                 language
-                anyLabel="Tất cả ngôn ngữ"
+                anyLabel="All Languages"
               />
             </div>
             <div>
-              <label>Xếp theo</label>
+              <label>Sort By</label>
               <div className="relative">
                 <select
                   className="form-control block w-full appearance-none items-center justify-between rounded-lg border-2 border-neutral-300 bg-neutral-50 p-4 pr-10 capitalize leading-[21px] text-neutral-900 focus:border-purple-500 focus:ring-purple-500 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white dark:focus:border-purple-500 dark:focus:ring-purple-500"
@@ -299,13 +299,6 @@ export default function SearchMangaForm() {
           </div>
         </div>
         <div className="flex flex-col items-baseline justify-between md:flex-row">
-          {!showFilter && dirtyValues.length > 0 && (
-            <div className="mb-2">
-              Bạn đang lọc theo{" "}
-              {dirtyValues.map((f) => TRANSLATED_FIELD[f] || f).join(", ")} và
-              sắp xếp theo thứ tự {ORDER_TYPE[values.orderType || "0"]}.
-            </div>
-          )}
           <div className="flex gap-2 md:justify-end">
             <Button
               className="rounded-lg"
@@ -318,7 +311,7 @@ export default function SearchMangaForm() {
               Reset
             </Button>
             <Button icon={<FaSearch />} className="rounded-lg" type="submit">
-              Tìm kiếm
+              Search
             </Button>
           </div>
         </div>
@@ -328,22 +321,22 @@ export default function SearchMangaForm() {
 }
 
 const TRANSLATED_FIELD: Record<string, string> = {
-  artists: "hoạ sĩ",
-  authors: "tác giả",
-  availableTranslatedLanguage: "ngôn ngữ bản dịch",
-  contentRating: "nội dung",
-  originalLanguage: "quốc gia",
-  publicationDemographic: "đối tượng",
-  status: "tình trạng",
-  year: "năm phát hành",
+  artists: "artist",
+  authors: "author",
+  availableTranslatedLanguage: "translated language",
+  contentRating: "content",
+  originalLanguage: "country",
+  publicationDemographic: "demographic",
+  status: "status",
+  year: "release year",
   tag: "tag",
 };
 
 const ORDER_TYPE: Record<string, string> = {
-  "0": "mới cập nhật",
-  "1": "truyện mới",
-  "2": "theo dõi nhiều nhất",
-  "3": "bảng chữ cái",
-  "4": "liên quan nhất",
-  "5": "đánh giá cao nhất",
+  "0": "latest updates",
+  "1": "new manga",
+  "2": "most followed",
+  "3": "alphabetical",
+  "4": "most relevant",
+  "5": "highest rated",
 };

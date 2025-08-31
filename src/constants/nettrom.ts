@@ -994,19 +994,19 @@ export class NettromConstants {
   ];
   languages = [
     {
-      name: "Nhật Bản",
+      name: "Japan",
       code: "ja",
     },
     {
-      name: "Trung Quốc",
+      name: "China",
       code: "zh",
     },
     {
-      name: "Đài Loan",
+      name: "Taiwan",
       code: "zh-hk",
     },
     {
-      name: "Hàn Quốc",
+      name: "South Korea",
       code: "ko",
     },
     {
@@ -1014,7 +1014,7 @@ export class NettromConstants {
       code: "en",
     },
     {
-      name: "Việt Nam",
+      name: "Vietnamese",
       code: "vi",
     },
     {

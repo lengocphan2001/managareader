@@ -24,16 +24,16 @@ interface ILoginForm {
 const loginSchema = yup.object().shape({
   email: yup
     .string()
-    .email("Email không hợp lệ")
-    .required("Vui lòng điền email"),
+    .email("Invalid email")
+    .required("Please enter email"),
   password: yup
     .string()
-    .min(6, "Mật khẩu ít nhất 6 ký tự")
-    .required("Vui lòng điền mật khẩu"),
+    .min(6, "Password must be at least 6 characters")
+    .required("Please enter password"),
   remember: yup.boolean().required(),
   "cf-turnstile-response": yup
     .string()
-    .required("Vui lòng xác minh bạn không phải robot"),
+    .required("Please verify you are not a robot"),
 });
 
 export default function LoginForm() {
@@ -86,7 +86,7 @@ export default function LoginForm() {
         </div>
         <div className="mb-4">
           <label className="font-semibold" htmlFor="LoginPassword">
-            Mật khẩu:
+            Password:
           </label>
           <input
             id="LoginPassword"
@@ -117,7 +117,7 @@ export default function LoginForm() {
               className="form-checkbox-label text-slate-400"
               htmlFor="RememberMe"
             >
-              Tự động đăng nhập
+              Auto login
             </label>
           </div>
           <p className="mb-0 text-slate-400">
@@ -135,26 +135,16 @@ export default function LoginForm() {
             type="submit"
             className="inline-block w-full rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base tracking-wide text-white duration-500 hover:border-indigo-700 hover:bg-indigo-700"
           >
-            {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </div>
-        <div className="mb-4">
-          <Link
-            href={Utils.Url.getGoogleAuthUrl()}
-            type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base tracking-wide text-white duration-500 hover:border-indigo-700 hover:bg-indigo-700"
-          >
-            <Iconify icon="devicon-plain:google" />
-            Đăng nhập với Google
-          </Link>
-        </div>
         <div className="text-center">
-          <span className="me-2 text-slate-400">Chưa có tài khoản?</span>{" "}
+          <span className="me-2 text-slate-400">Don't have an account?</span>{" "}
           <Link
             href={Constants.Routes.signup}
             className="inline-block font-bold text-black dark:text-white"
           >
-            Đăng ký ngay
+            Sign up now
           </Link>
         </div>
       </div>

@@ -7,7 +7,7 @@ import { DataLoader } from "@/components/DataLoader";
 import { ChapterControlBar } from "./chapter-control-bar";
 import { useMemo } from "react";
 import { FaClock } from "react-icons/fa";
-import RandomAlert from "./random-alert";
+
 
 export default function ChapterControl() {
   const { manga, chapter, others, group } = useChapterContext();
@@ -20,7 +20,7 @@ export default function ChapterControl() {
   }, [chapter]);
 
   return (
-    <DataLoader isLoading={!chapter} loadingText="Đang tải thông tin chương...">
+    <DataLoader isLoading={!chapter} loadingText="Loading chapter information...">
       <div className="flex flex-col gap-0">
         {/* <ul
           className="mb-2 inline-flex items-center gap-4"
@@ -29,12 +29,12 @@ export default function ChapterControl() {
           {[
             {
               href: Constants.Routes.nettrom.index,
-              name: "Trang chủ",
+              name: "Home",
               position: 1,
             },
             {
               href: Constants.Routes.nettrom.search,
-              name: "Truyện Tranh",
+              name: "Manga",
               position: 2,
             },
           ].map((item, index, arr) => {
@@ -81,9 +81,9 @@ export default function ChapterControl() {
           </p>
         </h1>
         <p className="mb-2 md:mb-5">
-          <span className="text-[14px] text-muted-foreground">
+                      <span className="text-[14px] text-muted-foreground">
             <FaClock className="mr-2 inline" />
-            Cập nhật lúc:{" "}
+            Updated at:{" "}
             <span className="">
               {chapter &&
                 format(
@@ -94,7 +94,7 @@ export default function ChapterControl() {
             {group && (
               <span className="text-muted-foreground">
                 {" "}
-                bởi{" "}
+                by{" "}
                 <Link href={Constants.Routes.nettrom.scanlationGroup(group.id)}>
                   {group.attributes.name}
                 </Link>
@@ -107,7 +107,7 @@ export default function ChapterControl() {
       <div className="reading-control">
         {others.length > 0 && (
           <div className="mrb5">
-            Chuyển sang đọc bản dịch nhóm khác
+            Switch to other scanlation group
             <div className="mrt10">
               {others.map((other, idx) => (
                 <Link
@@ -117,13 +117,13 @@ export default function ChapterControl() {
                   className="loadchapter btn btn-primary btn-success mrb5"
                   href={Constants.Routes.nettrom.chapter(other)}
                 >
-                  Nhóm {idx}
+                  Group {idx + 1}
                 </Link>
               ))}
             </div>
           </div>
         )}
-        <RandomAlert />
+
         <ChapterControlBar></ChapterControlBar>
         <div className="mb-4"></div>
       </div>

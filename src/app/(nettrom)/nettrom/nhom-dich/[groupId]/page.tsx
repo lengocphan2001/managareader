@@ -47,8 +47,8 @@ export async function generateMetadata(
   // optionally access and extend (rather than replace) parent metadata
 
   return {
-    title: "Đọc ngay tại NetTrom",
-    description: "NetTrom - Website Trộm Truyện Văn Minh",
+    title: "Read now at NetTrom",
+    description: "NetTrom - Civilized Manga Reading Website",
     openGraph: {
       images: [...previousImages],
     },
@@ -83,10 +83,10 @@ export default async function NhomDich({
     <div className="row">
       <div id="ctl00_divCenter" className="center-side col-md-8">
         <article id="item-detail">
-          <h1 className="title-detail">Nhóm dịch {group.attributes.name}</h1>
+          <h1 className="title-detail">Scanlation Group: {group.attributes.name}</h1>
           {group.attributes.focusedLanguages && (
             <time className="small">
-              Ngôn ngữ:{" "}
+              Languages:{" "}
               {group.attributes.focusedLanguages
                 .map((l) => l.toUpperCase())
                 .join("; ")}
@@ -170,7 +170,7 @@ export default async function NhomDich({
           </div>
           <div className="detail-content">
             <h3 className="list-title">
-              <i className="fa fa-file-text-o"></i> Giới thiệu nhóm
+              <i className="fa fa-file-text-o"></i> Group Introduction
             </h3>
             <div className="">
               {group.attributes.description && (
@@ -179,7 +179,7 @@ export default async function NhomDich({
             </div>
           </div>
         </article>
-        <NewUpdates title="Các chương mới đăng" groupId={group.id} />
+        <NewUpdates title="Latest Chapters" groupId={group.id} />
       </div>
       <div id="ctl00_divRight" className="right-side col-md-4 cmszone">
         <TopTitles groupId={group.id} />

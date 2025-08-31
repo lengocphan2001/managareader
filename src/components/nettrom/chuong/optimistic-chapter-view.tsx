@@ -57,10 +57,10 @@ export default function OptimisticChapterView({
               {/* Loading text with animation */}
               <div className="text-center">
                 <h3 className="mb-2 text-lg font-semibold text-gray-800">
-                  Đang chuyển chương
+                  Switching chapter
                 </h3>
                 <p className="animate-pulse text-sm text-gray-600">
-                  Vui lòng đợi trong giây lát...
+                  Please wait a moment...
                 </p>
               </div>
 
@@ -86,7 +86,7 @@ export default function OptimisticChapterView({
         <div className="flex min-h-[400px] items-center justify-center">
           <div className="text-center">
             <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-gray-200 border-t-web-title"></div>
-            <p className="font-medium text-gray-600">Đang tải chương...</p>
+            <p className="font-medium text-gray-600">Loading chapter...</p>
           </div>
         </div>
       )}

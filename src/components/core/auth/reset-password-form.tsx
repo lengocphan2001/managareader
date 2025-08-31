@@ -21,16 +21,16 @@ interface ISignupForm {
 const signupSchema = yup.object().shape({
   email: yup
     .string()
-    .email("Email không hợp lệ")
-    .required("Vui lòng nhập email"),
+    .email("Invalid email")
+    .required("Please enter an email"),
   password: yup
     .string()
-    .min(8, "Mật khẩu ít nhất 8 ký tự")
-    .required("Vui lòng nhập mật khẩu"),
+    .min(8, "Password must be at least 8 characters")
+    .required("Please enter a password"),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref("password")], "Nhập lại mật khẩu không khớp")
-    .required("Vui lòng nhập lại mật khẩu"),
+    .oneOf([yup.ref("password")], "Password confirmation does not match")
+    .required("Please confirm your password"),
 });
 
 export default function ResetPasswordForm() {
@@ -94,7 +94,7 @@ export default function ResetPasswordForm() {
         </div>
         <div className="mb-4">
           <label className="font-semibold" htmlFor="LoginPassword">
-            Nhập lại mật khẩu:
+            Re-enter password:
           </label>
           <input
             id="LoginPassword"
@@ -111,16 +111,16 @@ export default function ResetPasswordForm() {
             className="inline-block w-full rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base tracking-wide text-white duration-500 hover:border-indigo-700 hover:bg-indigo-700"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Đang gửi yêu cầu..." : "Đổi mật khẩu"}
+            {isSubmitting ? "Sending request..." : "Reset password"}
           </button>
         </div>
         <div className="text-center">
-          <span className="me-2 text-slate-400">Đã nhớ mật khẩu? </span>{" "}
+          <span className="me-2 text-slate-400">Remember your password? </span>{" "}
           <Link
             href={Constants.Routes.login}
             className="inline-block font-bold text-black dark:text-white"
           >
-            Đăng nhập
+            Log in
           </Link>
         </div>
       </div>

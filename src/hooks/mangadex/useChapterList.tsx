@@ -10,30 +10,35 @@ export default function useChapterList(
   mangaId: string,
   options: MangadexApi.Manga.GetMangaIdFeedRequestOptions,
 ) {
-  // rewrite
-  if (!options.translatedLanguage) options.translatedLanguage = ["vi"];
-  options.includes = [
+  // Don't restrict by translatedLanguage at API level - fetch all available chapters
+  // and prioritize by scanlation group language focus instead
+  const apiOptions = { ...options };
+  
+  // Remove translatedLanguage filter to fetch all available chapters
+  delete apiOptions.translatedLanguage;
+  
+  apiOptions.includes = [
     MangadexApi.Static.Includes.SCANLATION_GROUP,
     MangadexApi.Static.Includes.USER,
   ];
-  options.order = {
+  apiOptions.order = {
     volume: MangadexApi.Static.Order.DESC,
     chapter: MangadexApi.Static.Order.DESC,
   };
-  if (!options.contentRating)
-    options.contentRating = [
+  if (!apiOptions.contentRating)
+    apiOptions.contentRating = [
       MangadexApi.Static.MangaContentRating.EROTICA,
       MangadexApi.Static.MangaContentRating.PORNOGRAPHIC,
       MangadexApi.Static.MangaContentRating.SAFE,
       MangadexApi.Static.MangaContentRating.SUGGESTIVE,
     ];
-  options.limit = chaptersPerPage;
-  if (options.offset && options.offset > 10000) {
-    options.offset = 10000 - options.limit;
+  apiOptions.limit = chaptersPerPage;
+  if (apiOptions.offset && apiOptions.offset > 10000) {
+    apiOptions.offset = 10000 - apiOptions.limit;
   }
   const { data, isLoading, error } = useSWR(
-    [mangaId, options],
-    () => MangadexApi.Manga.getMangaIdFeed(mangaId, options),
+    [mangaId, apiOptions],
+    () => MangadexApi.Manga.getMangaIdFeed(mangaId, apiOptions),
     {
       revalidateOnFocus: false,
       refreshInterval: 0,
@@ -44,8 +49,14 @@ export default function useChapterList(
     (c) => Utils.Mangadex.extendRelationship(c) as ExtendChapter,
   );
 
+  const chapters = (data?.data.data || []) as ExtendChapter[];
+  const prioritizedChapters = Utils.Mangadex.prioritizeChaptersByGroupLanguage(
+    chapters,
+    options.translatedLanguage || ["en", "ja-ro"]
+  );
+
   return {
-    chapters: (data?.data.data || []) as ExtendChapter[],
+    chapters: prioritizedChapters,
     data,
     isLoading,
     error,

@@ -20,11 +20,11 @@ interface IForgotPasswordForm {
 const resetPasswordSchema = yup.object().shape({
   email: yup
     .string()
-    .email("Không đúng định dạng email")
-    .required("Vui lòng điền email"),
+    .email("Invalid email format")
+    .required("Please enter email"),
   "cf-turnstile-response": yup
     .string()
-    .required("Vui lòng xác minh bạn không phải robot"),
+    .required("Please verify you are not a robot"),
 });
 
 export default function ForgotPasswordForm() {
@@ -41,9 +41,9 @@ export default function ForgotPasswordForm() {
   const onSubmit: SubmitHandler<IForgotPasswordForm> = async (data) => {
     try {
       await forgotPassword(data);
-      toast("Gửi yêu cầu thành công! Vui lòng kiểm tra mail của bạn!");
+      toast("Request sent successfully! Please check your email!");
     } catch (error) {
-      Utils.Error.handleError(error, "Gửi yêu cầu thất bại");
+      Utils.Error.handleError(error, "Request failed");
     }
   };
 
@@ -78,17 +78,17 @@ export default function ForgotPasswordForm() {
             disabled={isSubmitting}
             type="submit"
             className="inline-block w-full rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base tracking-wide text-white duration-500 hover:border-indigo-700 hover:bg-indigo-700"
-            value="Gửi"
+            value="Send"
           />
         </div>
 
         <div className="text-center">
-          <span className="me-2 text-slate-400">Lại nhớ password rồi hử?</span>
+          <span className="me-2 text-slate-400">Remember your password?</span>
           <Link
             href={Constants.Routes.login}
             className="inline-block font-bold text-black dark:text-white"
           >
-            Đăng nhập
+            Login
           </Link>
         </div>
       </div>

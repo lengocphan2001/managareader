@@ -25,7 +25,7 @@ export default function useLastUpdates(options: {
   const { data, isLoading, error } = useSWR(["last-updates", options], () =>
     MangadexApi.Chapter.getChapter({
       includes: ["scanlation_group"],
-      translatedLanguage: options.filteredLanguages || ["vi"],
+      // Don't restrict by translatedLanguage - fetch all and prioritize by group language focus
       contentRating: options.filteredContentRating
         ? (options.filteredContentRating as MangadexApi.Static.MangaContentRating[])
         : [
@@ -50,8 +50,14 @@ export default function useLastUpdates(options: {
     total = data.data.total;
   }
 
+  const chapters = (data?.data.data || []) as ExtendChapter[];
+  const prioritizedChapters = Utils.Mangadex.prioritizeChaptersByGroupLanguage(
+    chapters,
+    options.filteredLanguages || ["en", "ja-ro"]
+  );
+
   return {
-    chapters: (data?.data.data || []) as ExtendChapter[],
+    chapters: prioritizedChapters,
     isLoading,
     error,
     total,

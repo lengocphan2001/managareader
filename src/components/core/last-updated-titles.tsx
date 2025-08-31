@@ -16,7 +16,7 @@ export default function LastUpdatedTitles({
         <div className="grid grid-cols-1 items-center md:grid-cols-12">
           <div className="text-center md:col-span-6 md:text-start lg:col-span-8">
             <h3 className="text-2xl font-semibold leading-normal">
-              Chương mới cập nhật
+              Latest Chapter Updates
             </h3>
           </div>
 
@@ -25,7 +25,7 @@ export default function LastUpdatedTitles({
               href={Constants.Routes.nettrom.index}
               className="relative inline-block border-none text-center align-middle text-base font-semibold tracking-wide text-slate-400 duration-500 ease-in-out after:absolute after:bottom-0 after:end-0 after:start-0 after:h-px after:w-0 after:bg-indigo-600 after:duration-500 after:content-[''] hover:text-indigo-600 hover:after:end-auto hover:after:w-full"
             >
-              Xem thêm <Iconify icon="uil:arrow-right" className="inline" />
+              View More <Iconify icon="uil:arrow-right" className="inline" />
             </Link>
           </div>
         </div>
@@ -45,7 +45,7 @@ export default function LastUpdatedTitles({
                       href={Constants.Routes.nettrom.manga(extended.id)}
                       className="inline-block w-full rounded-md border border-slate-900 bg-slate-900 px-5 py-2 text-center align-middle text-base font-semibold tracking-wide text-white duration-500"
                     >
-                      Đọc
+                      Read
                     </Link>
                   </div>
 

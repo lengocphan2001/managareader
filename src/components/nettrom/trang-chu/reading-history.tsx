@@ -20,13 +20,13 @@ export default function ReadingHistory() {
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 className="flex items-center gap-4 text-[20px] font-medium text-web-title">
             <FaHistory />
-            Lịch sử đọc truyện
+            Reading History
           </h2>
           <Link
             className="text-web-title transition hover:text-web-titleLighter"
             href={Constants.Routes.nettrom.history}
           >
-            Xem tất cả
+            View All
           </Link>
         </div>
         <ul className="grid grid-cols-4 gap-4">
@@ -56,7 +56,7 @@ export default function ReadingHistory() {
         {historyEntries.length === 0 && (
           <AspectRatio ratio={8 / 3}>
             <div className="flex h-full w-full items-center justify-center text-lg text-gray-500">
-              Không có lịch sử đọc truyện
+              No reading history
             </div>
           </AspectRatio>
         )}

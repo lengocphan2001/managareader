@@ -15,15 +15,15 @@ export default function VerifyMailAlert() {
         classNames={{
           alert: "[&>svg]:text-red-500 text-red-500 bg-red-100",
         }}
-        title="Xác nhận email để sử dụng đầy đủ chức năng."
-        description="Lưu ý: Dùng TRÌNH DUYỆT HIỆN TẠI để mở email và nhấn vào liên kết xác nhận."
+        title="Verify your email to use all features."
+        description="Note: Use your CURRENT BROWSER to open the email and click the verification link."
         action={
           <Link
             className="no-underline hover:no-underline"
             href={Constants.Routes.verifyEmail}
           >
             <Button className="bg-red-500 hover:bg-red-600">
-              Chưa nhận được mail?
+              Not received email?
             </Button>
           </Link>
         }

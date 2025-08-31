@@ -9,6 +9,8 @@ import { useMangadex } from "@/contexts/mangadex";
 import Iconify from "@/components/iconify";
 import { Utils } from "@/utils";
 import { DataLoader } from "@/components/DataLoader";
+import { useConfirmModal } from "@/hooks/useConfirmModal";
+import ConfirmModal from "@/components/shadcn/confirm-modal";
 
 import Pagination from "../Pagination";
 import MangaTile from "../manga-tile";
@@ -19,15 +21,26 @@ export default function FollowingList() {
     useMangadex();
   const [page, setPage] = useState(1);
   const { data, mutate, isLoading, error } = useReadList(page);
+  const { modalState, showConfirm, hideConfirm, handleConfirm } = useConfirmModal();
 
   const unfollow = useCallback(
     async (mangaId: string) => {
-      if (!confirm("Bạn có chắc chắn muốn bỏ theo dõi truyện này?")) return;
-      const { followed } = await AppApi.Series.followOrUnfollow(mangaId);
-      toast(followed ? "Theo dõi thành công" : "Bỏ theo dõi thành công");
-      await mutate();
+      showConfirm(
+        "Unfollow Manga",
+        "Are you sure you want to unfollow this manga?",
+        async () => {
+          const { followed } = await AppApi.Series.followOrUnfollow(mangaId);
+          toast(followed ? "Followed successfully" : "Unfollowed successfully");
+          await mutate();
+        },
+        {
+          confirmText: "Unfollow",
+          cancelText: "Cancel",
+          type: "danger"
+        }
+      );
     },
-    [mutate],
+    [mutate, showConfirm],
   );
 
   useEffect(() => {
@@ -42,7 +55,7 @@ export default function FollowingList() {
       <div className="items">
         <div className="row">
           <DataLoader
-            loadingText="Đang tải danh sách truyện bạn theo dõi..."
+            loadingText="Loading your followed manga list..."
             isLoading={isLoading}
             error={error}
           >
@@ -80,7 +93,7 @@ export default function FollowingList() {
                         icon={<Iconify icon="fa:times-circle" />}
                         className="mt-2 w-full"
                       >
-                        Bỏ theo dõi
+                        Unfollow
                       </Button>
                     </div>
                   );
@@ -90,7 +103,7 @@ export default function FollowingList() {
                 // Show empty state if no manga
                 !data?.data.length && (
                   <div className="col-span-4 text-center">
-                    <p>Bạn chưa theo dõi truyện nào</p>
+                    <p>You haven't followed any manga yet</p>
                   </div>
                 )
               }
@@ -109,6 +122,17 @@ export default function FollowingList() {
           />
         </div>
       )}
+      
+      <ConfirmModal
+        isOpen={modalState.isOpen}
+        onClose={hideConfirm}
+        onConfirm={handleConfirm}
+        title={modalState.title}
+        message={modalState.message}
+        confirmText={modalState.confirmText}
+        cancelText={modalState.cancelText}
+        type={modalState.type}
+      />
     </div>
   );
 }

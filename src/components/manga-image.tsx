@@ -51,7 +51,7 @@ export default function MangaImage({
             className="w-full min-w-0"
             onClick={() => onDataSaverChange()}
           >
-            {dataSaver ? "Tắt chế độ tiết kiệm" : "Bật chế độ tiết kiệm"}
+            {dataSaver ? "Disable data saver" : "Enable data saver"}
           </Button>
         </div>
       </div>

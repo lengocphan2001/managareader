@@ -50,13 +50,13 @@ export const ChapterControlList: FC<{}> = () => {
   const formatChapterLabel = (item: any) => {
     if (item.volume !== "none") {
       if (item.chapter !== "none") {
-        return `Tập ${item.volume} Chương ${item.chapter}`;
+        return `Volume ${item.volume} Chapter ${item.chapter}`;
       } else {
-        return `Oneshot Tập ${item.volume}`;
+        return `Oneshot Volume ${item.volume}`;
       }
     } else {
       if (item.chapter !== "none") {
-        return `Chương ${item.chapter}`;
+        return `Chapter ${item.chapter}`;
       } else {
         return "Oneshot";
       }
@@ -88,24 +88,24 @@ export const ChapterControlList: FC<{}> = () => {
                 size="2xl"
                 content={
                   manga
-                    ? `Danh sách chương - ${
+                    ? `Chapter List - ${
                         manga.attributes?.title?.en ||
                         manga.attributes?.title?.vi
                       }`
-                    : "Danh sách chương"
+                    : "Chapter List"
                 }
               >
                 <h3 className="truncate text-base font-semibold text-white">
                   {manga
-                    ? `Danh sách chương - ${
+                    ? `Chapter List - ${
                         manga.attributes?.title?.en ||
                         manga.attributes?.title?.vi
                       }`
-                    : "Danh sách chương"}
+                    : "Chapter List"}
                 </h3>
               </TooltipComponent>
               <p className="mt-1 text-sm text-neutral-400">
-                {chapters.length} chương
+                {chapters.length} chapters
               </p>
             </div>
 
@@ -128,7 +128,7 @@ export const ChapterControlList: FC<{}> = () => {
                       {formatChapterLabel(item)}
                     </span>
                     {item.id === chapterId && (
-                      <span className="text-xs font-medium">Đang đọc</span>
+                      <span className="text-xs font-medium">Reading</span>
                     )}
                   </div>
                 </button>
@@ -138,7 +138,7 @@ export const ChapterControlList: FC<{}> = () => {
             {/* Footer */}
             <div className="border-t border-neutral-700 p-2">
               <p className="text-center text-xs text-neutral-400">
-                Click để chuyển chương
+                Click to switch chapter
               </p>
             </div>
           </div>

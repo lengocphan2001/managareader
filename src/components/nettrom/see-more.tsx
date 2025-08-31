@@ -39,7 +39,7 @@ const ReadMore: React.FC<ReadMoreProps> = ({ children, maxHeight = 150 }) => {
                 className="text-white-500 font-bold hover:underline focus:outline-none"
                 onClick={() => setExpanded(true)}
               >
-                Hiện thêm
+                Show More
               </button>
             </div>
           </div>

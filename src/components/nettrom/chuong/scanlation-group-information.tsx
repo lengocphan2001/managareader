@@ -13,11 +13,11 @@ export default function ScanlationGroupInformation({
     <div className="my-4 rounded-lg px-2 py-2">
       {!canNext && (
         <div className="text-center text-lg text-gray-500">
-          Mãi không thấy chương mới? Giục tại đây 👇🏻
+          No new chapters? Request here 👇🏻
         </div>
       )}
       <div className="flex flex-col items-baseline justify-center gap-0 md:flex-row md:gap-3">
-        <div>Nhóm dịch</div>
+        <div>Scanlation Group</div>
         <Link
           href={Constants.Routes.nettrom.scanlationGroup(group.id)}
           className="text-[20px] font-bold text-orange-500"

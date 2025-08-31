@@ -54,7 +54,7 @@ export default function SearchInput() {
       <input
         type="text"
         className="searchinput form-control"
-        placeholder="Tìm truyện..."
+        placeholder="Search manga..."
         value={title}
         onChange={(event) => setTitle(event.target.value)}
       />
@@ -76,10 +76,10 @@ export default function SearchInput() {
           <div className="absolute left-0 top-full z-[1000] max-h-[350px] w-full overflow-hidden border border-gray-200 bg-white shadow-lg transition-all duration-300 ease-out md:max-h-[400px] md:w-[295px] lg:w-[455px]">
             <div className="border-b border-gray-100 bg-gray-50 px-4 py-3">
               <h3 className="mb-1 text-xl font-semibold text-gray-700">
-                Kết quả tìm kiếm
+                Search Results
               </h3>
               <p className="text-lg text-gray-500">
-                {isLoading ? "Đang tìm kiếm..." : `${mangaList.length} kết quả`}
+                {isLoading ? "Searching..." : `${mangaList.length} results`}
               </p>
             </div>
 
@@ -161,10 +161,10 @@ export default function SearchInput() {
                   <div className="px-4 py-8 text-center">
                     <div className="mb-3 text-3xl">📚</div>
                     <h3 className="mb-1 text-sm font-semibold text-gray-700">
-                      Không tìm thấy truyện
+                      No manga found
                     </h3>
                     <p className="text-xs text-gray-500">
-                      Thử tìm kiếm với từ khóa khác
+                      Try searching with different keywords
                     </p>
                   </div>
                 ) : null}
@@ -174,7 +174,7 @@ export default function SearchInput() {
             {mangaList.length > 0 && (
               <div className="border-t border-gray-100 bg-gray-50 px-4 py-2 text-center">
                 <p className="text-[11px] text-gray-500">
-                  Nhấn Enter để tìm kiếm nâng cao
+                  Press Enter for advanced search
                 </p>
               </div>
             )}

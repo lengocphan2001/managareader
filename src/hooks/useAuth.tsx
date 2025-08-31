@@ -30,13 +30,27 @@ export const useAuth = ({
       const { data } = await axios.get<GetUserResponse>("/api/user");
       if (data?.user) {
         userIdValues.setState(data.user.id);
+        return data.user;
       } else {
         userIdValues.resetState();
+        return null;
       }
-      return data.user;
-    } catch {}
-    userIdValues.resetState();
-    return null;
+    } catch (error: any) {
+      // If 401 (unauthorized), user is not logged in
+      if (error?.response?.status === 401) {
+        userIdValues.resetState();
+        return null;
+      }
+      // For other errors, still return null but don't reset state
+      return null;
+    }
+  }, {
+    // Don't retry on 401 errors
+    shouldRetryOnError: (error) => {
+      return error?.response?.status !== 401;
+    },
+    // Don't fetch on focus if we got 401
+    revalidateOnFocus: false,
   });
 
   const csrf = () => axios.get("/sanctum/csrf-cookie");
@@ -52,7 +66,12 @@ export const useAuth = ({
   }) => {
     await csrf();
 
-    await axios.post("/register", props);
+    const response = await axios.post("/api/auth/register", props);
+
+    // Store token in localStorage for Authorization header
+    if (response.data?.user && response.data?.token) {
+      localStorage.setItem('auth_token', response.data.token);
+    }
 
     await mutate();
   };
@@ -67,11 +86,16 @@ export const useAuth = ({
   }) => {
     await csrf();
 
-    await axios({
+    const response = await axios({
       method: "POST",
-      url: "/login",
+      url: "/api/auth/login",
       data: props,
     });
+
+    // Store token in localStorage for Authorization header
+    if (response.data?.user && response.data?.token) {
+      localStorage.setItem('auth_token', response.data.token);
+    }
 
     await mutate();
   };
@@ -83,7 +107,7 @@ export const useAuth = ({
     await csrf();
 
     try {
-      await axios.post("/forgot-password", data);
+      await axios.post("/api/auth/forgot-password", data);
     } catch (error) {
       throw error;
     }
@@ -99,7 +123,7 @@ export const useAuth = ({
   }) => {
     await csrf();
 
-    await axios.post("/reset-password", { ...props });
+    await axios.post("/api/auth/reset-password", { ...props });
 
     router.push(Constants.Routes.login);
   };
@@ -107,13 +131,18 @@ export const useAuth = ({
   const resendEmailVerification = async (data: {
     "cf-turnstile-response": string;
   }) => {
-    await axios.post("/email/verification-notification", data);
+    await axios.post("/api/auth/resend-verification", data);
   };
 
   const logout = useCallback(async () => {
-    await axios.post("/logout");
+    await axios.post("/api/auth/logout");
 
-    toast("Đăng xuất thành công");
+    // Clear token from localStorage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+    }
+
+    toast("Logged out successfully");
 
     await mutate();
   }, [mutate]);
@@ -143,7 +172,7 @@ export const useAuth = ({
         redirectIfNotAuthenticated,
       );
       // debugger;
-      toast("Đã đăng nhập, chuyển hướng...");
+      toast("Logged in successfully, redirecting...");
       router.push(redirectIfAuthenticated || Constants.Routes.nettrom.index);
     }
 

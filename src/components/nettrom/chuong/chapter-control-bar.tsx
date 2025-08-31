@@ -61,7 +61,7 @@ export const ChapterControlBar: FC<{}> = () => {
               trigger: "h-16 grow rounded-lg",
               content: "max-h-[500px] w-[95vw] sm:w-full",
             }}
-            value={chapterId || "Đang tải..."}
+            value={chapterId || "Loading..."}
             onValueChange={(value) => {
               goTo(value);
             }}
@@ -70,10 +70,10 @@ export const ChapterControlBar: FC<{}> = () => {
                 label:
                   item.volume !== "none"
                     ? item.chapter !== "none"
-                      ? `Tập ${item.volume} Chương ${item.chapter}`
-                      : `Oneshot Tập ${item.volume}`
+                      ? `Volume ${item.volume} Chapter ${item.chapter}`
+                      : `Oneshot Volume ${item.volume}`
                     : item.chapter !== "none"
-                      ? `Chương ${item.chapter}`
+                      ? `Chapter ${item.chapter}`
                       : "Oneshot",
                 value: item.id,
               };
@@ -93,7 +93,7 @@ export const ChapterControlBar: FC<{}> = () => {
           ></Button>
         </div>
         {/* <div className="flex items-center justify-center gap-x-1">
-          <Link className="home hidden md:block" href="/" title="Trang chủ">
+          <Link className="home hidden md:block" href="/" title="Home">
             <i className="fa fa-home" />
           </Link>
           <Link
@@ -107,7 +107,7 @@ export const ChapterControlBar: FC<{}> = () => {
             <a
               className="home changeserver"
               href="#"
-              title="Lên trên cùng"
+              title="Scroll to top"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               <i className="fa fa-arrow-circle-up" />
@@ -125,7 +125,7 @@ export const ChapterControlBar: FC<{}> = () => {
             name="ctl00$mainContent$ddlSelectChapter"
             id="ctl00_mainContent_ddlSelectChapter"
             className="select-chapter min-w-[100px] md:min-w-[200px]"
-            value={chapterId || "Đang tải..."}
+            value={chapterId || "Loading..."}
             onChange={(event) => {
               goTo(event.target.value);
             }}
@@ -134,14 +134,14 @@ export const ChapterControlBar: FC<{}> = () => {
               chapters.map((item) => (
                 <option value={item.id} key={item.id}>
                   {item.volume !== "none"
-                    ? `Tập ${item.volume} Chương ${item.chapter}`
+                    ? `Volume ${item.volume} Chapter ${item.chapter}`
                     : item.chapter !== "none"
-                      ? `Chương ${item.chapter}`
+                      ? `Chapter ${item.chapter}`
                       : "Oneshot"}
                 </option>
               ))
             ) : (
-              <option>Đang tải...</option>
+              <option>Loading...</option>
             )}
           </select>
           <a

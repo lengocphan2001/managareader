@@ -30,7 +30,7 @@ export default function HistoryList() {
                     className="visited-remove"
                     onClick={() => removeHistory(mangaId)}
                   >
-                    <i className="fa fa-times" /> Xóa
+                    <i className="fa fa-times" /> Remove
                   </a>
                 </div>
               </div>
@@ -48,7 +48,7 @@ export default function HistoryList() {
                     <Link
                       href={Constants.Routes.nettrom.chapter(manga.chapterId)}
                     >
-                      Đọc tiếp {manga.chapterTitle}{" "}
+                      Continue reading {manga.chapterTitle}{" "}
                       <i className="fa fa-angle-right" />
                     </Link>
                   </li>

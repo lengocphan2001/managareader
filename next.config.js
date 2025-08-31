@@ -26,6 +26,14 @@ module.exports = async (phase) => {
     eslint: {
       ignoreDuringBuilds: true,
     },
+    // Performance optimizations
+    experimental: {
+      optimizePackageImports: ['@iconify/react', 'lucide-react'],
+    },
+    // Enable compression
+    compress: true,
+    // Optimize bundle
+    swcMinify: true,
   };
 
   // You may want to use a more robust revision to cache

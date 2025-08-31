@@ -9,7 +9,7 @@ export default function UserProfileView() {
   return (
     <div className="grid grid-cols-1 gap-[30px] pt-6">
       <div>
-        <h5 className="text-xl font-semibold">Thông tin tài khoản :</h5>
+        <h5 className="text-xl font-semibold">Account Information:</h5>
         <div className="mt-6 flex flex-col gap-3">
           <div className="flex items-center">
             <Iconify
@@ -30,7 +30,7 @@ export default function UserProfileView() {
             />
             <div className="flex flex-1 flex-row gap-1 md:flex-row">
               <h6 className="mb-0 font-medium text-indigo-600 dark:text-white">
-                Tài khoản tạo lúc :
+                Account Created:
               </h6>
               <span className="text-slate-400">
                 {new Date(user.created_at).toLocaleString()}
@@ -44,7 +44,7 @@ export default function UserProfileView() {
             />
             <div className="flex flex-1 flex-row gap-1 md:flex-row">
               <h6 className="mb-0 font-medium text-indigo-600 dark:text-white">
-                Số bình luận :
+                Comments Count:
               </h6>
               <span className="text-slate-400">{user.comment_count}</span>
             </div>
@@ -56,7 +56,7 @@ export default function UserProfileView() {
             />
             <div className="flex flex-1 flex-row gap-1 md:flex-row">
               <h6 className="mb-0 font-medium text-indigo-600 dark:text-white">
-                Chức danh :
+                Roles:
               </h6>
               <span className="text-slate-400">
                 {user.display_roles.map((t) => t.toUpperCase()).join(", ")}

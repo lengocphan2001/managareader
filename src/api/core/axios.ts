@@ -3,18 +3,27 @@ import { Utils } from "@/utils";
 import Axios from "axios";
 
 const axios = Axios.create({
-  baseURL: Constants.BACKEND_URL,
+  baseURL: Constants.BACKEND_URL || "http://localhost:8000",
   headers: {
     "X-Requested-With": "XMLHttpRequest",
+    "Content-Type": "application/json",
   },
   withCredentials: true,
-  withXSRFToken: true,
 });
 
 axios.interceptors.request.use(
   (config) => {
     // Dynamically set the baseURL before each request
     config.baseURL = Utils.Url.getBackendUrl();
+    
+    // Add Authorization header if token exists
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    
     return config;
   },
   (error) => {

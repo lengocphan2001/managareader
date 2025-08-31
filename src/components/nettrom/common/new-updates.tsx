@@ -58,7 +58,7 @@ export default function NewUpdates({
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [page]);
 
-  if (isLoading) return <Loading title="Đang tải các chương mới" />;
+  if (isLoading) return <Loading title="Loading new chapters" />;
   if (error) return <div>error</div>;
 
   return (
@@ -67,12 +67,12 @@ export default function NewUpdates({
         <div className="items">
           <div className="relative">
             <h1 className="page-title">
-              {title ?? "Truyện mới cập nhật"}{" "}
+              {title ?? "Latest manga updates"}{" "}
               <i className="fa fa-angle-right" />
             </h1>
             <Link
               className="filter-icon"
-              title="Tìm truyện nâng cao"
+              title="Advanced manga search"
               href={Constants.Routes.nettrom.search}
             >
               <i className="fa fa-filter"></i>

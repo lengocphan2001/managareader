@@ -148,7 +148,7 @@ export default function TopTitles({ groupId }: { groupId?: string }) {
       MangadexApi.Static.MangaContentRating.SUGGESTIVE,
     ],
     hasAvailableChapters: "true",
-    availableTranslatedLanguage: ["vi"],
+    // Don't filter by language - get all available manga
     group: groupId ? groupId : undefined,
   });
   const {
@@ -166,7 +166,7 @@ export default function TopTitles({ groupId }: { groupId?: string }) {
       MangadexApi.Static.MangaContentRating.SUGGESTIVE,
     ],
     hasAvailableChapters: "true",
-    availableTranslatedLanguage: ["vi"],
+    // Don't filter by language - get all available manga
     group: groupId ? groupId : undefined,
   });
   const {
@@ -184,7 +184,7 @@ export default function TopTitles({ groupId }: { groupId?: string }) {
       MangadexApi.Static.MangaContentRating.SUGGESTIVE,
     ],
     hasAvailableChapters: "true",
-    availableTranslatedLanguage: ["vi"],
+    // Don't filter by language - get all available manga
     group: groupId ? groupId : undefined,
   });
 
@@ -211,7 +211,7 @@ export default function TopTitles({ groupId }: { groupId?: string }) {
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="flex items-center gap-4 text-[20px] font-medium text-web-title">
               <FaTrophy />
-              Bảng xếp hạng tháng này
+              Monthly Rankings
             </h2>
           </div>
           <Tabs defaultValue="top" className="w-full">
@@ -228,14 +228,14 @@ export default function TopTitles({ groupId }: { groupId?: string }) {
                 className="flex h-full items-center gap-3 rounded text-[12px]"
               >
                 <FaHeart />
-                Yêu thích
+                Favorites
               </TabsTrigger>
               <TabsTrigger
                 value="new"
                 className="flex h-full items-center gap-3 rounded text-[12px]"
               >
                 <FaClock />
-                Mới
+                New
               </TabsTrigger>
             </TabsList>
             <TabsContent value="top">

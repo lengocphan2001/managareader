@@ -21,17 +21,16 @@ export default function FollowingSync() {
   return (
     <div>
       <div>
-        Hướng dẫn đồng danh sách theo dõi truyện từ CManga, MangaDex, CuuTruyen
-        sang TruyenDex
+        Guide to sync followed manga list from CManga, MangaDex, CuuTruyen
+        to TruyenDex
       </div>
       <div className="text-base text-gray-300">
-        <b>Lưu ý:</b> Các thao tác phía dưới chỉ thực hiện được trên thiết bị
-        máy tính/laptop.
+        <b>Note:</b> The operations below can only be performed on desktop/laptop devices.
       </div>
-      <div className={headingClassName}>Bước 1:</div>
+      <div className={headingClassName}>Step 1:</div>
 
       <div className="flex items-center gap-2">
-        <div>Chọn nguồn muốn đồng bộ:</div>
+        <div>Select source to sync:</div>
         <select
           value={source}
           onChange={(e) => setSource(e.target.value)}
@@ -45,36 +44,36 @@ export default function FollowingSync() {
       </div>
 
       <div className="text-base text-gray-300">
-        <b>Lưu ý:</b> Bạn có thể đồng bộ NetTruyen, TruyenQQ sang CManga, rồi
-        đồng bộ CManga sang TruyenDex.
+        <b>Note:</b> You can sync NetTruyen, TruyenQQ to CManga, then
+        sync CManga to TruyenDex.
       </div>
 
-      <div className={headingClassName}>Bước 2:</div>
+      <div className={headingClassName}>Step 2:</div>
       {source ? (
         <Step2 source={source} />
       ) : (
-        <div>Vui lòng chọn nguồn đồng bộ</div>
+        <div>Please select a sync source</div>
       )}
 
       <div className={headingClassName}>Bước 3:</div>
       {source ? (
         <Step3 source={source} />
       ) : (
-        <div>Vui lòng chọn nguồn đồng bộ</div>
+        <div>Please select a sync source</div>
       )}
 
       <div className={headingClassName}>Bước 4:</div>
       {source ? (
         <Step4 source={source} />
       ) : (
-        <div>Vui lòng chọn nguồn đồng bộ</div>
+        <div>Please select a sync source</div>
       )}
 
       <div className={headingClassName}>Bước 5:</div>
       {source ? (
         <Step5 source={source} />
       ) : (
-        <div>Vui lòng chọn nguồn đồng bộ</div>
+        <div>Please select a sync source</div>
       )}
     </div>
   );
@@ -83,12 +82,12 @@ export default function FollowingSync() {
 function Step2({ source }: { source: string }) {
   return (
     <div>
-      Truy cập {source} và <b>đăng nhập</b>.
+      Visit {source} and <b>log in</b>.
       {source === "cmanga" && (
         <>
           <div>
-            Sau khi đăng nhập vào CManga, bạn có thể đồng bộ truyện từ NetTruyen
-            và TruyenQQ sang CManga trước.
+            After logging into CManga, you can sync manga from NetTruyen
+            and TruyenQQ to CManga first.
           </div>
           <Image className="mt-1" src={CMangaSyncImage} alt="CManga" />
         </>
@@ -109,7 +108,7 @@ function Step3({ source }: { source: string }) {
       <Image
         className="mt-1"
         src={OpenDevToolsImage}
-        alt="Mở Developer Tools"
+        alt="Open Developer Tools"
       />
     </div>
   );
@@ -123,7 +122,7 @@ function Step4({ source }: { source: string }) {
   const handleCopy = (text: string) => () => {
     copy(text)
       .then(() => {
-        toast.success("Đã sao chép script!");
+        toast.success("Script copied!");
       })
       .catch((error) => {
         console.error("Failed to copy!", error);
@@ -133,7 +132,7 @@ function Step4({ source }: { source: string }) {
   return (
     <div>
       <div>
-        Mở tab Console, sao chép script phía dưới, dán vào Console và bấm Enter.
+        Open the Console tab, copy the script below, paste it into Console and press Enter.
       </div>
       <pre className="whitespace-pre-wrap break-words rounded bg-gray-800 p-4 text-white">
         <code className="whitespace-pre-wrap break-words">{script}</code>
@@ -143,9 +142,9 @@ function Step4({ source }: { source: string }) {
         icon={<Iconify icon="fa:copy" />}
         onClick={handleCopy(script)}
       >
-        Sao chép
+        Copy
       </Button>
-      <Image className="mt-1" src={OpenConsoleImage} alt="Mở Console" />
+      <Image className="mt-1" src={OpenConsoleImage} alt="Open Console" />
     </div>
   );
 }

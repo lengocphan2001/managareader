@@ -23,7 +23,8 @@ export class UrlUtils {
         return `https://api.${domain}`;
       }
     }
-    return Constants.BACKEND_URL;
+    // For localhost development, use backend server
+    return Constants.BACKEND_URL || "http://localhost:8000";
   }
 
   getGoogleAuthUrl() {

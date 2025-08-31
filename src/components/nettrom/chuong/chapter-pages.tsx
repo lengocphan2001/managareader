@@ -25,10 +25,10 @@ export default function ChapterPages() {
     <div>
       {error ? (
         <div className="container flex flex-col items-center justify-center gap-2">
-          <div className="text-2xl font-bold">Chương này đã bị xoá</div>
+          <div className="text-2xl font-bold">This chapter has been deleted</div>
           <Link href={Constants.Routes.nettrom.manga(manga?.id || "")}>
             <Button icon={<Iconify icon="fa:arrow-left" />}>
-              Quay lại trang chủ
+              Back to manga page
             </Button>
           </Link>
         </div>
@@ -36,14 +36,14 @@ export default function ChapterPages() {
         <div className="container flex justify-center">
           <Link href={chapter.attributes.externalUrl} target="_blank">
             <Button icon={<Iconify icon="fa:external-link" />}>
-              Đọc tại trang chủ của {group?.attributes.name}
+              Read at {group?.attributes.name} website
             </Button>
           </Link>
         </div>
       ) : (
         <DataLoader
           isLoading={isLoading}
-          loadingText="Đang tải nội dung chương..."
+          loadingText="Loading chapter content..."
         >
           <div className="reading-detail box_doc">
             <LazyImages images={pages} threshold={(height || 1000) * 3} />
@@ -53,24 +53,20 @@ export default function ChapterPages() {
       <div className="container">
         <div className="mb-2 mt-4 flex flex-col gap-2">
           <Button disabled={!canNext} onClick={next}>
-            Chương tiếp theo
+            Next Chapter
           </Button>
           <Button disabled={!canPrev} onClick={prev}>
-            Chương trước
+            Previous Chapter
           </Button>
         </div>
-        <DataLoader isLoading={!group} loadingText="Đang tải nhóm dịch...">
+        <DataLoader isLoading={!group} loadingText="Loading scanlation group...">
           {group && (
             <ScanlationGroupInformation group={group} canNext={canNext} />
           )}
         </DataLoader>
-        <DataLoader isLoading={!chapter} loadingText="Đang tải bình luận...">
-          {chapterId &&
-            (!chapter || chapter.attributes.translatedLanguage === "vi") && (
-              <CommentSection type="chapter" typeId={chapterId} />
-            )}
-          {chapter && chapter.attributes.translatedLanguage !== "vi" && (
-            <Alert title="Chỉ hỗ trợ bình luận tại các chương tiếng Việt" />
+        <DataLoader isLoading={!chapter} loadingText="Loading comments...">
+          {chapterId && (
+            <CommentSection type="chapter" typeId={chapterId} />
           )}
         </DataLoader>
       </div>

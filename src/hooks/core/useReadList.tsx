@@ -3,6 +3,6 @@ import useSWR from "swr";
 
 export const useReadList = (page: number) => {
   return useSWR(["following-manga", page], () =>
-    AppApi.User.getReadList({ page }),
+    AppApi.User.getFollows({ page }),
   );
 };

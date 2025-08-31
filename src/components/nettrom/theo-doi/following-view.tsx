@@ -34,18 +34,12 @@ export default function FollowingView() {
                 className={tab === "following" ? "active" : ""}
                 onClick={() => setTab("following")}
               >
-                <a>Đang theo dõi</a>
+                <a>Following</a>
               </li>
-              <li
-                className={tab === "sync" ? "active" : ""}
-                onClick={() => setTab("sync")}
-              >
-                <a>Đồng bộ</a>
-              </li>
+              
             </ul>
           </div>
           {tab === "following" && <FollowingList />}
-          {tab === "sync" && <FollowingSync />}
         </div>
       </div>
     </div>

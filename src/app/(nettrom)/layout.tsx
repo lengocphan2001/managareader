@@ -14,12 +14,12 @@ import SettingsDialog from "@/components/nettrom/settings-dialog";
 import VerifyMailAlert from "@/components/nettrom/verify-mail-alert";
 
 export const metadata: Metadata = {
-  title: `${Constants.APP_NAME} - Truyện tranh chất lượng cao không quảng cáo`,
-  description: `Đọc truyện miễn phí, chất lượng cao và tham gia ủng hộ nhóm dịch trên ${Constants.APP_NAME}`,
+  title: `${Constants.APP_NAME} - High quality manga without ads`,
+  description: `Read manga for free, high quality and support scanlation groups on ${Constants.APP_NAME}`,
   applicationName: Constants.APP_NAME,
   authors: [{ name: "TruyenDex", url: "https://github.com/zennomi/truyendex" }],
   keywords: [
-    "truyện tranh",
+    "manga",
     "manga",
     "manhwa",
     "manhua",
@@ -47,7 +47,7 @@ export default function NettromLayout({
       <NextTopLoader
         zIndex={1000}
         easing="ease-in-out"
-        speed={400}
+        speed={200}
         height={4}
         showSpinner={false}
         template={`
@@ -62,12 +62,6 @@ export default function NettromLayout({
         <div className="inner bg-neutral-900">
           <div className="container">
             <div className="py-4">
-              <div className="mb-0 md:mb-4">
-                <Alert
-                  title="TruyenDex chỉ xây dựng giao diện tiếng Việt, toàn bộ dữ liệu
-                thuộc về MangaDex."
-                />
-              </div>
               <MainNav />
             </div>
           </div>
@@ -91,9 +85,9 @@ export default function NettromLayout({
               <Link itemProp="url" href="/">
                 <img
                   itemProp="logo"
-                  src={"/nettruyen/images/logo.png"}
-                  style={{ aspectRatio: 5 }}
-                  alt={`${Constants.APP_NAME} - Truyện tranh Online`}
+                  src={"/images/logo-footer.png"}
+                  // style={{ aspectRatio: 5 }}
+                  alt={`${Constants.APP_NAME} - Online Manga`}
                 />
               </Link>
               <div className="mrt10 row">
@@ -120,109 +114,6 @@ export default function NettromLayout({
                   {Constants.APP_NAME}
                 </Link>
               </p>
-            </div>
-            <div className="col-sm-8">
-              <div className="link-footer">
-                <h4>Từ khóa</h4>
-                <ul>
-                  <li>
-                    <Link target="_self" href="/">
-                      Truyện tranh
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      Truyen tranh online
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      Đọc truyện tranh
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      target="_self"
-                      href={`${Constants.Routes.nettrom.search}?order[followedCount]=desc#results`}
-                    >
-                      Truyện tranh hot
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      Truyện tranh hay
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      target="_self"
-                      href={`${Constants.Routes.nettrom.search}?publicationDemographic=josei&publicationDemographic=shoujo#results`}
-                    >
-                      Truyện ngôn tình
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      Manhwa
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      Manga
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      Manhua
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      truyenqq
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      mi2manga
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      doctruyen3q
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      toptruyen
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      cmanga
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      vlogtruyen
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      blogtruyen
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      truyentranhaudio
-                    </Link>
-                  </li>
-                  <li>
-                    <Link target="_self" href="/">
-                      vcomi
-                    </Link>
-                  </li>
-                </ul>
-              </div>
             </div>
           </div>
         </div>

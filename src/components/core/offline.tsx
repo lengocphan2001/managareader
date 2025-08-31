@@ -26,10 +26,10 @@ export default function OfflineView() {
       if (availableDomain === undefined || isLoading) return;
       if (availableDomain === null) {
         toast(
-          "Không domain nào khả dụng. Vui lòng nhấn vào nút bên dưới để được hỗ trợ.",
+          "No domains available. Please click the button below for support.",
         );
       } else {
-        toast(`${availableDomain} khả dụng, chuyển hướng...`);
+        toast(`${availableDomain} is available, redirecting...`);
         await new Promise((resolve) => setTimeout(resolve, 5000));
         router.push(`https://${availableDomain}${pathname}`);
       }
@@ -44,10 +44,10 @@ export default function OfflineView() {
             <div className="flex min-h-screen flex-col justify-center px-4 py-10 md:px-10">
               <div className="title-heading my-auto text-center">
                 <h1 className="mb-6 mt-3 text-3xl font-bold md:text-5xl">
-                  Mất kết nối mạng
+                  Disconnect network
                 </h1>
                 <p className="text-slate-400">
-                  Vui lòng kiểm tra lại đường truyền mạng của thiết bị
+                  Please check your network connection
                 </p>
               </div>
             </div>
@@ -63,14 +63,14 @@ export default function OfflineView() {
           <div className="flex min-h-screen flex-col justify-center px-4 py-10 md:px-10">
             <div className="title-heading my-auto text-center">
               <h1 className="mb-6 mt-3 text-3xl font-bold md:text-5xl">
-                Tên miền {hostname} đã bị chặn
+                Domain {hostname} is blocked
               </h1>
               <p className="text-slate-400">
                 {isLoading
-                  ? "Nhưng chill đi, để tôi tìm tên miền khả dụng khác"
+                  ? "But chill, let me find another available domain"
                   : !!availableDomain
-                    ? "Đang chuyển hướng..."
-                    : "Vui lòng bấm nút dưới để được hỗ trợ"}
+                    ? "Redirecting..."
+                    : "Please click the button below for support"}
               </p>
               {isLoading && (
                 <Loader2 className="mx-auto my-3 h-[40px] w-[40px] animate-spin" />
@@ -81,12 +81,9 @@ export default function OfflineView() {
                   target="_blank"
                   className="inline-block rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base font-semibold tracking-wide text-white duration-500 hover:border-indigo-700 hover:bg-indigo-700"
                 >
-                  Hỗ trợ
+                  Contact Support
                 </Link>
               </div>
-            </div>
-            <div className="text-center">
-              <p className="mb-0 text-slate-400">© TruyenDex</p>
             </div>
           </div>
         </div>

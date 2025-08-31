@@ -94,9 +94,7 @@ export const ChapterContextProvider = ({
   const { data: group } = useScanlationGroup(groupId);
 
   const { chapterList: chapters } = useMangaAggregate(mangaId, {
-    translatedLanguage: chapter
-      ? [chapter.attributes.translatedLanguage]
-      : filteredLanguages,
+    // Don't filter by language - get all available chapters
     groups: groupId ? [groupId] : undefined,
   });
 

@@ -8,9 +8,6 @@ export default function SyncPage() {
           <div className="justify-center md:flex">
             <div className="lg:w-2/5">
               <SyncView />
-              <div className="border-t border-gray-100 p-6 text-center dark:border-gray-700">
-                <p className="mb-0 text-slate-400">© TruyenDex</p>
-              </div>
             </div>
           </div>
         </div>

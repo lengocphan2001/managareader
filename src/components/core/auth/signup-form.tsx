@@ -11,6 +11,7 @@ import { Constants } from "@/constants";
 // import TurnstileWidget from "@/components/turnstile-widget";
 import { Utils } from "@/utils";
 import Iconify from "@/components/iconify";
+import TurnstileWidget from "@/components/turnstile-widget";
 
 // Define the form input types
 interface ISignupForm {
@@ -26,29 +27,29 @@ interface ISignupForm {
 const signupSchema = yup.object().shape({
   name: yup
     .string()
-    .min(6, "Tên tối thiểu có 6 ký tự")
-    .max(8, "Tên tối đa có 8 ký tự")
-    .required("Vui lòng nhập tên"),
+    .min(6, "Name must be at least 6 characters")
+    .max(8, "Name cannot exceed 8 characters")
+    .required("Please enter a name"),
   email: yup
     .string()
-    .email("Email không hợp lệ")
-    .matches(/@(gmail\.com)$/, "Chỉ chấp nhận Gmail")
-    .required("Vui lòng nhập email"),
+    .email("Invalid email")
+    .matches(/@(gmail\.com)$/, "Only Gmail is accepted")
+    .required("Please enter an email"),
   password: yup
     .string()
-    .min(8, "Mật khẩu ít nhất 8 ký tự")
-    .required("Vui lòng nhập mật khẩu"),
+    .min(8, "Password must be at least 8 characters")
+    .required("Please enter a password"),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref("password")], "Nhập lại mật khẩu không khớp")
-    .required("Vui lòng nhập lại mật khẩu"),
+    .oneOf([yup.ref("password")], "Password confirmation does not match")
+    .required("Please confirm your password"),
   acceptTerms: yup
     .boolean()
-    .oneOf([true], "Đồng ý điều khoản giùm")
-    .required("Đồng ý điều khoản giùm"),
+    .oneOf([true], "Please agree to the terms")
+    .required("Please agree to the terms"),
   "cf-turnstile-response": yup
     .string()
-    .required("Vui lòng xác minh bạn không phải robot"),
+    .required("Please verify you are not a robot"),
 });
 
 export default function SignUpForm() {
@@ -70,7 +71,7 @@ export default function SignUpForm() {
       await signup({ ...data, password_confirmation: data.confirmPassword });
     } catch (error) {
       console.error(error);
-      let message = "Đã có lỗi xảy ra";
+      let message = "An error occurred";
       if (isAxiosError(error)) {
         message = error.response?.data.message || message;
       }
@@ -81,20 +82,9 @@ export default function SignUpForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="text-start">
       <div className="grid grid-cols-1">
-        <div className="my-4">
-          <Link
-            href={Utils.Url.getGoogleAuthUrl()}
-            type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base tracking-wide text-white duration-500 hover:border-indigo-700 hover:bg-indigo-700"
-          >
-            <Iconify icon="devicon-plain:google" />
-            Đăng ký với Google
-          </Link>
-        </div>
-        {/* <div className="text-white-400 text-center">Hoặc đăng ký thủ công:</div>
         <div className="mb-4">
           <label className="font-semibold" htmlFor="RegisterName">
-            Tên:
+            Username:
           </label>
           <input
             id="RegisterName"
@@ -120,7 +110,7 @@ export default function SignUpForm() {
         </div>
         <div className="mb-4">
           <label className="font-semibold" htmlFor="LoginPassword">
-            Mật khẩu:
+            Passwrod:
           </label>
           <input
             id="LoginPassword"
@@ -133,7 +123,7 @@ export default function SignUpForm() {
         </div>
         <div className="mb-4">
           <label className="font-semibold" htmlFor="LoginPassword">
-            Nhập lại mật khẩu:
+            Re-enter password:
           </label>
           <input
             id="LoginPassword"
@@ -157,9 +147,9 @@ export default function SignUpForm() {
               className="form-check-label text-slate-400"
               htmlFor="AcceptT&C"
             >
-              Đồng ý với{" "}
+              Agree to the{" "}
               <a href="#" className="text-indigo-600">
-                điều khoản của TruyenDex
+                terms and conditions
               </a>
             </label>
           </div>
@@ -178,17 +168,17 @@ export default function SignUpForm() {
             className="inline-block w-full rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base tracking-wide text-white duration-500 hover:border-indigo-700 hover:bg-indigo-700"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Đang đăng ký..." : "Đăng ký"}
+            {isSubmitting ? "Signing up..." : "Sign up"}
           </button>
-        </div> */}
+        </div>
 
         <div className="text-center">
-          <span className="me-2 text-slate-400">Đã có tài khoản? </span>{" "}
+          <span className="me-2 text-slate-400">Already have an account? </span>{" "}
           <Link
             href={Constants.Routes.login}
             className="inline-block font-bold text-black dark:text-white"
           >
-            Đăng nhập
+            Log in
           </Link>
         </div>
       </div>

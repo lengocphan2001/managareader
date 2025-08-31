@@ -12,7 +12,7 @@ export async function GET(req: Request) {
 
   if (!source)
     return new NextResponse(
-      `alert("TruyenDex hiện chỉ hỗ trợ đồng bộ từ các nguồn MangaDex, CManga, CuuTruyen!")`,
+      `alert("TruyenDex currently only supports sync from MangaDex, CManga, CuuTruyen sources!")`,
       {
         headers: noCorsHeaders,
       },

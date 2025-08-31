@@ -44,52 +44,50 @@ export default function SettingsDialog() {
       onClick={handleBackdropClick}
     >
       <div className="max-w-lg space-y-4 rounded border bg-neutral-900 p-12 shadow">
-        <div className="font-bold">Tuỳ chỉnh</div>
-        <div>Những tuỳ chỉnh này được lưu tại thiết bị hiện tại.</div>
-        <div className="font-bold">Ngôn ngữ bản dịch:</div>
+        <div className="font-bold">Settings</div>
+        <div>These settings are saved on your current device.</div>
+        <div className="font-bold">Translation Language:</div>
         <div className="flex items-center justify-between">
-          <div>Tiếng Anh</div>
+          <div>English</div>
           <Switch
-            checked={filteredLanguages.includes("vi")}
+            checked={filteredLanguages.includes("en")}
             onCheckedChange={(value) =>
-              onUpdateField("filteredLanguages", value ? ["vi"] : ["en"])
+              onUpdateField("filteredLanguages", value ? ["en", "ja-ro"] : ["en", "ja-ro"])
             }
           />
-          <div>Tiếng Việt</div>
         </div>
-        <div className="font-bold">Chất lượng ảnh:</div>
+        <div className="font-bold">Image Quality:</div>
         <div className="flex items-center justify-between">
-          <div>Nét căng</div>
+          <div>High Quality</div>
           <Switch
             checked={dataSaver}
             onCheckedChange={(value) => onUpdateField("dataSaver", value)}
           />
-          <div>Tiết kiệm</div>
         </div>
-        <div className="font-bold">Truyện của quốc gia:</div>
+        <div className="font-bold">Manga Countries:</div>
         <MultiSelectDropdown
           options={[
-            { label: "Nhật (manga)", value: "ja" },
-            { label: "Hàn (manhwa)", value: "ko" },
-            { label: "Trung (manhua)", value: "zh" },
-            { label: "Việt Nam", value: "vi" },
+            { label: "Japanese (manga)", value: "ja" },
+            { label: "Korean (manhwa)", value: "ko" },
+            { label: "Chinese (manhua)", value: "zh" },
+            { label: "Vietnamese", value: "vi" },
           ]}
           selectedValues={originLanguages}
           onChange={(values) => onUpdateField("originLanguages", values)}
-          anyLabel="Tất cả quốc gia"
+          anyLabel="All Countries"
           language
         />
-        <div className="font-bold">Lọc nội dung:</div>
+        <div className="font-bold">Content Filter:</div>
         <MultiSelectDropdown
           options={[
-            { label: "An toàn", value: "safe" },
-            { label: "16+", value: "suggestive" },
-            { label: "18+", value: "erotica" },
-            { label: "18++", value: "pornographic" },
+            { label: "Safe", value: "safe" },
+            { label: "Suggestive", value: "suggestive" },
+            { label: "Erotica", value: "erotica" },
+            { label: "Pornographic", value: "pornographic" },
           ]}
           selectedValues={filteredContent}
           onChange={(values) => onUpdateField("filteredContent", values)}
-          anyLabel="Tất cả nội dung"
+          anyLabel="All Content"
         />
         <div className="flex items-center gap-2">
           <Switch
@@ -98,7 +96,7 @@ export default function SettingsDialog() {
               onUpdateField("maxImageWidth", value ? 0 : undefined)
             }
           />
-          <div className="font-bold">Chiều rộng ảnh</div>
+          <div className="font-bold">Image Width</div>
           {maxImageWidth !== undefined && (
             <span className="font-normal text-muted-foreground">
               {"(" + maxImageWidth + "px)"}
@@ -129,7 +127,7 @@ export default function SettingsDialog() {
               });
             }}
           >
-            Lưu
+            Save
           </Button>
           <Button icon={<Iconify icon="fa:refresh" />} onClick={onReset}>
             Reset

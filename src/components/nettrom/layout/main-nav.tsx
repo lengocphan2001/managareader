@@ -11,12 +11,12 @@ export default function MainNav() {
           <li>
             <Link target="_self" href={Constants.Routes.nettrom.index}>
               <i className="fa fa-home hidden-xs"></i>
-              <span className="visible-xs">Trang chủ</span>
+              <span className="visible-xs">Home</span>
             </Link>
           </li>
           <li>
             <Link target="_self" href={Constants.Routes.nettrom.following}>
-              Theo dõi
+              Following
             </Link>
           </li>
           <li>
@@ -32,7 +32,7 @@ export default function MainNav() {
               target="_self"
               href={`${Constants.Routes.nettrom.search}?order[rating]=desc#results`}
             >
-              Yêu thích
+              Favorites
             </Link>
           </li>
           <li>
@@ -40,12 +40,12 @@ export default function MainNav() {
               target="_self"
               href={`${Constants.Routes.nettrom.search}?order[createdAt]=desc#results`}
             >
-              Mới cập nhật
+              Latest Updates
             </Link>
           </li>
           <li>
             <Link target="_self" href={Constants.Routes.nettrom.history}>
-              Lịch sử
+              History
             </Link>
           </li>
           <li className="dropdown hidden md:block">
@@ -57,7 +57,7 @@ export default function MainNav() {
               target="_self"
               href={Constants.Routes.nettrom.search}
             >
-              Thể loại <i className="fa fa-caret-down"></i>
+              Genres <i className="fa fa-caret-down"></i>
             </Link>
             <ul className="dropdown-menu megamenu">
               <li>
@@ -94,7 +94,7 @@ export default function MainNav() {
           </li>
           <li>
             <Link target="_self" href={Constants.Routes.nettrom.search}>
-              Tìm truyện
+              Search Manga
             </Link>
           </li>
           <li>
@@ -102,7 +102,7 @@ export default function MainNav() {
               target="_self"
               href={`${Constants.Routes.nettrom.search}?publicationDemographic=josei&publicationDemographic=shoujo#results`}
             >
-              Con gái
+              Girls
             </Link>
           </li>
           <li>
@@ -110,12 +110,7 @@ export default function MainNav() {
               target="_self"
               href={`${Constants.Routes.nettrom.search}?publicationDemographic=seinen&publicationDemographic=shounen#results`}
             >
-              Con trai
-            </Link>
-          </li>
-          <li>
-            <Link target="_blank" href={Constants.Routes.hako}>
-              Light Novel
+              Boys
             </Link>
           </li>
         </ul>

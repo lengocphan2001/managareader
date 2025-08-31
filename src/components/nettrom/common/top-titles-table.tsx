@@ -21,7 +21,7 @@ export default function TopTitles({ groupId }: { groupId?: string }) {
       MangadexApi.Static.MangaContentRating.SUGGESTIVE,
     ],
     hasAvailableChapters: "true",
-    availableTranslatedLanguage: ["vi"],
+    // Don't filter by language - get all available manga
     group: groupId ? groupId : undefined,
   });
 
@@ -42,7 +42,7 @@ export default function TopTitles({ groupId }: { groupId?: string }) {
             <li>
               <Link
                 rel="nofollow"
-                title="BXH truyện tranh theo tháng"
+                title="Monthly Manga Rankings"
                 className="active"
                 href={`${Constants.Routes.nettrom.search}?order[followedCount]=desc#results`}
               >
@@ -52,19 +52,19 @@ export default function TopTitles({ groupId }: { groupId?: string }) {
             <li>
               <Link
                 rel="nofollow"
-                title="BXH truyện tranh theo tuần"
+                title="Weekly Manga Rankings"
                 href={`${Constants.Routes.nettrom.search}?order[rating]=desc#results`}
               >
-                Yêu thích
+                Favorites
               </Link>
             </li>
             <li>
               <Link
                 rel="nofollow"
-                title="BXH truyện tranh theo ngày"
+                title="Daily Manga Rankings"
                 href={`${Constants.Routes.nettrom.search}?order[createdAt]=desc#results`}
               >
-                Mới
+                New
               </Link>
             </li>
           </ul>

@@ -16,7 +16,7 @@ export default function FirstChapterButton({ mangaId }: { mangaId: string }) {
     setLoading(true);
     try {
       const { data } = await MangadexApi.Manga.getMangaIdAggregate(mangaId, {
-        translatedLanguage: ["vi"],
+        // Don't filter by language - get all available chapters
       });
       const firstChapterId = Object.values(
         Object.values(data.volumes)[0].chapters,
@@ -24,7 +24,7 @@ export default function FirstChapterButton({ mangaId }: { mangaId: string }) {
       setLoading(false);
       router.push(Constants.Routes.nettrom.chapter(firstChapterId));
     } catch {
-      toast("Manga này không có chương đầu", { type: "error" });
+      toast("This manga has no first chapter", { type: "error" });
     }
   }, [mangaId]);
   return (
@@ -36,7 +36,7 @@ export default function FirstChapterButton({ mangaId }: { mangaId: string }) {
       }
       disabled={loading}
     >
-      Đọc ngay
+      Read Now
     </Button>
   );
 }

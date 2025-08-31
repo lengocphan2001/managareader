@@ -9,6 +9,14 @@ export const getReadList = async (query: { page?: number } = {}) => {
   return data;
 };
 
+export const getFollows = async (query: { page?: number } = {}) => {
+  const { data } = await axios<ReadListResponse>({
+    url: "/api/user/follows",
+    params: { ...query },
+  });
+  return data;
+};
+
 export const syncReadList = async (body: { source: string; ids: string[] }) => {
   const { data } = await axios({
     url: "/api/user/read-list/sync",

@@ -3,7 +3,7 @@ import { Utils } from "@/utils";
 import Axios from "axios";
 
 const axios = Axios.create({
-  baseURL: Constants.BACKEND_URL || "http://localhost:8000",
+  baseURL: "", // Will be set dynamically
   headers: {
     "X-Requested-With": "XMLHttpRequest",
     "Content-Type": "application/json",

@@ -3,7 +3,7 @@ import { axios } from "./axios";
 
 export const getReadList = async (query: { page?: number } = {}) => {
   const { data } = await axios<ReadListResponse>({
-    url: "/api/user/read-list",
+    url: "/user/read-list",
     params: { ...query },
   });
   return data;
@@ -11,7 +11,7 @@ export const getReadList = async (query: { page?: number } = {}) => {
 
 export const getFollows = async (query: { page?: number } = {}) => {
   const { data } = await axios<ReadListResponse>({
-    url: "/api/user/follows",
+    url: "/user/follows",
     params: { ...query },
   });
   return data;
@@ -19,7 +19,7 @@ export const getFollows = async (query: { page?: number } = {}) => {
 
 export const syncReadList = async (body: { source: string; ids: string[] }) => {
   const { data } = await axios({
-    url: "/api/user/read-list/sync",
+    url: "/user/read-list/sync",
     method: "POST",
     data: body,
   });
@@ -33,7 +33,7 @@ export const changePassword = async (body: {
   password_confirmation: string;
 }) => {
   const { data } = await axios({
-    url: "/api/user/change-password",
+    url: "/user/change-password",
     method: "POST",
     data: body,
   });
@@ -43,7 +43,7 @@ export const changePassword = async (body: {
 
 export const changeName = async (body: { name: string }) => {
   const { data } = await axios({
-    url: "/api/user/change-name",
+    url: "/user/change-name",
     method: "POST",
     data: body,
   });
@@ -56,7 +56,7 @@ export const changeAvatar = async (file: File) => {
   formData.append("avatar", file);
 
   const { data } = await axios({
-    url: "/api/user/change-avatar",
+    url: "/user/change-avatar",
     method: "POST",
     data: formData,
     headers: {

@@ -4,7 +4,7 @@ import { axios } from "./axios";
 export const followOrUnfollow = async (seriesId: string) => {
   const { data } = await axios({
     method: "POST",
-    url: "/api/series/follow",
+    url: "/series/follow",
     data: {
       series_uuid: seriesId,
     },
@@ -18,7 +18,7 @@ export const checkInfo = async (seriesId: string) => {
     comment_count: number;
   }>({
     method: "POST",
-    url: "/api/series/check-info",
+    url: "/series/check-info",
     data: {
       series_uuid: seriesId,
     },
@@ -32,7 +32,7 @@ export const getHomepageSeries = async (params: {
 }) => {
   const { data } = await axios<SeriesHomepageResponse>({
     method: "GET",
-    url: "/api/series/homepage",
+    url: "/series/homepage",
     params,
   });
   return data;

@@ -11,7 +11,7 @@ RUN apk add --no-cache postgresql-client
 COPY package*.json ./
 
 # Install all dependencies (including dev dependencies for Prisma)
-RUN npm ci
+RUN npm install
 
 # Copy source code
 COPY . .
@@ -32,7 +32,7 @@ RUN apk add --no-cache postgresql-client
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm ci --only=production && npm cache clean --force
+RUN npm install --only=production && npm cache clean --force
 
 # Copy source code from builder stage
 COPY --from=builder /app/src ./src

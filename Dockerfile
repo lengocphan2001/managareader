@@ -4,8 +4,8 @@ FROM node:20-alpine
 # Create and set the working directory
 WORKDIR /app
 
-# Copy the package.json and yarn.lock files to the working directory
-COPY package.json yarn.lock ./
+# Copy the package.json and package-lock.json files to the working directory
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm install
@@ -23,4 +23,4 @@ RUN npm run build
 EXPOSE 3000
 
 # Start the Next.js application
-CMD ["yarn", "start"]
+CMD ["npm", "start"]

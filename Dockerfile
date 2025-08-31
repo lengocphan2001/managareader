@@ -23,4 +23,4 @@ RUN npm run build:prod
 EXPOSE 3000
 
 # Start the Next.js application
-CMD ["npm", "start"]
+CMD ["node", ".next/standalone/server.js"]

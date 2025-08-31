@@ -34,27 +34,15 @@ module.exports = async (phase) => {
     experimental: {
       missingSuspenseWithCSRBailout: false,
       optimizePackageImports: ["@iconify/react", "lucide-react"],
-      // Disable static optimization for pages that use cookies
-      staticPageGenerationTimeout: 1000,
     },
     // Enable compression
     compress: true,
     // Optimize bundle
     swcMinify: true,
-    // Force dynamic rendering for all pages (prevents static generation issues)
+    // Use standalone output for Docker
     output: "standalone",
     // Disable static generation completely
     trailingSlash: false,
-    // Force all pages to be dynamic
-    generateStaticParams: false,
-    // Disable static optimization
-    staticPageGenerationTimeout: 0,
-    // Force dynamic rendering
-    dynamic: "force-dynamic",
-    // Disable static generation completely
-    generateBuildId: async () => {
-      return "build-" + Date.now();
-    },
     // Disable client-side rendering bailout warnings
     onDemandEntries: {
       maxInactiveAge: 25 * 1000,

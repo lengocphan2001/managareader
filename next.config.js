@@ -25,7 +25,7 @@ module.exports = async (phase) => {
     // compatible with eslint 9), I will write the flat config instead.
     eslint: {
       ignoreDuringBuilds: true,
-      dirs: ['src', 'backend/src'],
+      dirs: ["src", "backend/src"],
     },
     typescript: {
       ignoreBuildErrors: true,

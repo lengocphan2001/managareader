@@ -58,6 +58,39 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// MangaDex API proxy route
+const { createProxyMiddleware } = require("http-proxy-middleware");
+
+const mangadexProxy = createProxyMiddleware({
+  target: "https://api.mangadex.org",
+  changeOrigin: true,
+  pathRewrite: {
+    "^/api/mangadex": "",
+  },
+  onProxyReq: (proxyReq, req, res) => {
+    proxyReq.setHeader("User-Agent", "TruyenDex/1.0.0");
+    console.log(`Proxying MangaDex: ${req.method} ${req.url} -> https://api.mangadex.org${req.url.replace("/api/mangadex", "")}`);
+  },
+  onProxyRes: (proxyRes, req, res) => {
+    // Add CORS headers to the response
+    proxyRes.headers["Access-Control-Allow-Origin"] = req.headers.origin || "https://ninetails.site";
+    proxyRes.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
+    proxyRes.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With";
+    proxyRes.headers["Access-Control-Allow-Credentials"] = "true";
+    proxyRes.headers["Access-Control-Max-Age"] = "86400";
+  },
+  onError: (err, req, res) => {
+    console.error("MangaDex proxy error:", err);
+    res.status(500).json({
+      error: "MangaDex proxy error occurred",
+      details: err.message,
+      timestamp: new Date().toISOString(),
+    });
+  },
+});
+
+app.use("/api/mangadex", mangadexProxy);
+
 // API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);

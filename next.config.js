@@ -34,8 +34,6 @@ module.exports = async (phase) => {
     experimental: {
       missingSuspenseWithCSRBailout: false,
       optimizePackageImports: ["@iconify/react", "lucide-react"],
-      // Force all pages to be dynamic
-      staticPageGenerationTimeout: 0,
     },
     // Enable compression
     compress: true,
@@ -43,10 +41,6 @@ module.exports = async (phase) => {
     swcMinify: true,
     // Force dynamic rendering for all pages
     trailingSlash: false,
-    // Disable static generation
-    generateStaticParams: false,
-    // Force dynamic rendering
-    dynamic: "force-dynamic",
     // Disable client-side rendering bailout warnings
     onDemandEntries: {
       maxInactiveAge: 25 * 1000,

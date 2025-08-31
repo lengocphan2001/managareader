@@ -32,9 +32,9 @@ cd ..
 echo -e "${YELLOW}📦 Installing frontend dependencies...${NC}"
 npm install --production
 
-# Build frontend
+# Build frontend with increased memory
 echo -e "${YELLOW}🔨 Building frontend...${NC}"
-npm run build
+NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # Generate Prisma client
 echo -e "${YELLOW}🔧 Generating Prisma client...${NC}"
@@ -52,9 +52,9 @@ cd backend
 pm2 start src/server.js --name "truyendex-backend" --env production
 cd ..
 
-# Start frontend with PM2
+# Start frontend with PM2 (standalone mode)
 echo -e "${YELLOW}🚀 Starting frontend...${NC}"
-pm2 start npm --name "truyendex-frontend" -- start
+pm2 start "node .next/standalone/server.js" --name "truyendex-frontend"
 
 # Save PM2 configuration
 pm2 save

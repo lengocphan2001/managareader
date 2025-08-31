@@ -13,6 +13,9 @@ const { errorHandler } = require("./middleware/errorHandler");
 const app = express();
 const PORT = process.env.PORT || 8000;
 
+// Trust proxy for rate limiting behind Nginx
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 

@@ -49,6 +49,29 @@ module.exports = async (phase) => {
     // Additional dynamic rendering options
     skipTrailingSlashRedirect: true,
     skipMiddlewareUrlNormalize: true,
+    
+    // Security headers
+    async headers() {
+      return [
+        {
+          source: '/(.*)',
+          headers: [
+            {
+              key: 'Content-Security-Policy',
+              value: "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.ninetails.site; style-src 'self' 'unsafe-inline' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; object-src 'none'; base-uri 'self';"
+            },
+            {
+              key: 'X-Frame-Options',
+              value: 'SAMEORIGIN'
+            },
+            {
+              key: 'X-Content-Type-Options',
+              value: 'nosniff'
+            }
+          ]
+        }
+      ];
+    },
   };
 
   // You may want to use a more robust revision to cache

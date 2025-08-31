@@ -151,17 +151,15 @@ export const createHttpsRequestPromise = async function <T>(
     // Use Cubari proxy services with proper base64 encoding
     // According to GitHub docs: Targets are base64 URL encoded and appended as path parameters
     const fullUrl = `${MANGADEX_API_URL}${path}`;
-    const encodedUrl = btoa(fullUrl)
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_");
-    
+    const encodedUrl = btoa(fullUrl).replace(/\+/g, "-").replace(/\//g, "_");
+
     console.log("Using Cubari proxy:", `${CORS_V2}/v1/cors/${encodedUrl}`);
-    
+
     const data = await customFetch(`${CORS_V2}/v1/cors/${encodedUrl}`, {
       method: method,
       headers: {
-        'x-requested-with': 'cubari',
-        'origin': 'https://ninetails.site',
+        "x-requested-with": "cubari",
+        origin: "https://ninetails.site",
         ...options?.headers,
       },
       ...options,

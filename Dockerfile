@@ -16,8 +16,8 @@ COPY . .
 # Set environment variables from the .env file (if it exists)
 COPY .env.docker.local* .env
 
-# Build the Next.js application
-RUN npm run build
+# Build the Next.js application with increased memory limit
+RUN npm run build:prod
 
 # Expose the port that the app runs on
 EXPOSE 3000

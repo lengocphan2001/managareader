@@ -3,7 +3,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "nextjs-toploader/app";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, Suspense } from "react";
 import { twMerge } from "tailwind-merge";
 import { FaArrowDown, FaArrowUp, FaRedo, FaSearch } from "react-icons/fa";
 
@@ -28,7 +28,7 @@ const optionlize = (
   parser: (t: string) => string = (t) => t.toUpperCase(),
 ) => ({ value: t, label: parser(t) });
 
-export default function SearchMangaForm() {
+function SearchMangaFormContent() {
   const router = useRouter();
   const params = useSearchParams();
   const [showFilter, toggle] = useToggle(false);
@@ -317,6 +317,14 @@ export default function SearchMangaForm() {
         </div>
       </form>
     </>
+  );
+}
+
+export default function SearchMangaForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchMangaFormContent />
+    </Suspense>
   );
 }
 

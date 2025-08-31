@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useRouter } from "nextjs-toploader/app";
 import Link from "next/link";
 
@@ -20,7 +20,7 @@ import Skeleton from "react-loading-skeleton";
 
 const LIMIT = 12;
 
-export default function MangaResults() {
+function MangaResultsContent() {
   const router = useRouter();
   const params = useSearchParams();
   const options = Utils.Mangadex.normalizeParams(params);
@@ -157,6 +157,14 @@ export default function MangaResults() {
         forcePage={page}
       />
     </div>
+  );
+}
+
+export default function MangaResults() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MangaResultsContent />
+    </Suspense>
   );
 }
 

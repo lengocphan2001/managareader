@@ -1,13 +1,13 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import Iconify from "../iconify";
 import { useSearchParams } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { AppApi } from "@/api";
 
-export default function SyncView() {
+function SyncViewContent() {
   const { user } = useAuth();
   const params = useSearchParams();
   const ids = params.get("ids") ? params.get("ids")!.split(",") : null;
@@ -55,5 +55,13 @@ export default function SyncView() {
       </div>
       <div className="px-6 py-12 text-center">{message}</div>
     </div>
+  );
+}
+
+export default function SyncView() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SyncViewContent />
+    </Suspense>
   );
 }

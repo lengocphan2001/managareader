@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
-import { MouseEvent, useCallback, useState } from "react";
+import { MouseEvent, useCallback, useState, Suspense } from "react";
 
 import { MangadexApi } from "@/api";
 import { DataLoader } from "@/components/DataLoader";
@@ -13,7 +13,7 @@ import useDebounce from "@/hooks/useDebounce";
 import { Utils } from "@/utils";
 import Link from "next/link";
 
-export default function SearchInput() {
+function SearchInputContent() {
   const params = useSearchParams();
   const router = useRouter();
   const [title, setTitle] = useState(params.get("title") || "");
@@ -182,5 +182,13 @@ export default function SearchInput() {
         </>
       )}
     </form>
+  );
+}
+
+export default function SearchInput() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchInputContent />
+    </Suspense>
   );
 }

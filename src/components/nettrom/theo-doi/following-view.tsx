@@ -1,20 +1,13 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 
 import { Constants } from "@/constants";
 import { useAuth } from "@/hooks/useAuth";
 
 import FollowingList from "./following-list";
 
-export default function FollowingView() {
-  useAuth({
-    middleware: "auth",
-    redirectIfNotAuthenticated: Constants.Routes.loginWithRedirect(
-      Constants.Routes.nettrom.following,
-    ),
-  });
-
+function FollowingViewContent() {
   const params = useSearchParams();
   const [tab, setTab] = useState<"following" | "sync">(
     params.get("tab") === "sync" ? "sync" : "following",
@@ -41,5 +34,20 @@ export default function FollowingView() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function FollowingView() {
+  useAuth({
+    middleware: "auth",
+    redirectIfNotAuthenticated: Constants.Routes.loginWithRedirect(
+      Constants.Routes.nettrom.following,
+    ),
+  });
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FollowingViewContent />
+    </Suspense>
   );
 }

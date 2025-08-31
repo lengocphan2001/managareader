@@ -75,6 +75,11 @@ docker-compose -f docker-compose.prod.yml exec backend npx prisma migrate deploy
 print_status "Seeding database..."
 docker-compose -f docker-compose.prod.yml exec backend node scripts/seed.js
 
+# Remove existing ninetails.site configuration if it exists
+print_status "Removing existing ninetails.site configuration..."
+sudo rm -f /etc/nginx/sites-available/ninetails.site
+sudo rm -f /etc/nginx/sites-enabled/ninetails.site
+
 # Setup Nginx configuration
 print_status "Configuring Nginx..."
 sudo tee /etc/nginx/sites-available/truyendex << EOF

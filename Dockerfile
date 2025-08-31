@@ -17,7 +17,7 @@ COPY . .
 COPY .env.docker.local* .env
 
 # Build the Next.js application
-RUN run build
+RUN npm run build
 
 # Expose the port that the app runs on
 EXPOSE 3000

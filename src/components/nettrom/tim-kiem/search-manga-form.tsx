@@ -41,7 +41,7 @@ function SearchMangaFormContent() {
   };
   const values = watch();
 
-  const dirtyValues = useMemo(() => {
+  const _dirtyValues = useMemo(() => {
     const result = [];
     if (values.artists && values.artists.length) result.push("artists");
     if (values.authors && values.authors.length) result.push("authors");
@@ -328,7 +328,7 @@ export default function SearchMangaForm() {
   );
 }
 
-const TRANSLATED_FIELD: Record<string, string> = {
+const _TRANSLATED_FIELD: Record<string, string> = {
   artists: "artist",
   authors: "author",
   availableTranslatedLanguage: "translated language",

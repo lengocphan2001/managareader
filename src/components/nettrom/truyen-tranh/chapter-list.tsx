@@ -8,7 +8,7 @@ import { ChapterList, ExtendChapter } from "@/types/mangadex";
 import Pagination from "../Pagination";
 
 export default function ListChapter({
-  mangaId,
+  mangaId: _mangaId,
   ...props
 }: {
   mangaId: string;

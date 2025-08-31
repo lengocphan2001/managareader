@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 router.get("/homepage", async (req, res) => {
   try {
     const { limit = 28, page = 1 } = req.query;
-    const offset = (page - 1) * limit;
+    const _offset = (page - 1) * limit;
 
     // For now, return empty data
     // In production, you might want to cache popular series from MangaDex

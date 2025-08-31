@@ -160,7 +160,7 @@ router.post(
         });
       }
 
-      const { source, ids } = req.body;
+      const { source: _source, ids } = req.body;
 
       // Delete existing read list for this user
       await prisma.readList.deleteMany({

@@ -15,7 +15,7 @@ async function main() {
     },
   });
 
-  const modRole = await prisma.role.upsert({
+  const _modRole = await prisma.role.upsert({
     where: { name: "mod" },
     update: {},
     create: {
@@ -24,7 +24,7 @@ async function main() {
     },
   });
 
-  const userRole = await prisma.role.upsert({
+  const _userRole = await prisma.role.upsert({
     where: { name: "user" },
     update: {},
     create: {

@@ -62,7 +62,7 @@ function CommentSkeleton() {
 }
 
 function Comment({ comment }: { comment: RecentCommentResponse }) {
-  const type =
+  const _type =
     comment.commentable_type === "App\\Models\\Chapter" ? "chapter" : "manga";
 
   const userBanned = comment.user.display_roles.includes(

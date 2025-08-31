@@ -25,6 +25,7 @@ module.exports = async (phase) => {
     // compatible with eslint 9), I will write the flat config instead.
     eslint: {
       ignoreDuringBuilds: true,
+      dirs: ['src', 'backend/src'],
     },
     typescript: {
       ignoreBuildErrors: true,
@@ -49,10 +50,10 @@ module.exports = async (phase) => {
     // Disable static optimization
     staticPageGenerationTimeout: 0,
     // Force dynamic rendering
-    dynamic: 'force-dynamic',
+    dynamic: "force-dynamic",
     // Disable static generation completely
     generateBuildId: async () => {
-      return 'build-' + Date.now()
+      return "build-" + Date.now();
     },
     // Disable client-side rendering bailout warnings
     onDemandEntries: {

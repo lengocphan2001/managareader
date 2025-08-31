@@ -42,7 +42,7 @@ const auth = async (req, res, next) => {
     };
 
     next();
-  } catch (error) {
+  } catch (_error) {
     res.status(401).json({
       success: false,
       message: "Invalid token.",
@@ -78,7 +78,7 @@ const optionalAuth = async (req, res, next) => {
     }
 
     next();
-  } catch (error) {
+  } catch (_error) {
     // Continue without authentication
     next();
   }

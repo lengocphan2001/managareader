@@ -31,9 +31,8 @@ RUN apk add --no-cache postgresql-client openssl
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies including Prisma
+# Install production dependencies
 RUN npm install --only=production && npm cache clean --force
-RUN npx prisma generate
 
 # Copy source code from builder stage
 COPY --from=builder /app/src ./src

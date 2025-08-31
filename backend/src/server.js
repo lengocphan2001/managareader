@@ -65,7 +65,7 @@ app.use("/api/comment", commentRoutes);
 app.use("/api/series", seriesRoutes);
 
 // CSRF cookie endpoint (for Laravel Sanctum compatibility)
-app.get("/sanctum/csrf-cookie", (req, res) => {
+app.get("/api/sanctum/csrf-cookie", (req, res) => {
   res.json({ message: "CSRF cookie set" });
 });
 

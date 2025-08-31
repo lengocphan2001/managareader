@@ -1,68 +1,51 @@
 #!/bin/bash
 
-echo "🔧 Comprehensive TruyenDex Fix"
-echo "=============================="
+echo "🔧 Fixing all deployment issues..."
 
-# Stop all PM2 processes
-echo "🛑 Stopping all processes..."
-pm2 stop all 2>/dev/null || true
-pm2 delete all 2>/dev/null || true
+# Stop PM2 processes
+echo "🛑 Stopping PM2 processes..."
+pm2 stop all
+pm2 delete all
 
-# Clean everything thoroughly
-echo "🧹 Deep cleaning..."
+# Clean up
+echo "🧹 Cleaning up..."
+cd /var/www/truyendex
 rm -rf .next
-rm -rf node_modules/.cache
 rm -rf backend/node_modules/.prisma
-rm -rf backend/.env.production 2>/dev/null || true
 
-# Copy environment files
-echo "📝 Setting up environment files..."
-cp backend/env.production.template backend/.env.production 2>/dev/null || true
-cp env.production.template .env.production 2>/dev/null || true
+# Copy environment templates
+echo "📋 Setting up environment files..."
+cp env.production.template .env.production
+cp backend/env.production.template backend/.env
 
 # Install dependencies
 echo "📦 Installing dependencies..."
 npm install
-cd backend
-npm install
-cd ..
+cd backend && npm install && cd ..
+
+# Build frontend with memory limit
+echo "🏗️ Building frontend..."
+NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # Generate Prisma client
-echo "🔧 Generating Prisma client..."
+echo "🗄️ Generating Prisma client..."
 cd backend
 npx prisma generate
 cd ..
 
-# Build frontend with memory limit and force dynamic
-echo "🔨 Building frontend (force dynamic)..."
-NODE_OPTIONS="--max-old-space-size=4096" npm run build
-
-# Check if build was successful
-if [ ! -d ".next" ]; then
-    echo "❌ Frontend build failed!"
-    exit 1
-fi
-
 # Start backend
 echo "🚀 Starting backend..."
-cd backend
-pm2 start src/server.js --name "truyendex-backend" --env production
-cd ..
+pm2 start ecosystem.config.js --only truyendex-backend
+
+# Wait a moment for backend to start
+sleep 5
 
 # Start frontend
 echo "🚀 Starting frontend..."
-pm2 start npm --name "truyendex-frontend" -- start
+pm2 start ecosystem.config.js --only truyendex-frontend
 
-# Save PM2 config
+# Save PM2 configuration
 pm2 save
 
-echo "✅ Fix complete!"
-echo ""
-echo "📊 PM2 Status:"
-pm2 status
-echo ""
-echo "📝 Recent logs:"
-pm2 logs --lines 3
-echo ""
-echo "🌐 Test your site: https://ninetails.site"
-echo "🔍 Check logs: pm2 logs"
+echo "✅ All fixes applied! Check status with: pm2 status"
+echo "📊 Check logs with: pm2 logs"

@@ -26,10 +26,10 @@ export const useAuth = ({
   });
 
   const { data: user, mutate } = useSWR(
-    "/user",
+    "/api/user",
     async () => {
       try {
-        const { data } = await axios.get<GetUserResponse>("/user");
+        const { data } = await axios.get<GetUserResponse>("/api/user");
         if (data?.user) {
           userIdValues.setState(data.user.id);
           return data.user;
@@ -57,7 +57,7 @@ export const useAuth = ({
     },
   );
 
-  const csrf = () => axios.get("/sanctum/csrf-cookie");
+  const csrf = () => axios.get("/api/sanctum/csrf-cookie");
 
   const signup = async ({
     ...props
@@ -70,7 +70,7 @@ export const useAuth = ({
   }) => {
     await csrf();
 
-    const response = await axios.post("/auth/register", props);
+    const response = await axios.post("/api/auth/register", props);
 
     // Store token in localStorage for Authorization header
     if (response.data?.user && response.data?.token) {
@@ -92,7 +92,7 @@ export const useAuth = ({
 
     const response = await axios({
       method: "POST",
-      url: "/auth/login",
+      url: "/api/auth/login",
       data: props,
     });
 
@@ -111,7 +111,7 @@ export const useAuth = ({
     await csrf();
 
     try {
-      await axios.post("/auth/forgot-password", data);
+      await axios.post("/api/auth/forgot-password", data);
     } catch (error) {
       throw error;
     }
@@ -127,7 +127,7 @@ export const useAuth = ({
   }) => {
     await csrf();
 
-    await axios.post("/auth/reset-password", { ...props });
+    await axios.post("/api/auth/reset-password", { ...props });
 
     router.push(Constants.Routes.login);
   };
@@ -135,11 +135,11 @@ export const useAuth = ({
   const resendEmailVerification = async (data: {
     "cf-turnstile-response": string;
   }) => {
-    await axios.post("/auth/resend-verification", data);
+    await axios.post("/api/auth/resend-verification", data);
   };
 
   const logout = useCallback(async () => {
-    await axios.post("/auth/logout");
+    await axios.post("/api/auth/logout");
 
     // Clear token from localStorage
     if (typeof window !== "undefined") {

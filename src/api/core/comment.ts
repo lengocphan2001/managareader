@@ -12,7 +12,7 @@ export const storeComment = async (body: {
   parentId: number;
 }) => {
   const { data } = await axios({
-    url: "/comment/store",
+    url: "/api/comment/store",
     method: "POST",
     data: {
       content: body.content,
@@ -26,7 +26,7 @@ export const storeComment = async (body: {
 
 export const updateComment = async (body: { content: string; id: number }) => {
   const { data } = await axios({
-    url: "/comment/update",
+    url: "/api/comment/update",
     method: "POST",
     data: {
       content: body.content,
@@ -38,7 +38,7 @@ export const updateComment = async (body: { content: string; id: number }) => {
 
 export const deleteComment = async (body: { id: number }) => {
   const { data } = await axios({
-    url: "/comment/delete",
+    url: "/api/comment/delete",
     method: "POST",
     data: {
       id: body.id,
@@ -54,7 +54,7 @@ export const getCommentList = async (params: {
   limit?: number;
 }) => {
   const { data } = await axios<CommentListResponse>({
-    url: "/comment/list",
+    url: "/api/comment/list",
     params: {
       type: params.type,
       type_id: params.typeId,
@@ -66,7 +66,7 @@ export const getCommentList = async (params: {
 
 export const getCommentReplyList = async (params: { lastId: number }) => {
   const { data } = await axios<CommentRepliesResponse>({
-    url: "/comment/fetch-reply",
+    url: "/api/comment/fetch-reply",
     data: {
       last_id: params.lastId,
     },
@@ -77,7 +77,7 @@ export const getCommentReplyList = async (params: { lastId: number }) => {
 
 export const getRecentCommentList = async (params: { limit: number }) => {
   const { data } = await axios<RecentCommentListResponse>({
-    url: "/comment/recent",
+    url: "/api/comment/recent",
     params: {
       limit: params.limit,
     },

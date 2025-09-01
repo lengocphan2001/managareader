@@ -118,13 +118,13 @@ module.exports = async (phase) => {
 
   if (phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) {
     const withSerwist = (await import("@serwist/next")).default({
-      cacheOnNavigation: true,
+      cacheOnNavigation: true, // Enable navigation caching for manga covers
       // Note: This is only an example. If you use Pages Router,
       // use something else that works, such as "service-worker/index.ts".
       swSrc: "src/app/sw.ts",
       swDest: "public/sw.js",
       additionalPrecacheEntries: [{ url: "/ngoai-tuyen", revision }],
-      exclude: [/^\/api\//],
+      exclude: [/^\/api\//], // Don't exclude images - let service worker handle them
     });
     return withSerwist(nextConfig);
   }

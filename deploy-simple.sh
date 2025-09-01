@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# Simple Deploy Script for TruyenDex (No Image Caching)
+# This script deploys the simplified version without complex image caching
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+print_status() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+print_status "Deploying simplified version (no image caching)..."
+
+# Navigate to application directory
+cd /var/www/truyendex
+
+# 1. Backup current configuration
+print_status "1. Creating backups..."
+cp nginx.conf nginx.conf.backup.$(date +%Y%m%d_%H%M%S)
+cp next.config.js next.config.js.backup.$(date +%Y%m%d_%H%M%S)
+
+# 2. Clear all caches
+print_status "2. Clearing all caches..."
+if [ -d "/var/cache/nginx" ]; then
+    sudo rm -rf /var/cache/nginx/*
+fi
+
+# Clear browser caches by updating service worker revision
+print_status "3. Updating service worker revision..."
+if [ -f "next.config.js" ]; then
+    sed -i 's/crypto.randomUUID()/crypto.randomUUID() + "_'$(date +%s)'"/' next.config.js
+fi
+
+# 4. Copy nginx config to system
+print_status "4. Updating nginx configuration..."
+sudo cp nginx.conf /etc/nginx/sites-available/truyendex
+
+# 5. Test nginx config
+print_status "5. Testing nginx configuration..."
+if sudo nginx -t; then
+    print_status "Nginx configuration is valid"
+else
+    print_error "Nginx configuration has errors!"
+    exit 1
+fi
+
+# 6. Reload nginx
+print_status "6. Reloading nginx..."
+sudo systemctl reload nginx
+
+# 7. Restart services
+print_status "7. Restarting services..."
+if command -v pm2 &> /dev/null; then
+    pm2 restart truyendex-frontend
+    pm2 restart truyendex-backend
+    print_status "PM2 services restarted"
+elif command -v docker-compose &> /dev/null; then
+    docker-compose -f docker-compose.prod.yml restart
+    print_status "Docker services restarted"
+else
+    print_warning "No service manager found, please restart services manually"
+fi
+
+# 8. Wait for services to be ready
+print_status "8. Waiting for services to be ready..."
+sleep 15
+
+# 9. Test endpoints
+print_status "9. Testing endpoints..."
+echo "Testing frontend..."
+curl -s -o /dev/null -w "Frontend: %{http_code}\n" http://localhost:3000 || echo "Frontend not responding"
+echo "Testing backend..."
+curl -s -o /dev/null -w "Backend: %{http_code}\n" http://localhost:8000 || echo "Backend not responding"
+
+print_status "Deployment completed successfully!"
+echo ""
+print_status "Changes made:"
+echo "✅ Removed complex image caching from service worker"
+echo "✅ Disabled nginx image caching"
+echo "✅ Simplified MangaImage component"
+echo "✅ Images will now load fresh each time"
+echo ""
+print_status "Next steps:"
+echo "1. Clear your browser cache completely (Ctrl+Shift+Delete)"
+echo "2. Visit your site - images should load immediately"
+echo "3. No more need for Ctrl+Shift+R to see images"
+echo ""
+print_warning "Note: Images will load slightly slower but will be more reliable"

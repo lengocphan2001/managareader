@@ -1,6 +1,6 @@
 import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
-import { Serwist, CacheFirst, NetworkFirst, StaleWhileRevalidate } from "serwist";
+import { Serwist, CacheFirst, NetworkFirst } from "serwist";
 
 // This declares the value of `injectionPoint` to TypeScript.
 // `injectionPoint` is the string that will be replaced by the
@@ -14,36 +14,39 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
-// Custom cache strategies for images
-const imageCacheStrategy = new CacheFirst({
-  cacheName: "image-cache",
+// Manga cover image caching strategy - ALWAYS serve from cache if available
+const mangaCoverCacheStrategy = new CacheFirst({
+  cacheName: "manga-covers",
   plugins: [
     {
       cacheKeyWillBeUsed: async ({ request }) => {
-        // Create a unique cache key for each image
+        // Create a stable cache key for manga covers
         const url = new URL(request.url);
-        // Remove query parameters that might change
-        const cleanUrl = url.origin + url.pathname;
-        return cleanUrl;
-      },
-    },
-    {
-      cacheWillUpdate: async ({ response }) => {
-        // Only cache successful responses
-        return response.status === 200 ? response : null;
-      },
-    },
-  ],
-});
-
-const mangadexImageCacheStrategy = new CacheFirst({
-  cacheName: "mangadex-images",
-  plugins: [
-    {
-      cacheKeyWillBeUsed: async ({ request }) => {
-        // Create a unique cache key for MangaDex images
-        const url = new URL(request.url);
-        // For MangaDex, we want to cache with size parameters
+        
+        // For MangaDex covers, cache by manga ID and size
+        if (url.hostname === "mangadex.org" && url.pathname.includes("/covers/")) {
+          // Extract manga ID and size from URL
+          const pathParts = url.pathname.split("/");
+          const mangaId = pathParts[2]; // /covers/{mangaId}/{filename}.{size}.jpg
+          const filename = pathParts[3];
+          const size = filename.split(".")[1]; // Extract size from filename
+          return `manga-cover-${mangaId}-${size}`;
+        }
+        
+        // For resizer URLs, cache by the original manga cover URL
+        if (url.hostname === "resizer.f-ck.me") {
+          const originalUrl = url.searchParams.get("url");
+          if (originalUrl && originalUrl.includes("/covers/")) {
+            const originalUrlObj = new URL(originalUrl);
+            const pathParts = originalUrlObj.pathname.split("/");
+            const mangaId = pathParts[2];
+            const filename = pathParts[3];
+            const size = filename.split(".")[1];
+            return `manga-cover-resized-${mangaId}-${size}`;
+          }
+        }
+        
+        // Fallback to original URL
         return request.url;
       },
     },
@@ -62,42 +65,24 @@ const apiCacheStrategy = new NetworkFirst({
   networkTimeoutSeconds: 3,
 });
 
-// Stale while revalidate for static assets
-const staticCacheStrategy = new StaleWhileRevalidate({
-  cacheName: "static-cache",
-});
-
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
   runtimeCaching: [
-    // Cache MangaDex images aggressively with proper strategy
+    // Cache manga cover images with proper strategy
     {
       matcher: ({ url }) =>
         url.hostname === "mangadex.org" ||
         url.hostname === "resizer.f-ck.me" ||
         url.pathname.includes("/covers/"),
-      handler: mangadexImageCacheStrategy,
-    },
-    // Cache other images with proper strategy
-    {
-      matcher: ({ request }) => request.destination === "image",
-      handler: imageCacheStrategy,
+      handler: mangaCoverCacheStrategy,
     },
     // Cache API calls
     {
       matcher: ({ url }) => url.pathname.startsWith("/api/"),
       handler: apiCacheStrategy,
-    },
-    // Cache static assets
-    {
-      matcher: ({ request }) => 
-        request.destination === "style" ||
-        request.destination === "script" ||
-        request.destination === "font",
-      handler: staticCacheStrategy,
     },
     // Default cache for other resources
     ...defaultCache,
@@ -126,10 +111,10 @@ self.addEventListener("activate", (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== "image-cache" && 
-              cacheName !== "mangadex-images" && 
-              cacheName !== "api-cache" && 
-              cacheName !== "static-cache") {
+          // Keep only the new cache names, remove all old ones
+          if (!cacheName.includes("manga-covers") && 
+              !cacheName.includes("api-cache") && 
+              !cacheName.includes("serwist")) {
             console.log("Deleting old cache:", cacheName);
             return caches.delete(cacheName);
           }
@@ -139,10 +124,42 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// CRITICAL: Intercept ALL fetch requests to ensure manga covers are served from cache
 self.addEventListener("fetch", (event) => {
-  // Log image requests for debugging
-  if (event.request.destination === "image") {
-    console.log("Image request:", event.request.url);
+  const url = new URL(event.request.url);
+  
+  // Log manga cover requests for debugging
+  if (url.hostname === "mangadex.org" || url.hostname === "resizer.f-ck.me") {
+    console.log("Manga cover request:", event.request.url);
+  }
+  
+  // Handle manga cover images specifically
+  if (url.hostname === "mangadex.org" || 
+      url.hostname === "resizer.f-ck.me" || 
+      url.pathname.includes("/covers/")) {
+    
+    event.respondWith(
+      caches.open("manga-covers").then((cache) => {
+        // Try to get from cache first
+        return cache.match(event.request).then((response) => {
+          if (response) {
+            console.log("Serving manga cover from cache:", event.request.url);
+            return response;
+          }
+          
+          // If not in cache, fetch from network and cache it
+          return fetch(event.request).then((networkResponse) => {
+            if (networkResponse.status === 200) {
+              // Clone the response before caching
+              const responseToCache = networkResponse.clone();
+              cache.put(event.request, responseToCache);
+              console.log("Cached new manga cover:", event.request.url);
+            }
+            return networkResponse;
+          });
+        });
+      })
+    );
   }
 });
 

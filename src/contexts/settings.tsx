@@ -13,7 +13,6 @@ import { useCookies } from "@/hooks/useCookies";
 import type {
   SettingsState,
   SettingsContextValue,
-  SettingsProviderProps,
 } from "@/types";
 import { Constants } from "@/constants";
 
@@ -29,18 +28,19 @@ export const SettingsConsumer = SettingsContext.Consumer;
 
 export function SettingsProvider({
   children,
-  settings,
-}: SettingsProviderProps) {
+}: {
+  children: React.ReactNode;
+}) {
   const values = useCookies<SettingsState>(
     Constants.Settings.COOKIE_KEY,
-    settings || Constants.Settings.DEFAULT_SETTINGS,
+    Constants.Settings.DEFAULT_SETTINGS,
     Constants.Settings.DEFAULT_SETTINGS,
     {
       daysUntilExpiration: 9999,
     },
   );
 
-  const [openDrawer, setOpenDrawer] = useState(!settings);
+  const [openDrawer, setOpenDrawer] = useState(false);
 
   const onToggleDrawer = useCallback(() => {
     setOpenDrawer((prev) => !prev);

@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { GoogleTagManager } from "@next/third-parties/google";
 
 import { PropsWithChildren } from "react";
@@ -14,24 +13,13 @@ import { Constants } from "@/constants";
 import { SettingsProvider } from "@/contexts/settings";
 import { SkeletonTheme } from "react-loading-skeleton";
 
-async function detectSettings() {
-  try {
-    const cookieStore = cookies();
-    const settingsStore = cookieStore.get(Constants.Settings.COOKIE_KEY);
-    return settingsStore ? JSON.parse(settingsStore.value) : null;
-  } catch (error) {
-    console.warn("Failed to parse settings cookie:", error);
-    return null;
-  }
-}
-
-export const LayoutWrapper = async ({
+// Remove server-side cookies usage - handle on client side
+export const LayoutWrapper = ({
   children,
   ...props
 }: PropsWithChildren & {
   id: string;
 }) => {
-  const settings = await detectSettings();
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       {Constants.GTM_ID && Constants.GTM_ID !== "GTM-XXXXXXX" && (
@@ -54,7 +42,7 @@ export const LayoutWrapper = async ({
         <link rel="prefetch" href="/profile" />
       </head>
       <body data-layout-id={props.id}>
-        <SettingsProvider settings={settings}>
+        <SettingsProvider>
           <SkeletonTheme baseColor="#202020" highlightColor="#444">
             <MangadexContextProvider>{children}</MangadexContextProvider>
           </SkeletonTheme>

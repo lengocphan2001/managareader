@@ -13,7 +13,17 @@ module.exports = async (phase) => {
           protocol: "https",
           hostname: "mangadex.org",
         },
+        {
+          protocol: "https",
+          hostname: "resizer.f-ck.me",
+        },
       ],
+      // Enable image optimization
+      unoptimized: false,
+      // Add cache headers
+      formats: ['image/webp', 'image/avif'],
+      deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+      imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     },
     logging: {
       fetches: {
@@ -52,8 +62,8 @@ module.exports = async (phase) => {
 
     // Security headers
     async headers() {
-      const isDevelopment = process.env.NODE_ENV === 'development';
-      
+      const isDevelopment = process.env.NODE_ENV === "development";
+
       // Skip CSP in development to avoid localhost issues
       if (isDevelopment) {
         return [
@@ -72,7 +82,7 @@ module.exports = async (phase) => {
           },
         ];
       }
-      
+
       // Production CSP
       return [
         {
@@ -80,7 +90,8 @@ module.exports = async (phase) => {
           headers: [
             {
               key: "Content-Security-Policy",
-              value: "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.ninetails.site https://api.iconify.design; style-src 'self' 'unsafe-inline' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' data: https: blob: https://resizer.f-ck.me https://mangadex.org; font-src 'self' data: https:; object-src 'none'; base-uri 'self';",
+              value:
+                "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.ninetails.site https://api.iconify.design; style-src 'self' 'unsafe-inline' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' data: https: blob: https://resizer.f-ck.me https://mangadex.org; font-src 'self' data: https:; object-src 'none'; base-uri 'self';",
             },
             {
               key: "X-Frame-Options",
@@ -103,7 +114,7 @@ module.exports = async (phase) => {
 
   if (phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) {
     const withSerwist = (await import("@serwist/next")).default({
-      cacheOnNavigation: false,
+      cacheOnNavigation: true,
       // Note: This is only an example. If you use Pages Router,
       // use something else that works, such as "service-worker/index.ts".
       swSrc: "src/app/sw.ts",

@@ -27,7 +27,8 @@
     "prisma": "^5.7.1",
     "express-session": "^1.17.3",
     "connect-redis": "^7.1.0",
-    "redis": "^4.6.10"
+    "redis": "^4.6.10",
+    "http-proxy-middleware": "^2.0.6"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

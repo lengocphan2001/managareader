@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   LazyLoadImage,
   LazyLoadImageProps,
@@ -30,17 +30,50 @@ export default function MangaImage({
 }: Props) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [imageSrc, setImageSrc] = useState(other.src);
+
+  // Reset error state when src changes
+  useEffect(() => {
+    if (other.src !== imageSrc) {
+      setImageSrc(other.src);
+      setError(false);
+      setRetryCount(0);
+      setLoaded(false);
+    }
+  }, [other.src, imageSrc]);
+
+  const handleRetry = useCallback(() => {
+    setError(false);
+    setRetryCount(prev => prev + 1);
+    // Force reload by changing the src slightly
+    if (other.src) {
+      const separator = other.src.includes('?') ? '&' : '?';
+      const newSrc = `${other.src}${separator}_retry=${retryCount + 1}`;
+      setImageSrc(newSrc);
+    }
+  }, [other.src, retryCount]);
+
+  const handleDataSaverToggle = useCallback(() => {
+    onDataSaverChange();
+    // Reset states when toggling data saver
+    setError(false);
+    setRetryCount(0);
+    setLoaded(false);
+  }, [onDataSaverChange]);
+
   if (error)
     return (
       <div className="flex flex-col justify-center gap-2 bg-white/10 px-2 py-5">
         <div className="text-center">
-          Đã có lỗi khi tải ảnh thứ {(other.index || 0) + 1}
+          Fail to load image {(other.index || 0) + 1}
+          {retryCount > 0 && ` (Retry ${retryCount})`}
         </div>
         <div className="flex gap-2">
           <Button
             icon={<Iconify icon="fa:refresh" />}
             className="w-full min-w-0"
-            onClick={() => setError(false)}
+            onClick={handleRetry}
           >
             Tải lại ảnh
           </Button>
@@ -49,13 +82,14 @@ export default function MangaImage({
               <Iconify icon={dataSaver ? "fa:caret-down" : "fa:caret-up"} />
             }
             className="w-full min-w-0"
-            onClick={() => onDataSaverChange()}
+            onClick={handleDataSaverToggle}
           >
             {dataSaver ? "Disable data saver" : "Enable data saver"}
           </Button>
         </div>
       </div>
     );
+
   return (
     <span
       className={`block overflow-hidden ${loaded ? "min-h-0" : "min-h-[100vh]"} ${className}`}
@@ -67,9 +101,13 @@ export default function MangaImage({
         placeholderSrc: "/images/truyendex-loading.jpg",
         className: "mx-auto h-full object-cover",
         width: maxImageWidth || "100%",
+        src: imageSrc,
         onLoad: () => setLoaded(true),
         onError: () => setError(true),
         threshold: threshold,
+        // Add cache-friendly attributes
+        loading: "lazy",
+        decoding: "async",
         ...(other as any),
       })}
     </span>

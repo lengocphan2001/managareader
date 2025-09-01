@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Simple Deploy Script for TruyenDex (No Image Caching)
-# This script deploys the simplified version without complex image caching
+# Simple Test Deployment Script
+# This script will deploy and test the new service worker
 
 set -e
 
@@ -9,6 +9,7 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 print_status() {
@@ -23,26 +24,32 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-print_status "Deploying simplified version (no image caching)..."
+print_debug() {
+    echo -e "${BLUE}[DEBUG]${NC} $1"
+}
+
+print_status "Deploying and testing new service worker..."
 
 # Navigate to application directory
 cd /var/www/truyendex
 
-# 1. Backup current configuration
+# 1. Backup current files
 print_status "1. Creating backups..."
+cp src/app/sw.ts src/app/sw.ts.backup.$(date +%Y%m%d_%H%M%S)
 cp nginx.conf nginx.conf.backup.$(date +%Y%m%d_%H%M%S)
-cp next.config.js next.config.js.backup.$(date +%Y%m%d_%H%M%S)
 
-# 2. Clear all caches
-print_status "2. Clearing all caches..."
-if [ -d "/var/cache/nginx" ]; then
-    sudo rm -rf /var/cache/nginx/*
-fi
-
-# Clear browser caches by updating service worker revision
-print_status "3. Updating service worker revision..."
+# 2. Update service worker revision
+print_status "2. Updating service worker revision..."
 if [ -f "next.config.js" ]; then
     sed -i 's/crypto.randomUUID()/crypto.randomUUID() + "_'$(date +%s)'"/' next.config.js
+    print_debug "Service worker revision updated"
+fi
+
+# 3. Clear nginx cache
+print_status "3. Clearing nginx cache..."
+if [ -d "/var/cache/nginx" ]; then
+    sudo rm -rf /var/cache/nginx/*
+    print_debug "Nginx cache cleared"
 fi
 
 # 4. Copy nginx config to system
@@ -72,7 +79,7 @@ elif command -v docker-compose &> /dev/null; then
     docker-compose -f docker-compose.prod.yml restart
     print_status "Docker services restarted"
 else
-    print_warning "No service manager found, please restart services manually"
+    print_warning "No service manager found"
 fi
 
 # 8. Wait for services to be ready
@@ -86,17 +93,19 @@ curl -s -o /dev/null -w "Frontend: %{http_code}\n" http://localhost:3000 || echo
 echo "Testing backend..."
 curl -s -o /dev/null -w "Backend: %{http_code}\n" http://localhost:8000 || echo "Backend not responding"
 
-print_status "Deployment completed successfully!"
+print_status "Deployment completed!"
 echo ""
-print_status "Changes made:"
-echo "✅ Removed complex image caching from service worker"
-echo "✅ Disabled nginx image caching"
-echo "✅ Simplified MangaImage component"
-echo "✅ Images will now load fresh each time"
+print_status "Testing Instructions:"
+echo "1. Clear browser cache completely (Ctrl+Shift+Delete)"
+echo "2. Visit your site and wait for manga covers to load"
+echo "3. Open DevTools (F12) → Console tab"
+echo "4. Look for 'Manga cover request:' logs"
+echo "5. Press Ctrl+R (normal refresh)"
+echo "6. Check if images stay visible"
+echo "7. Look for 'Serving manga cover from cache:' logs"
 echo ""
-print_status "Next steps:"
-echo "1. Clear your browser cache completely (Ctrl+Shift+Delete)"
-echo "2. Visit your site - images should load immediately"
-echo "3. No more need for Ctrl+Shift+R to see images"
-echo ""
-print_warning "Note: Images will load slightly slower but will be more reliable"
+print_status "If images still disappear:"
+echo "• Check browser console for errors"
+echo "• Verify service worker is active (Application tab)"
+echo "• Look for 'manga-covers' cache in Cache Storage"
+echo "• Run './debug-sw.sh' for detailed analysis"

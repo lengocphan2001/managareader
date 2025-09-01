@@ -22,7 +22,7 @@ export function ConfirmModal({
   onCancel,
   confirmText = "Confirm",
   cancelText = "Cancel",
-  type = "danger"
+  type = "danger",
 }: ConfirmModalProps) {
   if (!isOpen) return null;
 
@@ -32,25 +32,25 @@ export function ConfirmModal({
         return {
           icon: "text-red-600",
           button: "bg-red-600 hover:bg-red-700",
-          border: "border-red-200"
+          border: "border-red-200",
         };
       case "warning":
         return {
           icon: "text-yellow-600",
           button: "bg-yellow-600 hover:bg-yellow-700",
-          border: "border-yellow-200"
+          border: "border-yellow-200",
         };
       case "info":
         return {
           icon: "text-blue-600",
           button: "bg-blue-600 hover:bg-blue-700",
-          border: "border-blue-200"
+          border: "border-blue-200",
         };
       default:
         return {
           icon: "text-red-600",
           button: "bg-red-600 hover:bg-red-700",
-          border: "border-red-200"
+          border: "border-red-200",
         };
     }
   };
@@ -60,22 +60,24 @@ export function ConfirmModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black bg-opacity-50"
         onClick={onCancel}
       />
-      
+
       {/* Modal */}
-      <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+      <div className="relative mx-4 w-full max-w-md rounded-lg bg-white shadow-xl">
         {/* Header */}
-        <div className={`flex items-center justify-between p-6 border-b ${styles.border}`}>
+        <div
+          className={`flex items-center justify-between border-b p-6 ${styles.border}`}
+        >
           <div className="flex items-center space-x-3">
             <AlertTriangle className={`h-5 w-5 ${styles.icon}`} />
             <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
           </div>
           <button
             onClick={onCancel}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 transition-colors hover:text-gray-600"
           >
             <X className="h-5 w-5" />
           </button>
@@ -87,7 +89,7 @@ export function ConfirmModal({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+        <div className="flex items-center justify-end space-x-3 border-t border-gray-200 p-6">
           <Button
             variant="outline"
             onClick={onCancel}
@@ -95,10 +97,7 @@ export function ConfirmModal({
           >
             {cancelText}
           </Button>
-          <Button
-            onClick={onConfirm}
-            className={styles.button}
-          >
+          <Button onClick={onConfirm} className={styles.button}>
             {confirmText}
           </Button>
         </div>

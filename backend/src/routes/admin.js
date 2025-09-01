@@ -19,8 +19,8 @@ const requireAdmin = async (req, res, next) => {
       },
     });
 
-    const hasAdminRole = user.roles.some(ur => 
-      ur.role.name === "admin" || ur.role.name === "mod"
+    const hasAdminRole = user.roles.some(
+      (ur) => ur.role.name === "admin" || ur.role.name === "mod",
     );
 
     if (!hasAdminRole) {
@@ -43,39 +43,35 @@ const requireAdmin = async (req, res, next) => {
 // Get admin dashboard stats
 router.get("/stats", auth, requireAdmin, async (req, res) => {
   try {
-    const [
-      totalUsers,
-      totalComments,
-      recentUsers,
-      recentComments
-    ] = await Promise.all([
-      prisma.user.count(),
-      prisma.comment.count(),
-      prisma.user.findMany({
-        take: 5,
-        orderBy: { created_at: "desc" },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          created_at: true,
-          avatar_path: true,
-        },
-      }),
-      prisma.comment.findMany({
-        take: 5,
-        orderBy: { created_at: "desc" },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
+    const [totalUsers, totalComments, recentUsers, recentComments] =
+      await Promise.all([
+        prisma.user.count(),
+        prisma.comment.count(),
+        prisma.user.findMany({
+          take: 5,
+          orderBy: { created_at: "desc" },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            created_at: true,
+            avatar_path: true,
+          },
+        }),
+        prisma.comment.findMany({
+          take: 5,
+          orderBy: { created_at: "desc" },
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
             },
           },
-        },
-      }),
-    ]);
+        }),
+      ]);
 
     res.json({
       success: true,
@@ -85,7 +81,7 @@ router.get("/stats", auth, requireAdmin, async (req, res) => {
         totalSeries: 0, // No series table in your schema
         pendingComments: 0, // No status field in your schema
         recentUsers,
-        recentComments: recentComments.map(comment => ({
+        recentComments: recentComments.map((comment) => ({
           id: comment.id,
           content: comment.content,
           created_at: comment.created_at,
@@ -109,12 +105,14 @@ router.get("/users", auth, requireAdmin, async (req, res) => {
     const { page = 1, limit = 20, search = "" } = req.query;
     const offset = (page - 1) * limit;
 
-    const where = search ? {
-      OR: [
-        { name: { contains: search, mode: "insensitive" } },
-        { email: { contains: search, mode: "insensitive" } },
-      ],
-    } : {};
+    const where = search
+      ? {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { email: { contains: search, mode: "insensitive" } },
+          ],
+        }
+      : {};
 
     const [users, total] = await Promise.all([
       prisma.user.findMany({
@@ -140,7 +138,7 @@ router.get("/users", auth, requireAdmin, async (req, res) => {
 
     res.json({
       success: true,
-      data: users.map(user => ({
+      data: users.map((user) => ({
         id: user.id,
         email: user.email,
         name: user.name,
@@ -148,7 +146,7 @@ router.get("/users", auth, requireAdmin, async (req, res) => {
         created_at: user.created_at,
         email_verified_at: user.email_verified_at,
         comment_count: user._count.comments,
-        display_roles: user.roles.map(ur => ur.role.name),
+        display_roles: user.roles.map((ur) => ur.role.name),
       })),
       pagination: {
         current_page: parseInt(page),
@@ -179,7 +177,7 @@ router.put("/users/:userId/roles", auth, requireAdmin, async (req, res) => {
 
     // Then add new roles
     if (roles && roles.length > 0) {
-      const roleData = roles.map(roleName => ({
+      const roleData = roles.map((roleName) => ({
         user_id: parseInt(userId),
         role: {
           connect: { name: roleName },
@@ -204,6 +202,61 @@ router.put("/users/:userId/roles", auth, requireAdmin, async (req, res) => {
   }
 });
 
+// Update user information
+router.put("/users/:userId", auth, requireAdmin, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { name, email, avatar_path } = req.body;
+
+    // Check if user exists
+    const existingUser = await prisma.user.findUnique({
+      where: { id: parseInt(userId) },
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Update user information
+    const updatedUser = await prisma.user.update({
+      where: { id: parseInt(userId) },
+      data: {
+        name: name || existingUser.name,
+        email: email || existingUser.email,
+        avatar_path: avatar_path || existingUser.avatar_path,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar_path: true,
+        created_at: true,
+        updated_at: true,
+        roles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
+
+    res.json({
+      success: true,
+      message: "User updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error("Update user error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
 // Delete user
 router.delete("/users/:userId", auth, requireAdmin, async (req, res) => {
   try {
@@ -221,7 +274,7 @@ router.delete("/users/:userId", auth, requireAdmin, async (req, res) => {
       },
     });
 
-    if (user.roles.some(ur => ur.role.name === "admin")) {
+    if (user.roles.some((ur) => ur.role.name === "admin")) {
       return res.status(400).json({
         success: false,
         message: "Cannot delete admin users",
@@ -272,7 +325,7 @@ router.get("/comments", auth, requireAdmin, async (req, res) => {
 
     res.json({
       success: true,
-      data: comments.map(comment => ({
+      data: comments.map((comment) => ({
         id: comment.id,
         content: comment.content,
         status: "approved", // Default status since no status field exists
@@ -307,6 +360,80 @@ router.get("/comments", auth, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error("Get admin comments error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+// Update comment
+router.put("/comments/:commentId", auth, requireAdmin, async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const { content } = req.body;
+
+    // Check if comment exists
+    const existingComment = await prisma.comment.findUnique({
+      where: { id: parseInt(commentId) },
+    });
+
+    if (!existingComment) {
+      return res.status(404).json({
+        success: false,
+        message: "Comment not found",
+      });
+    }
+
+    // Update comment
+    const updatedComment = await prisma.comment.update({
+      where: { id: parseInt(commentId) },
+      data: {
+        content: content || existingComment.content,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    res.json({
+      success: true,
+      message: "Comment updated successfully",
+      data: {
+        id: updatedComment.id,
+        content: updatedComment.content,
+        status: "approved",
+        created_at: updatedComment.created_at,
+        user: {
+          id: updatedComment.user.id,
+          name: updatedComment.user.name,
+          email: updatedComment.user.email,
+          display_roles: ["User"],
+          avatar_path: null,
+        },
+        parent_id: updatedComment.parent_id,
+        reply_count: 0,
+        commentable: {
+          title: `${updatedComment.commentable_type} ${updatedComment.commentable_id}`,
+          type: updatedComment.commentable_type,
+          id: updatedComment.commentable_id,
+          uuid: updatedComment.commentable_id,
+          series: {
+            title: `${updatedComment.commentable_type} ${updatedComment.commentable_id}`,
+            uuid: updatedComment.commentable_id,
+          },
+        },
+        is_spam: false,
+      },
+    });
+  } catch (error) {
+    console.error("Update comment error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",

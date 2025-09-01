@@ -1,20 +1,20 @@
-import { NextResponse } from 'next/server';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { NextResponse } from "next/server";
+import { readFile } from "fs/promises";
+import { join } from "path";
+import { existsSync } from "fs";
 
 export async function GET() {
   try {
     // Try to load settings from the config file
-    const configPath = join(process.cwd(), 'src', 'config', 'site-meta.json');
-    
+    const configPath = join(process.cwd(), "src", "config", "site-meta.json");
+
     if (existsSync(configPath)) {
-      const configContent = await readFile(configPath, 'utf-8');
+      const configContent = await readFile(configPath, "utf-8");
       const settings = JSON.parse(configContent);
-      
+
       return NextResponse.json({
         success: true,
-        settings: settings
+        settings: settings,
       });
     }
 
@@ -35,14 +35,13 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      settings: defaultSettings
+      settings: defaultSettings,
     });
-
   } catch (error) {
-    console.error('Error loading settings:', error);
+    console.error("Error loading settings:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: "Internal server error" },
+      { status: 500 },
     );
   }
 }

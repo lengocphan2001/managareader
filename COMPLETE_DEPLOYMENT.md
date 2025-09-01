@@ -1,11 +1,11 @@
 # TruyenDex Deployment Guide (PM2 + Nginx)
 
-This guide will help you deploy TruyenDex to your VPS at `/var/www/ninetails.site` using PM2 for process management and Nginx as a reverse proxy.
+This guide will help you deploy TruyenDex to your VPS at `/var/www/xklduyenviet.net` using PM2 for process management and Nginx as a reverse proxy.
 
 ## Prerequisites
 
 - Ubuntu/Debian VPS with root access
-- Domain `ninetails.site` pointing to your VPS IP
+- Domain `xklduyenviet.net` pointing to your VPS IP
 - At least 2GB RAM and 20GB storage
 - Basic knowledge of Linux commands
 
@@ -41,12 +41,12 @@ apt install -y curl wget git unzip software-properties-common
 
 ```bash
 # Create main application directory
-mkdir -p /var/www/ninetails.site
-cd /var/www/ninetails.site
+mkdir -p /var/www/xklduyenviet.net
+cd /var/www/xklduyenviet.net
 
 # Set proper permissions
-chown -R www-data:www-data /var/www/ninetails.site
-chmod -R 755 /var/www/ninetails.site
+chown -R www-data:www-data /var/www/xklduyenviet.net
+chmod -R 755 /var/www/xklduyenviet.net
 ```
 
 ---
@@ -57,7 +57,7 @@ chmod -R 755 /var/www/ninetails.site
 
 ```bash
 # Add NodeSource repository
-curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 
 # Install Node.js
 apt install -y nodejs
@@ -156,17 +156,17 @@ sudo -u postgres psql -d truyendex -c "SELECT version();"
 
 ```bash
 # If using Git (replace with your repository URL)
-cd /var/www/ninetails.site
+cd /var/www/xklduyenviet.net
 git clone https://github.com/yourusername/truyendex.git .
 
-# Or upload your files using SCP/SFTP to /var/www/ninetails.site
+# Or upload your files using SCP/SFTP to /var/www/xklduyenviet.net
 ```
 
 ### 4.2 Install Frontend Dependencies
 
 ```bash
 # Navigate to frontend directory
-cd /var/www/ninetails.site
+cd /var/www/xklduyenviet.net
 
 # Install dependencies
 npm install
@@ -179,7 +179,7 @@ npm ci --only=production
 
 ```bash
 # Navigate to backend directory
-cd /var/www/ninetails.site/backend
+cd /var/www/xklduyenviet.net/backend
 
 # Install dependencies
 npm install
@@ -196,15 +196,15 @@ npm ci --only=production
 
 ```bash
 # Create frontend environment file
-cd /var/www/ninetails.site
+cd /var/www/xklduyenviet.net
 cat > .env.production << 'EOF'
 # Frontend Environment Variables
 NODE_ENV=production
-NEXT_PUBLIC_API_URL=https://ninetails.site
-NEXT_PUBLIC_BACKEND_URL=https://ninetails.site
-NEXT_PUBLIC_APP_URL=https://ninetails.site
-NEXT_PUBLIC_CORS_URL=https://ninetails.site
-NEXT_PUBLIC_CORS_V2_URL=https://ninetails.site
+NEXT_PUBLIC_API_URL=https://xklduyenviet.net
+NEXT_PUBLIC_BACKEND_URL=https://xklduyenviet.net
+NEXT_PUBLIC_APP_URL=https://xklduyenviet.net
+NEXT_PUBLIC_CORS_URL=https://xklduyenviet.net
+NEXT_PUBLIC_CORS_V2_URL=https://xklduyenviet.net
 NEXT_PUBLIC_GTM_ID="GTM-T8T8T8KF"
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
 # Other frontend variables
@@ -217,7 +217,7 @@ EOF
 
 ```bash
 # Create backend environment file
-cd /var/www/ninetails.site/backend
+cd /var/www/xklduyenviet.net/backend
 cat > .env << 'EOF'
 # Backend Environment Variables
 NODE_ENV=production
@@ -231,7 +231,7 @@ JWT_SECRET=your_jwt_secret_key_here
 JWT_EXPIRES_IN=7d
 
 # CORS Configuration
-CORS_ORIGIN=https://ninetails.site
+CORS_ORIGIN=https://xklduyenviet.net
 CORS_CREDENTIALS=true
 
 # Rate Limiting
@@ -252,7 +252,7 @@ SMTP_PASS=your_app_password
 
 # File Upload Configuration
 MAX_FILE_SIZE=10485760
-UPLOAD_PATH=/var/www/ninetails.site/uploads
+UPLOAD_PATH=/var/www/xklduyenviet.net/uploads
 
 # Security
 BCRYPT_ROUNDS=12
@@ -263,11 +263,11 @@ EOF
 
 ```bash
 # Set permissions for environment files
-chmod 600 /var/www/ninetails.site/.env.production
-chmod 600 /var/www/ninetails.site/backend/.env
+chmod 600 /var/www/xklduyenviet.net/.env.production
+chmod 600 /var/www/xklduyenviet.net/backend/.env
 
 # Set ownership
-chown -R www-data:www-data /var/www/ninetails.site
+chown -R www-data:www-data /var/www/xklduyenviet.net
 ```
 
 ---
@@ -278,7 +278,7 @@ chown -R www-data:www-data /var/www/ninetails.site
 
 ```bash
 # Navigate to backend directory
-cd /var/www/ninetails.site/backend
+cd /var/www/xklduyenviet.net/backend
 
 # Generate Prisma client
 npx prisma generate
@@ -294,7 +294,7 @@ npx prisma db seed
 
 ```bash
 # Navigate to frontend directory
-cd /var/www/ninetails.site
+cd /var/www/xklduyenviet.net
 
 # Build the application with increased memory
 NODE_OPTIONS="--max-old-space-size=4096" npm run build
@@ -307,14 +307,14 @@ ls -la .next/
 
 ```bash
 # Create PM2 ecosystem file
-cd /var/www/ninetails.site
+cd /var/www/xklduyenviet.net
 cat > ecosystem.config.js << 'EOF'
 module.exports = {
   apps: [
     {
       name: "truyendex-backend",
       script: "src/server.js",
-      cwd: "/var/www/ninetails.site/backend",
+      cwd: "/var/www/xklduyenviet.net/backend",
       instances: 1,
       exec_mode: "fork",
       env: {
@@ -334,7 +334,7 @@ module.exports = {
       name: "truyendex-frontend",
       script: "npm",
       args: "start",
-      cwd: "/var/www/ninetails.site",
+      cwd: "/var/www/xklduyenviet.net",
       instances: 1,
       exec_mode: "fork",
       env: {
@@ -355,7 +355,7 @@ module.exports = {
 EOF
 
 # Create logs directory
-mkdir -p /var/www/ninetails.site/logs
+mkdir -p /var/www/xklduyenviet.net/logs
 ```
 
 ### 6.4 Start Applications with PM2
@@ -382,7 +382,7 @@ pm2 logs
 
 ```bash
 # Create Nginx site configuration
-cat > /etc/nginx/sites-available/ninetails.site << 'EOF'
+cat > /etc/nginx/sites-available/xklduyenviet.net << 'EOF'
 # Rate limiting
 limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
 limit_req_zone $binary_remote_addr zone=login:10m rate=5r/m;
@@ -402,11 +402,11 @@ server {
     listen [::]:80;
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name ninetails.site www.ninetails.site;
+    server_name xklduyenviet.net www.xklduyenviet.net;
 
     # SSL Configuration (will be updated by Certbot)
-    ssl_certificate /etc/letsencrypt/live/ninetails.site/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/ninetails.site/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/xklduyenviet.net/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/xklduyenviet.net/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
@@ -513,7 +513,7 @@ EOF
 
 ```bash
 # Enable the site
-ln -s /etc/nginx/sites-available/ninetails.site /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/xklduyenviet.net /etc/nginx/sites-enabled/
 
 # Remove default site
 rm -f /etc/nginx/sites-enabled/default
@@ -540,7 +540,7 @@ apt install -y certbot python3-certbot-nginx
 
 ```bash
 # Get SSL certificate
-certbot --nginx -d ninetails.site -d www.ninetails.site --non-interactive --agree-tos --email lengocphan503@gmail.com
+certbot --nginx -d xklduyenviet.net -d www.xklduyenviet.net --non-interactive --agree-tos --email lengocphan503@gmail.com
 
 # Test automatic renewal
 certbot renew --dry-run
@@ -585,8 +585,8 @@ const cors = require('cors');
 // Enable CORS for all routes
 app.use(cors({
   origin: [
-    'https://ninetails.site',
-    'https://www.ninetails.site',
+    'https://xklduyenviet.net',
+    'https://www.xklduyenviet.net',
     'http://localhost:3000', // For development
     'http://localhost:3001'  // For development
   ],
@@ -645,13 +645,13 @@ cat >> /etc/nginx/sites-available/ninetails.site << 'EOF'
 # Add CORS headers for API routes
 location /api/ {
     # Add CORS headers
-    add_header Access-Control-Allow-Origin "https://ninetails.site" always;
+    add_header Access-Control-Allow-Origin "https://xklduyenviet.net" always;
     add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
     add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization" always;
 
     # Handle preflight requests
     if ($request_method = 'OPTIONS') {
-        add_header Access-Control-Allow-Origin "https://ninetails.site";
+        add_header Access-Control-Allow-Origin "https://xklduyenviet.net";
         add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
         add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization";
         add_header Access-Control-Max-Age 1728000;
@@ -676,7 +676,7 @@ cd /var/www/ninetails.site/backend
 cat >> .env << 'EOF'
 
 # CORS Configuration
-CORS_ORIGIN=https://ninetails.site,https://www.ninetails.site
+CORS_ORIGIN=https://xklduyenviet.net,https://www.xklduyenviet.net
 CORS_CREDENTIALS=true
 CORS_METHODS=GET,POST,PUT,DELETE,OPTIONS
 CORS_ALLOWED_HEADERS=Content-Type,Authorization,X-Requested-With
@@ -721,27 +721,27 @@ curl -I http://localhost:8000/api/health
 curl -I http://localhost:3000
 
 # Test through Nginx
-curl -I https://ninetails.site
+curl -I https://xklduyenviet.net
 ```
 
 ### 10.3 Test CORS Configuration
 
 ```bash
 # Test CORS headers
-curl -H "Origin: https://ninetails.site" -H "Access-Control-Request-Method: GET" -H "Access-Control-Request-Headers: X-Requested-With" -X OPTIONS https://ninetails.site/api/health
+curl -H "Origin: https://xklduyenviet.net" -H "Access-Control-Request-Method: GET" -H "Access-Control-Request-Headers: X-Requested-With" -X OPTIONS https://xklduyenviet.net/api/health
 
 # Test API with CORS
-curl -H "Origin: https://ninetails.site" https://ninetails.site/api/health
+curl -H "Origin: https://xklduyenviet.net" https://xklduyenviet.net/api/health
 ```
 
 ### 10.4 Test Full Application
 
 ```bash
 # Test main site
-curl -I https://ninetails.site
+curl -I https://xklduyenviet.net
 
 # Test API endpoints
-curl -I https://ninetails.site/api/health
+curl -I https://xklduyenviet.net/api/health
 ```
 
 ---
@@ -792,8 +792,8 @@ systemctl status redis-server
 
 ```bash
 # View application logs
-tail -f /var/www/ninetails.site/logs/backend-combined.log
-tail -f /var/www/ninetails.site/logs/frontend-combined.log
+tail -f /var/www/xklduyenviet.net/logs/backend-combined.log
+tail -f /var/www/xklduyenviet.net/logs/frontend-combined.log
 
 # View Nginx logs
 tail -f /var/log/nginx/access.log
@@ -819,7 +819,7 @@ mkdir -p $BACKUP_DIR
 pg_dump -h localhost -U truyendex_user truyendex > $BACKUP_DIR/database_$DATE.sql
 
 # Backup application files
-tar -czf $BACKUP_DIR/application_$DATE.tar.gz /var/www/ninetails.site
+tar -czf $BACKUP_DIR/application_$DATE.tar.gz /var/www/xklduyenviet.net
 
 # Keep only last 7 days of backups
 find $BACKUP_DIR -name "*.sql" -mtime +7 -delete
@@ -865,7 +865,7 @@ systemctl status postgresql
 sudo -u postgres psql -d truyendex -c "SELECT version();"
 
 # Check environment variables
-cat /var/www/ninetails.site/backend/.env
+cat /var/www/xklduyenviet.net/backend/.env
 ```
 
 #### 3. Nginx Configuration Issues
@@ -891,7 +891,7 @@ certbot certificates
 certbot renew
 
 # Check certificate expiration
-openssl x509 -in /etc/letsencrypt/live/ninetails.site/cert.pem -text -noout | grep "Not After"
+openssl x509 -in /etc/letsencrypt/live/xklduyenviet.net/cert.pem -text -noout | grep "Not After"
 ```
 
 #### 5. Memory Issues
@@ -933,10 +933,10 @@ ufw enable
 apt update && apt upgrade -y
 
 # Update Node.js packages
-cd /var/www/ninetails.site
+cd /var/www/xklduyenviet.net
 npm audit fix
 
-cd /var/www/ninetails.site/backend
+cd /var/www/xklduyenviet.net/backend
 npm audit fix
 ```
 
@@ -1029,4 +1029,4 @@ pm2 restart all
 systemctl restart nginx
 ```
 
-Your TruyenDex application is now live at `https://ninetails.site`! 🎉
+Your TruyenDex application is now live at `https://xklduyenviet.net`! 🎉

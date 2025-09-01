@@ -202,6 +202,61 @@ router.put("/users/:userId/roles", auth, requireAdmin, async (req, res) => {
   }
 });
 
+// Update user information
+router.put("/users/:userId", auth, requireAdmin, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { name, email, avatar_path } = req.body;
+
+    // Check if user exists
+    const existingUser = await prisma.user.findUnique({
+      where: { id: parseInt(userId) },
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Update user information
+    const updatedUser = await prisma.user.update({
+      where: { id: parseInt(userId) },
+      data: {
+        name: name || existingUser.name,
+        email: email || existingUser.email,
+        avatar_path: avatar_path || existingUser.avatar_path,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar_path: true,
+        created_at: true,
+        updated_at: true,
+        roles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
+
+    res.json({
+      success: true,
+      message: "User updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error("Update user error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
 // Delete user
 router.delete("/users/:userId", auth, requireAdmin, async (req, res) => {
   try {
@@ -305,6 +360,80 @@ router.get("/comments", auth, requireAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error("Get admin comments error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+// Update comment
+router.put("/comments/:commentId", auth, requireAdmin, async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const { content } = req.body;
+
+    // Check if comment exists
+    const existingComment = await prisma.comment.findUnique({
+      where: { id: parseInt(commentId) },
+    });
+
+    if (!existingComment) {
+      return res.status(404).json({
+        success: false,
+        message: "Comment not found",
+      });
+    }
+
+    // Update comment
+    const updatedComment = await prisma.comment.update({
+      where: { id: parseInt(commentId) },
+      data: {
+        content: content || existingComment.content,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    res.json({
+      success: true,
+      message: "Comment updated successfully",
+      data: {
+        id: updatedComment.id,
+        content: updatedComment.content,
+        status: "approved",
+        created_at: updatedComment.created_at,
+        user: {
+          id: updatedComment.user.id,
+          name: updatedComment.user.name,
+          email: updatedComment.user.email,
+          display_roles: ["User"],
+          avatar_path: null,
+        },
+        parent_id: updatedComment.parent_id,
+        reply_count: 0,
+        commentable: {
+          title: `${updatedComment.commentable_type} ${updatedComment.commentable_id}`,
+          type: updatedComment.commentable_type,
+          id: updatedComment.commentable_id,
+          uuid: updatedComment.commentable_id,
+          series: {
+            title: `${updatedComment.commentable_type} ${updatedComment.commentable_id}`,
+            uuid: updatedComment.commentable_id,
+          },
+        },
+        is_spam: false,
+      },
+    });
+  } catch (error) {
+    console.error("Update comment error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",

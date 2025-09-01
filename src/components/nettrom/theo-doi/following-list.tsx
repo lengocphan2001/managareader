@@ -10,7 +10,7 @@ import Iconify from "@/components/iconify";
 import { Utils } from "@/utils";
 import { DataLoader } from "@/components/DataLoader";
 import { useConfirmModal } from "@/hooks/useConfirmModal";
-import ConfirmModal from "@/components/shadcn/confirm-modal";
+import { ConfirmModal } from "@/components/shadcn/confirm-modal";
 
 import Pagination from "../Pagination";
 import MangaTile from "../manga-tile";
@@ -21,27 +21,22 @@ export default function FollowingList() {
     useMangadex();
   const [page, setPage] = useState(1);
   const { data, mutate, isLoading, error } = useReadList(page);
-  const { modalState, showConfirm, hideConfirm, handleConfirm } =
+  const { isOpen, title, message, onConfirm, openConfirmModal, closeConfirmModal } =
     useConfirmModal();
 
   const unfollow = useCallback(
     async (mangaId: string) => {
-      showConfirm(
-        "Unfollow Manga",
-        "Are you sure you want to unfollow this manga?",
-        async () => {
+      openConfirmModal({
+        title: "Unfollow Manga",
+        message: "Are you sure you want to unfollow this manga?",
+        onConfirm: async () => {
           const { followed } = await AppApi.Series.followOrUnfollow(mangaId);
           toast(followed ? "Followed successfully" : "Unfollowed successfully");
           await mutate();
         },
-        {
-          confirmText: "Unfollow",
-          cancelText: "Cancel",
-          type: "danger",
-        },
-      );
+      });
     },
-    [mutate, showConfirm],
+    [mutate, openConfirmModal],
   );
 
   useEffect(() => {
@@ -125,14 +120,14 @@ export default function FollowingList() {
       )}
 
       <ConfirmModal
-        isOpen={modalState.isOpen}
-        onClose={hideConfirm}
-        onConfirm={handleConfirm}
-        title={modalState.title}
-        message={modalState.message}
-        confirmText={modalState.confirmText}
-        cancelText={modalState.cancelText}
-        type={modalState.type}
+        isOpen={isOpen}
+        onCancel={closeConfirmModal}
+        onConfirm={onConfirm}
+        title={title}
+        message={message}
+        confirmText="Unfollow"
+        cancelText="Cancel"
+        type="danger"
       />
     </div>
   );

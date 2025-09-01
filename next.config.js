@@ -21,9 +21,13 @@ module.exports = async (phase) => {
       // Enable image optimization
       unoptimized: false,
       // Add cache headers
-      formats: ['image/webp', 'image/avif'],
+      formats: ["image/webp", "image/avif"],
       deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
       imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+      // Add caching configuration
+      minimumCacheTTL: 60 * 60 * 24 * 7, // 7 days
+      dangerouslyAllowSVG: true,
+      contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     },
     logging: {
       fetches: {
@@ -91,7 +95,7 @@ module.exports = async (phase) => {
             {
               key: "Content-Security-Policy",
               value:
-                "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.ninetails.site https://api.iconify.design; style-src 'self' 'unsafe-inline' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' data: https: blob: https://resizer.f-ck.me https://mangadex.org; font-src 'self' data: https:; object-src 'none'; base-uri 'self';",
+                "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.ninetails.site https://api.iconify.design https://challenges.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://challenges.cloudflare.com https://www.googletagmanager.com; img-src 'self' data: https: blob: https://resizer.f-ck.me https://mangadex.org https://www.googletagmanager.com; font-src 'self' data: https:; object-src 'none'; base-uri 'self';",
             },
             {
               key: "X-Frame-Options",

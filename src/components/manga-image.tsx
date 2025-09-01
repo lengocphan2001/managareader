@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   LazyLoadImage,
   LazyLoadImageProps,
@@ -32,6 +32,8 @@ export default function MangaImage({
   const [error, setError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [imageSrc, setImageSrc] = useState(other.src);
+  const [isLoading, setIsLoading] = useState(true);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   // Reset error state when src changes
   useEffect(() => {
@@ -40,19 +42,23 @@ export default function MangaImage({
       setError(false);
       setRetryCount(0);
       setLoaded(false);
+      setIsLoading(true);
     }
   }, [other.src, imageSrc]);
 
   const handleRetry = useCallback(() => {
     setError(false);
-    setRetryCount(prev => prev + 1);
+    setRetryCount((prev) => prev + 1);
+    setIsLoading(true);
+    
     // Force reload by changing the src slightly
     if (other.src) {
-      const separator = other.src.includes('?') ? '&' : '?';
-      const newSrc = `${other.src}${separator}_retry=${retryCount + 1}`;
+      const separator = other.src.includes("?") ? "&" : "?";
+      const timestamp = Date.now();
+      const newSrc = `${other.src}${separator}_retry=${timestamp}`;
       setImageSrc(newSrc);
     }
-  }, [other.src, retryCount]);
+  }, [other.src]);
 
   const handleDataSaverToggle = useCallback(() => {
     onDataSaverChange();
@@ -60,7 +66,31 @@ export default function MangaImage({
     setError(false);
     setRetryCount(0);
     setLoaded(false);
+    setIsLoading(true);
   }, [onDataSaverChange]);
+
+  const handleImageLoad = useCallback(() => {
+    setLoaded(true);
+    setIsLoading(false);
+    setError(false);
+  }, []);
+
+  const handleImageError = useCallback(() => {
+    setError(true);
+    setIsLoading(false);
+    setLoaded(false);
+    
+    // Enhanced error logging for debugging
+    console.error("Image failed to load:", {
+      src: other.src,
+      currentSrc: imageSrc,
+      retryCount,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      online: navigator.onLine,
+      serviceWorker: 'serviceWorker' in navigator ? 'available' : 'not available'
+    });
+  }, [other.src, imageSrc, retryCount]);
 
   if (error)
     return (
@@ -94,6 +124,13 @@ export default function MangaImage({
     <span
       className={`block overflow-hidden ${loaded ? "min-h-0" : "min-h-[100vh]"} ${className}`}
     >
+      {/* Show loading state */}
+      {isLoading && !loaded && (
+        <div className="flex items-center justify-center h-full min-h-[200px] bg-gray-100 dark:bg-gray-800">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        </div>
+      )}
+      
       {/* Todo: Fix compatibility issue */}
       {React.createElement(LazyLoadImage as any, {
         wrapperClassName: "block mx-auto",
@@ -102,12 +139,16 @@ export default function MangaImage({
         className: "mx-auto h-full object-cover",
         width: maxImageWidth || "100%",
         src: imageSrc,
-        onLoad: () => setLoaded(true),
-        onError: () => setError(true),
+        onLoad: handleImageLoad,
+        onError: handleImageError,
         threshold: threshold,
         // Add cache-friendly attributes
         loading: "lazy",
         decoding: "async",
+        // Add crossOrigin for external images
+        crossOrigin: imageSrc?.includes("mangadex.org") ? "anonymous" : undefined,
+        // Add referrer policy for better caching
+        referrerPolicy: "no-referrer",
         ...(other as any),
       })}
     </span>

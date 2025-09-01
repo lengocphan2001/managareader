@@ -14,13 +14,14 @@ declare global {
 
 declare const self: ServiceWorkerGlobalScope;
 
+// COMPLETELY DISABLE SERVICE WORKER - NO CACHING AT ALL
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  // Use only default cache - no custom image caching
-  runtimeCaching: defaultCache,
+  // NO RUNTIME CACHING - completely disabled
+  runtimeCaching: [],
   fallbacks: {
     entries: [
       {
@@ -33,60 +34,53 @@ const serwist = new Serwist({
   },
 });
 
-// SIMPLE APPROACH: Force page reload for fresh images
+// COMPLETELY DISABLE ALL CACHING - force fresh load for everything
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   
-  // For manga cover images, force a fresh load by bypassing cache
-  if (
-    url.hostname === "mangadex.org" ||
-    url.hostname === "resizer.f-ck.me" ||
-    url.pathname.includes("/covers/")
-  ) {
-    console.log("Manga cover request - forcing fresh load:", event.request.url);
-    
-    // Force fresh load by adding cache-busting headers
-    const freshRequest = new Request(event.request.url, {
-      method: event.request.method,
-      headers: event.request.headers,
-      mode: event.request.mode,
-      credentials: event.request.credentials,
-      cache: 'no-cache', // Force fresh load
-    });
-    
-    event.respondWith(
-      fetch(freshRequest).then((response) => {
-        // Don't cache the response - always fetch fresh
+  // For ALL requests, force fresh load
+  console.log("Service Worker: Forcing fresh load for:", event.request.url);
+  
+  // Force fresh load by adding cache-busting headers
+  const freshRequest = new Request(event.request.url, {
+    method: event.request.method,
+    headers: event.request.headers,
+    mode: event.request.mode,
+    credentials: event.request.credentials,
+    cache: "no-cache", // Force fresh load
+  });
+  
+  event.respondWith(
+    fetch(freshRequest)
+      .then((response) => {
+        // Don't cache anything - always fetch fresh
         return response;
-      }).catch((error) => {
-        console.error("Failed to fetch manga cover:", event.request.url, error);
-        // Return a placeholder or error response
-        return new Response("Image not available", { status: 404 });
       })
-    );
-  }
+      .catch((error) => {
+        console.error("Failed to fetch:", event.request.url, error);
+        // Return error response
+        return new Response("Resource not available", { status: 404 });
+      }),
+  );
 });
 
 // Add event listeners for debugging
 self.addEventListener("install", (event) => {
-  console.log("Service Worker installing...");
+  console.log("Service Worker installing... DISABLED MODE");
 });
 
 self.addEventListener("activate", (event) => {
-  console.log("Service Worker activating...");
-  // Clean up old caches
+  console.log("Service Worker activating... DISABLED MODE");
+  // Clean up ALL old caches
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          // Keep only the serwist cache, remove all old ones
-          if (!cacheName.includes("serwist")) {
-            console.log("Deleting old cache:", cacheName);
-            return caches.delete(cacheName);
-          }
-        })
+          console.log("Deleting ALL caches:", cacheName);
+          return caches.delete(cacheName);
+        }),
       );
-    })
+    }),
   );
 });
 

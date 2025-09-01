@@ -3,23 +3,31 @@
 import { useState, useEffect } from "react";
 import {
   Search,
-  Filter,
   MoreHorizontal,
   Edit,
   Trash2,
   UserCheck,
   UserX,
-  Plus,
   Download,
   Eye,
   X,
-  Save
+  Save,
 } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/shadcn/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/shadcn/card";
 import { Badge } from "@/components/shadcn/badge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/shadcn/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/shadcn/dropdown-menu";
 import { ConfirmModal } from "@/components/shadcn/confirm-modal";
 import { useConfirmModal } from "@/hooks/useConfirmModal";
 import { adminAPI, User, UpdateUserData } from "@/api/admin";
@@ -52,7 +60,7 @@ export function UserManagement() {
     name: "",
     email: "",
     display_roles: [],
-    status: "active"
+    status: "active",
   });
   const [savingEdit, setSavingEdit] = useState(false);
 
@@ -60,7 +68,14 @@ export function UserManagement() {
   const [isViewProfileOpen, setIsViewProfileOpen] = useState(false);
   const [viewingUser, setViewingUser] = useState<User | null>(null);
 
-  const { openConfirmModal, closeConfirmModal, isOpen, title, message, onConfirm } = useConfirmModal();
+  const {
+    openConfirmModal,
+    closeConfirmModal,
+    isOpen,
+    title,
+    message,
+    onConfirm,
+  } = useConfirmModal();
 
   useEffect(() => {
     fetchUsers();
@@ -92,20 +107,23 @@ export function UserManagement() {
 
     // Search filter
     if (searchQuery) {
-      filtered = filtered.filter(user =>
-        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        (user) =>
+          user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          user.email.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
 
     // Status filter
     if (statusFilter !== "all") {
-      filtered = filtered.filter(user => user.status === statusFilter);
+      filtered = filtered.filter((user) => user.status === statusFilter);
     }
 
     // Role filter
     if (roleFilter !== "all") {
-      filtered = filtered.filter(user => user.display_roles.includes(roleFilter));
+      filtered = filtered.filter((user) =>
+        user.display_roles.includes(roleFilter),
+      );
     }
 
     setFilteredUsers(filtered);
@@ -117,7 +135,7 @@ export function UserManagement() {
       name: user.name,
       email: user.email,
       display_roles: [...user.display_roles],
-      status: user.status
+      status: user.status,
     });
     setIsEditModalOpen(true);
   };
@@ -136,19 +154,17 @@ export function UserManagement() {
         name: editForm.name,
         email: editForm.email,
         display_roles: editForm.display_roles,
-        status: editForm.status
+        status: editForm.status,
       };
 
       const response = await adminAPI.updateUser(editingUser.id, updateData);
 
       if (response.success) {
         // Update the user in the list
-        setUsers(prevUsers =>
-          prevUsers.map(user =>
-            user.id === editingUser.id
-              ? { ...user, ...editForm }
-              : user
-          )
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === editingUser.id ? { ...user, ...editForm } : user,
+          ),
         );
 
         // Close modal and reset state
@@ -158,7 +174,7 @@ export function UserManagement() {
           name: "",
           email: "",
           display_roles: [],
-          status: "active"
+          status: "active",
         });
       } else {
         setError(response.message || "Failed to update user");
@@ -178,12 +194,12 @@ export function UserManagement() {
       name: "",
       email: "",
       display_roles: [],
-      status: "active"
+      status: "active",
     });
   };
 
   const handleDeleteUser = (userId: number) => {
-    const user = users.find(u => u.id === userId);
+    const user = users.find((u) => u.id === userId);
     openConfirmModal({
       title: "Delete User",
       message: `Are you sure you want to delete ${user?.name}? This action cannot be undone and will permanently remove the user account.`,
@@ -191,7 +207,7 @@ export function UserManagement() {
         try {
           const response = await adminAPI.deleteUser(userId);
           if (response.success) {
-            setUsers(users.filter(user => user.id !== userId));
+            setUsers(users.filter((user) => user.id !== userId));
             closeConfirmModal();
           } else {
             setError(response.message || "Failed to delete user");
@@ -202,14 +218,19 @@ export function UserManagement() {
           setError("Failed to delete user");
           closeConfirmModal();
         }
-      }
+      },
     });
   };
 
   const handleBulkAction = (action: "delete" | "suspend" | "activate") => {
     if (selectedUsers.length === 0) return;
 
-    const actionText = action === "delete" ? "delete" : action === "suspend" ? "suspend" : "activate";
+    const actionText =
+      action === "delete"
+        ? "delete"
+        : action === "suspend"
+          ? "suspend"
+          : "activate";
 
     openConfirmModal({
       title: `Bulk ${actionText.charAt(0).toUpperCase() + actionText.slice(1)}`,
@@ -225,7 +246,7 @@ export function UserManagement() {
           setError(`Failed to ${actionText} users`);
           closeConfirmModal();
         }
-      }
+      },
     });
   };
 
@@ -233,24 +254,24 @@ export function UserManagement() {
     if (selectedUsers.length === filteredUsers.length) {
       setSelectedUsers([]);
     } else {
-      setSelectedUsers(filteredUsers.map(user => user.id));
+      setSelectedUsers(filteredUsers.map((user) => user.id));
     }
   };
 
   const handleSelectUser = (userId: number) => {
-    setSelectedUsers(prev =>
+    setSelectedUsers((prev) =>
       prev.includes(userId)
-        ? prev.filter(id => id !== userId)
-        : [...prev, userId]
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId],
     );
   };
 
   const handleRoleToggle = (role: string) => {
-    setEditForm(prev => ({
+    setEditForm((prev) => ({
       ...prev,
       display_roles: prev.display_roles.includes(role)
-        ? prev.display_roles.filter(r => r !== role)
-        : [...prev.display_roles, role]
+        ? prev.display_roles.filter((r) => r !== role)
+        : [...prev.display_roles, role],
     }));
   };
 
@@ -260,7 +281,7 @@ export function UserManagement() {
     const variants = {
       active: "default",
       suspended: "secondary",
-      banned: "destructive"
+      banned: "destructive",
     } as const;
 
     return (
@@ -279,7 +300,7 @@ export function UserManagement() {
       );
     }
 
-    return roles.map(role => (
+    return roles.map((role) => (
       <Badge key={role} variant="outline" className="mr-1">
         {role.charAt(0).toUpperCase() + role.slice(1)}
       </Badge>
@@ -293,8 +314,8 @@ export function UserManagement() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="flex h-64 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -305,11 +326,13 @@ export function UserManagement() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-600">Manage user accounts, roles, and permissions</p>
+          <p className="text-gray-600">
+            Manage user accounts, roles, and permissions
+          </p>
         </div>
         <div className="flex space-x-3">
           <Button variant="outline">
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
         </div>
@@ -317,7 +340,7 @@ export function UserManagement() {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+        <div className="rounded-md border border-red-200 bg-red-50 p-4">
           <p className="text-sm text-red-600">{error}</p>
         </div>
       )}
@@ -325,9 +348,9 @@ export function UserManagement() {
       {/* Filters and Search */}
       <Card>
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
               <Input
                 placeholder="Search users..."
                 value={searchQuery}
@@ -336,11 +359,10 @@ export function UserManagement() {
               />
             </div>
 
-
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="h-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="h-10 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Roles</option>
               <option value="user">User</option>
@@ -365,7 +387,7 @@ export function UserManagement() {
                   size="sm"
                   onClick={() => handleBulkAction("activate")}
                 >
-                  <UserCheck className="h-4 w-4 mr-2" />
+                  <UserCheck className="mr-2 h-4 w-4" />
                   Activate
                 </Button>
                 <Button
@@ -373,7 +395,7 @@ export function UserManagement() {
                   size="sm"
                   onClick={() => handleBulkAction("suspend")}
                 >
-                  <UserX className="h-4 w-4 mr-2" />
+                  <UserX className="mr-2 h-4 w-4" />
                   Suspend
                 </Button>
                 <Button
@@ -382,7 +404,7 @@ export function UserManagement() {
                   onClick={() => handleBulkAction("delete")}
                   className="text-red-600 hover:text-red-700"
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="mr-2 h-4 w-4" />
                   Delete
                 </Button>
               </div>
@@ -401,25 +423,31 @@ export function UserManagement() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left p-3">
+                  <th className="p-3 text-left">
                     <input
                       type="checkbox"
-                      checked={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
+                      checked={
+                        selectedUsers.length === filteredUsers.length &&
+                        filteredUsers.length > 0
+                      }
                       onChange={handleSelectAll}
                       className="rounded border-gray-300"
                     />
                   </th>
-                  <th className="text-left p-3 font-medium">User</th>
-                  <th className="text-left p-3 font-medium">Email</th>
-                  <th className="text-left p-3 font-medium">Role</th>
-                  <th className="text-left p-3 font-medium">Comments</th>
-                  <th className="text-left p-3 font-medium">Joined</th>
-                  <th className="text-left p-3 font-medium">Actions</th>
+                  <th className="p-3 text-left font-medium">User</th>
+                  <th className="p-3 text-left font-medium">Email</th>
+                  <th className="p-3 text-left font-medium">Role</th>
+                  <th className="p-3 text-left font-medium">Comments</th>
+                  <th className="p-3 text-left font-medium">Joined</th>
+                  <th className="p-3 text-left font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredUsers.map((user) => (
-                  <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <tr
+                    key={user.id}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
                     <td className="p-3">
                       <input
                         type="checkbox"
@@ -430,30 +458,38 @@ export function UserManagement() {
                     </td>
                     <td className="p-3">
                       <div className="flex items-center space-x-3">
-                        <div className="h-8 w-8 bg-blue-500 rounded-full flex items-center justify-center">
-                          <span className="text-white text-sm font-medium">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500">
+                          <span className="text-sm font-medium text-white">
                             {(user.name || "U").charAt(0).toUpperCase()}
                           </span>
                         </div>
                         <div>
-                          <div className="font-medium text-gray-900">{user.name || "Unknown User"}</div>
+                          <div className="font-medium text-gray-900">
+                            {user.name || "Unknown User"}
+                          </div>
                         </div>
                       </div>
                     </td>
                     <td className="p-3">
-                      <div className="text-sm text-gray-900">{user.email || "No email"}</div>
+                      <div className="text-sm text-gray-900">
+                        {user.email || "No email"}
+                      </div>
                       {user.email_verified_at && (
-                        <Badge variant="secondary" className="text-xs">Verified</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          Verified
+                        </Badge>
                       )}
                     </td>
+                    <td className="p-3">{getRoleBadge(user.display_roles)}</td>
                     <td className="p-3">
-                      {getRoleBadge(user.display_roles)}
+                      <span className="text-sm text-gray-900">
+                        {user.comment_count || 0}
+                      </span>
                     </td>
                     <td className="p-3">
-                      <span className="text-sm text-gray-900">{user.comment_count || 0}</span>
-                    </td>
-                    <td className="p-3">
-                      <span className="text-sm text-gray-500">{formatDate(user.created_at)}</span>
+                      <span className="text-sm text-gray-500">
+                        {formatDate(user.created_at)}
+                      </span>
                     </td>
                     <td className="p-3">
                       <DropdownMenu>
@@ -462,20 +498,29 @@ export function UserManagement() {
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-white border border-gray-200 shadow-lg">
-                          <DropdownMenuItem onClick={() => handleViewProfile(user)} className="hover:bg-gray-50">
-                            <Eye className="h-4 w-4 mr-2" />
+                        <DropdownMenuContent
+                          align="end"
+                          className="border border-gray-200 bg-white shadow-lg"
+                        >
+                          <DropdownMenuItem
+                            onClick={() => handleViewProfile(user)}
+                            className="hover:bg-gray-50"
+                          >
+                            <Eye className="mr-2 h-4 w-4" />
                             View Profile
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleEditUser(user)} className="hover:bg-gray-50">
-                            <Edit className="h-4 w-4 mr-2" />
+                          <DropdownMenuItem
+                            onClick={() => handleEditUser(user)}
+                            className="hover:bg-gray-50"
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
                             Edit User
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleDeleteUser(user.id)}
                             className="text-red-600 hover:bg-red-50"
                           >
-                            <Trash2 className="h-4 w-4 mr-2" />
+                            <Trash2 className="mr-2 h-4 w-4" />
                             Delete User
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -489,15 +534,18 @@ export function UserManagement() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-6">
+            <div className="mt-6 flex items-center justify-between">
               <div className="text-sm text-gray-700">
-                Showing page {currentPage} of {totalPages} ({totalUsers} total users)
+                Showing page {currentPage} of {totalPages} ({totalUsers} total
+                users)
               </div>
               <div className="flex space-x-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
                   disabled={currentPage === 1}
                 >
                   Previous
@@ -505,7 +553,9 @@ export function UserManagement() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
                   disabled={currentPage === totalPages}
                 >
                   Next
@@ -526,9 +576,9 @@ export function UserManagement() {
           />
 
           {/* Modal */}
-          <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="relative mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between border-b border-gray-200 p-6">
               <div className="flex items-center space-x-3">
                 <Edit className="h-5 w-5 text-blue-600" />
                 <h3 className="text-lg font-semibold text-gray-900">
@@ -537,38 +587,48 @@ export function UserManagement() {
               </div>
               <button
                 onClick={handleCancelEdit}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 transition-colors hover:text-gray-600"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="p-6 space-y-6">
+            <div className="space-y-6 p-6">
               {/* Basic Information */}
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-900">Basic Information</h4>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
                       Name
                     </label>
                     <Input
                       value={editForm.name}
-                      onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+                      onChange={(e) =>
+                        setEditForm((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
                       placeholder="Enter user name"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="mb-2 block text-sm font-medium text-gray-700">
                       Email
                     </label>
                     <Input
                       type="email"
                       value={editForm.email}
-                      onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
+                      onChange={(e) =>
+                        setEditForm((prev) => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
                       placeholder="Enter email address"
                     />
                   </div>
@@ -579,23 +639,30 @@ export function UserManagement() {
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-900">Account Status</h4>
                 <div className="grid grid-cols-3 gap-3">
-                  {(["active", "suspended", "banned"] as const).map((status) => (
-                    <button
-                      key={status}
-                      onClick={() => setEditForm(prev => ({ ...prev, status }))}
-                      className={`p-3 border rounded-lg text-left transition-colors ${editForm.status === status
-                          ? "border-blue-500 bg-blue-50 text-blue-700"
-                          : "border-gray-300 hover:border-gray-400"
+                  {(["active", "suspended", "banned"] as const).map(
+                    (status) => (
+                      <button
+                        key={status}
+                        onClick={() =>
+                          setEditForm((prev) => ({ ...prev, status }))
+                        }
+                        className={`rounded-lg border p-3 text-left transition-colors ${
+                          editForm.status === status
+                            ? "border-blue-500 bg-blue-50 text-blue-700"
+                            : "border-gray-300 hover:border-gray-400"
                         }`}
-                    >
-                      <div className="font-medium capitalize">{status}</div>
-                      <div className="text-sm text-gray-500">
-                        {status === "active" && "User can access the platform"}
-                        {status === "suspended" && "User access temporarily restricted"}
-                        {status === "banned" && "User permanently banned"}
-                      </div>
-                    </button>
-                  ))}
+                      >
+                        <div className="font-medium capitalize">{status}</div>
+                        <div className="text-sm text-gray-500">
+                          {status === "active" &&
+                            "User can access the platform"}
+                          {status === "suspended" &&
+                            "User access temporarily restricted"}
+                          {status === "banned" && "User permanently banned"}
+                        </div>
+                      </button>
+                    ),
+                  )}
                 </div>
               </div>
 
@@ -615,7 +682,8 @@ export function UserManagement() {
                         <div className="font-medium capitalize">{role}</div>
                         <div className="text-sm text-gray-500">
                           {role === "user" && "Basic user permissions"}
-                          {role === "mod" && "Moderator with content management rights"}
+                          {role === "mod" &&
+                            "Moderator with content management rights"}
                           {role === "admin" && "Full administrative access"}
                         </div>
                       </div>
@@ -626,7 +694,7 @@ export function UserManagement() {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+            <div className="flex items-center justify-end space-x-3 border-t border-gray-200 p-6">
               <Button
                 variant="outline"
                 onClick={handleCancelEdit}
@@ -641,9 +709,9 @@ export function UserManagement() {
                 disabled={savingEdit}
               >
                 {savingEdit ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                 ) : (
-                  <Save className="h-4 w-4 mr-2" />
+                  <Save className="mr-2 h-4 w-4" />
                 )}
                 {savingEdit ? "Saving..." : "Save Changes"}
               </Button>
@@ -662,9 +730,9 @@ export function UserManagement() {
           />
 
           {/* Modal */}
-          <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="relative mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between border-b border-gray-200 p-6">
               <div className="flex items-center space-x-3">
                 <Eye className="h-5 w-5 text-blue-600" />
                 <h3 className="text-lg font-semibold text-gray-900">
@@ -673,33 +741,53 @@ export function UserManagement() {
               </div>
               <button
                 onClick={() => setIsViewProfileOpen(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 transition-colors hover:text-gray-600"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-6 p-6">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <h4 className="font-medium text-gray-900">Basic Information</h4>
-                  <p><span className="font-semibold">Name:</span> {viewingUser.name || "N/A"}</p>
-                  <p><span className="font-semibold">Email:</span> {viewingUser.email || "N/A"}</p>
-                  <p><span className="font-semibold">Email Verified:</span> {viewingUser.email_verified_at ? "Yes" : "No"}</p>
-                  <p><span className="font-semibold">Joined:</span> {formatDate(viewingUser.created_at)}</p>
+                  <h4 className="font-medium text-gray-900">
+                    Basic Information
+                  </h4>
+                  <p>
+                    <span className="font-semibold">Name:</span>{" "}
+                    {viewingUser.name || "N/A"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Email:</span>{" "}
+                    {viewingUser.email || "N/A"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Email Verified:</span>{" "}
+                    {viewingUser.email_verified_at ? "Yes" : "No"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Joined:</span>{" "}
+                    {formatDate(viewingUser.created_at)}
+                  </p>
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-900">Account Status</h4>
-                  <p><span className="font-semibold">Status:</span> {getStatusBadge(viewingUser.status || "active")}</p>
-                  <p><span className="font-semibold">Comment Count:</span> {viewingUser.comment_count || 0}</p>
+                  <p>
+                    <span className="font-semibold">Status:</span>{" "}
+                    {getStatusBadge(viewingUser.status || "active")}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Comment Count:</span>{" "}
+                    {viewingUser.comment_count || 0}
+                  </p>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <h4 className="font-medium text-gray-900">User Roles</h4>
                 <div className="space-y-2">
-                  {viewingUser.display_roles.map(role => (
+                  {viewingUser.display_roles.map((role) => (
                     <Badge key={role} variant="outline" className="mr-1">
                       {role.charAt(0).toUpperCase() + role.slice(1)}
                     </Badge>
@@ -709,7 +797,7 @@ export function UserManagement() {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+            <div className="flex items-center justify-end space-x-3 border-t border-gray-200 p-6">
               <Button
                 variant="outline"
                 onClick={() => setIsViewProfileOpen(false)}

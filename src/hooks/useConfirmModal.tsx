@@ -17,15 +17,18 @@ export function useConfirmModal() {
     onConfirm: () => {},
   });
 
-  const openConfirmModal = useCallback((config: Omit<ConfirmModalState, "isOpen">) => {
-    setState({
-      ...config,
-      isOpen: true,
-    });
-  }, []);
+  const openConfirmModal = useCallback(
+    (config: Omit<ConfirmModalState, "isOpen">) => {
+      setState({
+        ...config,
+        isOpen: true,
+      });
+    },
+    [],
+  );
 
   const closeConfirmModal = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       isOpen: false,
     }));

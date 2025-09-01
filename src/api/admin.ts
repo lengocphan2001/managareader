@@ -1,4 +1,4 @@
-import { axios } from './core/axios';
+import { axios } from "./core/axios";
 
 export interface AdminUser {
   id: number;
@@ -78,7 +78,7 @@ export interface PaginatedResponse<T> {
 }
 
 class AdminAPI {
-  private baseURL = '/api';
+  private baseURL = "/api";
 
   // Admin Authentication
   async login(email: string, password: string): Promise<AdminLoginResponse> {
@@ -105,43 +105,75 @@ class AdminAPI {
   }
 
   // User Management
-  async getUsers(page: number = 1, limit: number = 20): Promise<PaginatedResponse<User>> {
+  async getUsers(
+    page: number = 1,
+    limit: number = 20,
+  ): Promise<PaginatedResponse<User>> {
     const response = await axios.get(`${this.baseURL}/admin/users`, {
-      params: { page, limit }
+      params: { page, limit },
     });
     return response.data;
   }
 
-  async updateUser(userId: number, userData: UpdateUserData): Promise<{ success: boolean; message: string; user?: User }> {
-    const response = await axios.put(`${this.baseURL}/admin/users/${userId}`, userData);
+  async updateUser(
+    userId: number,
+    userData: UpdateUserData,
+  ): Promise<{ success: boolean; message: string; user?: User }> {
+    const response = await axios.put(
+      `${this.baseURL}/admin/users/${userId}`,
+      userData,
+    );
     return response.data;
   }
 
-  async updateUserRole(userId: number, roles: string[]): Promise<{ success: boolean; message: string }> {
-    const response = await axios.put(`${this.baseURL}/admin/users/${userId}/roles`, { roles });
+  async updateUserRole(
+    userId: number,
+    roles: string[],
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await axios.put(
+      `${this.baseURL}/admin/users/${userId}/roles`,
+      { roles },
+    );
     return response.data;
   }
 
-  async deleteUser(userId: number): Promise<{ success: boolean; message: string }> {
-    const response = await axios.delete(`${this.baseURL}/admin/users/${userId}`);
+  async deleteUser(
+    userId: number,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await axios.delete(
+      `${this.baseURL}/admin/users/${userId}`,
+    );
     return response.data;
   }
 
   // Comment Management
-  async getComments(page: number = 1, limit: number = 20): Promise<PaginatedResponse<Comment>> {
+  async getComments(
+    page: number = 1,
+    limit: number = 20,
+  ): Promise<PaginatedResponse<Comment>> {
     const response = await axios.get(`${this.baseURL}/admin/comments`, {
-      params: { page, limit }
+      params: { page, limit },
     });
     return response.data;
   }
 
-  async updateComment(commentId: number, commentData: UpdateCommentData): Promise<{ success: boolean; message: string }> {
-    const response = await axios.put(`${this.baseURL}/admin/comments/${commentId}`, commentData);
+  async updateComment(
+    commentId: number,
+    commentData: UpdateCommentData,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await axios.put(
+      `${this.baseURL}/admin/comments/${commentId}`,
+      commentData,
+    );
     return response.data;
   }
 
-  async deleteComment(commentId: number): Promise<{ success: boolean; message: string }> {
-    const response = await axios.delete(`${this.baseURL}/admin/comments/${commentId}`);
+  async deleteComment(
+    commentId: number,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await axios.delete(
+      `${this.baseURL}/admin/comments/${commentId}`,
+    );
     return response.data;
   }
 
@@ -151,8 +183,13 @@ class AdminAPI {
     return response.data;
   }
 
-  async updateSiteSettings(settings: any): Promise<{ success: boolean; message: string }> {
-    const response = await axios.put(`${this.baseURL}/admin/settings`, settings);
+  async updateSiteSettings(
+    settings: any,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await axios.put(
+      `${this.baseURL}/admin/settings`,
+      settings,
+    );
     return response.data;
   }
 }

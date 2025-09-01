@@ -27,19 +27,20 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <AdminSettingsProvider>
             <AdminGuard>
               <AdminTitle />
-              <div className="min-h-screen flex">
+              <div className="flex min-h-screen">
                 {/* Sidebar */}
-                <AdminSidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+                <AdminSidebar
+                  collapsed={sidebarCollapsed}
+                  onToggle={toggleSidebar}
+                />
 
                 {/* Main Content */}
-                <div className="flex-1 flex flex-col min-w-0">
+                <div className="flex min-w-0 flex-1 flex-col">
                   {/* Top Navbar */}
                   <AdminNavbar onToggleSidebar={toggleSidebar} />
 
                   {/* Page Content */}
-                  <main className="flex-1 p-6 overflow-auto">
-                    {children}
-                  </main>
+                  <main className="flex-1 overflow-auto p-6">{children}</main>
                 </div>
               </div>
             </AdminGuard>

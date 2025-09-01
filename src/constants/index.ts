@@ -47,6 +47,14 @@ export class Constants {
       index: "/profile",
       settings: "/profile/settings",
     },
+    admin: {
+      index: "/admin",
+      dashboard: "/admin",
+      login: "/admin/login",
+      users: "/admin/users",
+      comments: "/admin/comments",
+      settings: "/admin/settings",
+    },
   };
   static readonly AVALABLE_DOMAINS = DOMAINS;
   static readonly DOMAIN_LIST_URL =

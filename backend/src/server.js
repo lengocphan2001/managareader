@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const commentRoutes = require("./routes/comment");
 const seriesRoutes = require("./routes/series");
+const adminRoutes = require("./routes/admin");
 const { errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
@@ -101,6 +102,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/comment", commentRoutes);
 app.use("/api/series", seriesRoutes);
+app.use("/api/admin", adminRoutes);
 
 // CSRF cookie endpoint (for Laravel Sanctum compatibility)
 app.get("/api/sanctum/csrf-cookie", (req, res) => {

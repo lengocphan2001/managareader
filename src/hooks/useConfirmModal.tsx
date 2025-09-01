@@ -6,58 +6,34 @@ interface ConfirmModalState {
   isOpen: boolean;
   title: string;
   message: string;
-  confirmText?: string;
-  cancelText?: string;
-  type?: "danger" | "warning" | "info";
-  onConfirm?: () => void;
+  onConfirm: () => void;
 }
 
 export function useConfirmModal() {
-  const [modalState, setModalState] = useState<ConfirmModalState>({
+  const [state, setState] = useState<ConfirmModalState>({
     isOpen: false,
     title: "",
     message: "",
+    onConfirm: () => {},
   });
 
-  const showConfirm = useCallback(
-    (
-      title: string,
-      message: string,
-      onConfirm: () => void,
-      options?: {
-        confirmText?: string;
-        cancelText?: string;
-        type?: "danger" | "warning" | "info";
-      },
-    ) => {
-      setModalState({
-        isOpen: true,
-        title,
-        message,
-        onConfirm,
-        confirmText: options?.confirmText,
-        cancelText: options?.cancelText,
-        type: options?.type || "danger",
-      });
-    },
-    [],
-  );
-
-  const hideConfirm = useCallback(() => {
-    setModalState((prev) => ({ ...prev, isOpen: false }));
+  const openConfirmModal = useCallback((config: Omit<ConfirmModalState, "isOpen">) => {
+    setState({
+      ...config,
+      isOpen: true,
+    });
   }, []);
 
-  const handleConfirm = useCallback(() => {
-    if (modalState.onConfirm) {
-      modalState.onConfirm();
-    }
-    hideConfirm();
-  }, [modalState.onConfirm, hideConfirm]);
+  const closeConfirmModal = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      isOpen: false,
+    }));
+  }, []);
 
   return {
-    modalState,
-    showConfirm,
-    hideConfirm,
-    handleConfirm,
+    ...state,
+    openConfirmModal,
+    closeConfirmModal,
   };
 }

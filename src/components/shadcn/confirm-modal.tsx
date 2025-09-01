@@ -1,132 +1,108 @@
 "use client";
 
-import { Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { AlertTriangle, X } from "lucide-react";
+import { Button } from "@/components/shadcn/button";
 
 interface ConfirmModalProps {
   isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
   title: string;
   message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
   confirmText?: string;
   cancelText?: string;
   type?: "danger" | "warning" | "info";
 }
 
-export default function ConfirmModal({
+export function ConfirmModal({
   isOpen,
-  onClose,
-  onConfirm,
   title,
   message,
+  onConfirm,
+  onCancel,
   confirmText = "Confirm",
   cancelText = "Cancel",
-  type = "danger",
+  type = "danger"
 }: ConfirmModalProps) {
-  const handleConfirm = () => {
-    onConfirm();
-    onClose();
-  };
+  if (!isOpen) return null;
 
-  const getIconColor = () => {
+  const getTypeStyles = () => {
     switch (type) {
       case "danger":
-        return "text-red-600";
+        return {
+          icon: "text-red-600",
+          button: "bg-red-600 hover:bg-red-700",
+          border: "border-red-200"
+        };
       case "warning":
-        return "text-yellow-600";
+        return {
+          icon: "text-yellow-600",
+          button: "bg-yellow-600 hover:bg-yellow-700",
+          border: "border-yellow-200"
+        };
       case "info":
-        return "text-blue-600";
+        return {
+          icon: "text-blue-600",
+          button: "bg-blue-600 hover:bg-blue-700",
+          border: "border-blue-200"
+        };
       default:
-        return "text-red-600";
+        return {
+          icon: "text-red-600",
+          button: "bg-red-600 hover:bg-red-700",
+          border: "border-red-200"
+        };
     }
   };
 
-  const getButtonColor = () => {
-    switch (type) {
-      case "danger":
-        return "bg-red-600 hover:bg-red-700 focus:ring-red-500";
-      case "warning":
-        return "bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500";
-      case "info":
-        return "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500";
-      default:
-        return "bg-red-600 hover:bg-red-700 focus:ring-red-500";
-    }
-  };
+  const styles = getTypeStyles();
 
   return (
-    <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={onClose}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              enterTo="opacity-100 translate-y-0 sm:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-xl bg-white px-6 pb-6 pt-6 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-8 md:max-w-3xl lg:max-w-4xl">
-                <div className="sm:flex sm:items-start">
-                  <div
-                    className={`mx-auto flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-16 sm:w-16`}
-                  >
-                    <ExclamationTriangleIcon
-                      className={`h-8 w-8 ${getIconColor()}`}
-                      aria-hidden="true"
-                    />
-                  </div>
-                  <div className="mt-4 text-center sm:ml-6 sm:mt-0 sm:text-left">
-                    <Dialog.Title
-                      as="h3"
-                      className="text-xl font-bold leading-7 text-gray-900 sm:text-2xl"
-                    >
-                      {title}
-                    </Dialog.Title>
-                    <div className="mt-4">
-                      <p className="text-base text-gray-600 sm:text-lg">
-                        {message}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-8 sm:mt-6 sm:flex sm:flex-row-reverse">
-                  <button
-                    type="button"
-                    className={`inline-flex w-full justify-center rounded-lg px-6 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl sm:ml-4 sm:w-auto ${getButtonColor()}`}
-                    onClick={handleConfirm}
-                  >
-                    {confirmText}
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-4 inline-flex w-full justify-center rounded-lg bg-white px-6 py-3 text-base font-semibold text-gray-900 shadow-lg ring-1 ring-inset ring-gray-300 transition-all duration-200 hover:bg-gray-50 hover:shadow-xl sm:mt-0 sm:w-auto"
-                    onClick={onClose}
-                  >
-                    {cancelText}
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black bg-opacity-50"
+        onClick={onCancel}
+      />
+      
+      {/* Modal */}
+      <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        {/* Header */}
+        <div className={`flex items-center justify-between p-6 border-b ${styles.border}`}>
+          <div className="flex items-center space-x-3">
+            <AlertTriangle className={`h-5 w-5 ${styles.icon}`} />
+            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
           </div>
+          <button
+            onClick={onCancel}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
-      </Dialog>
-    </Transition.Root>
+
+        {/* Content */}
+        <div className="p-6">
+          <p className="text-gray-600">{message}</p>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
+          <Button
+            variant="outline"
+            onClick={onCancel}
+            className="border-gray-300 text-gray-700 hover:bg-gray-50"
+          >
+            {cancelText}
+          </Button>
+          <Button
+            onClick={onConfirm}
+            className={styles.button}
+          >
+            {confirmText}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

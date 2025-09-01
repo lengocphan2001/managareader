@@ -57,6 +57,14 @@ export default function TopNav() {
               <Iconify icon="eva:github-fill" className="h-4 w-4" />
             </a>
           </li>
+          <li className="mb-0 inline pl-1">
+            <Link
+              href="/admin/login"
+              className="btn btn-icon rounded-full border-red-600 bg-red-600 text-white hover:border-red-700 hover:bg-red-700"
+            >
+              <Iconify icon="eva:shield-fill" className="h-4 w-4" />
+            </Link>
+          </li>
         </ul>
         {/*Login button End*/}
         <div id="navigation" className={openMenu ? "open" : ""}>

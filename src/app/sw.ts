@@ -19,7 +19,7 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  // Use only default cache - let nginx handle image caching
+  // Use only default cache - no custom image caching
   runtimeCaching: defaultCache,
   fallbacks: {
     entries: [
@@ -33,7 +33,41 @@ const serwist = new Serwist({
   },
 });
 
-// Add event listeners for better debugging
+// SIMPLE APPROACH: Force page reload for fresh images
+self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+  
+  // For manga cover images, force a fresh load by bypassing cache
+  if (
+    url.hostname === "mangadex.org" ||
+    url.hostname === "resizer.f-ck.me" ||
+    url.pathname.includes("/covers/")
+  ) {
+    console.log("Manga cover request - forcing fresh load:", event.request.url);
+    
+    // Force fresh load by adding cache-busting headers
+    const freshRequest = new Request(event.request.url, {
+      method: event.request.method,
+      headers: event.request.headers,
+      mode: event.request.mode,
+      credentials: event.request.credentials,
+      cache: 'no-cache', // Force fresh load
+    });
+    
+    event.respondWith(
+      fetch(freshRequest).then((response) => {
+        // Don't cache the response - always fetch fresh
+        return response;
+      }).catch((error) => {
+        console.error("Failed to fetch manga cover:", event.request.url, error);
+        // Return a placeholder or error response
+        return new Response("Image not available", { status: 404 });
+      })
+    );
+  }
+});
+
+// Add event listeners for debugging
 self.addEventListener("install", (event) => {
   console.log("Service Worker installing...");
 });
@@ -50,57 +84,10 @@ self.addEventListener("activate", (event) => {
             console.log("Deleting old cache:", cacheName);
             return caches.delete(cacheName);
           }
-        }),
+        })
       );
-    }),
+    })
   );
-});
-
-// SIMPLE MANGA COVER CACHING - No complex logic
-self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
-
-  // Only handle manga cover images
-  if (
-    url.hostname === "mangadex.org" ||
-    url.hostname === "resizer.f-ck.me" ||
-    url.pathname.includes("/covers/")
-  ) {
-    console.log("Manga cover request:", event.request.url);
-
-    event.respondWith(
-      caches.open("manga-covers").then((cache) => {
-        // Try to get from cache first
-        return cache.match(event.request).then((response) => {
-          if (response) {
-            console.log("Serving manga cover from cache:", event.request.url);
-            return response;
-          }
-
-          // If not in cache, fetch from network and cache it
-          return fetch(event.request)
-            .then((networkResponse) => {
-              if (networkResponse.status === 200) {
-                // Clone the response before caching
-                const responseToCache = networkResponse.clone();
-                cache.put(event.request, responseToCache);
-                console.log("Cached new manga cover:", event.request.url);
-              }
-              return networkResponse;
-            })
-            .catch((error) => {
-              console.error(
-                "Failed to fetch manga cover:",
-                event.request.url,
-                error,
-              );
-              // Return a placeholder or error response
-              return new Response("Image not available", { status: 404 });
-            });
-        });
-      }),
-    );
-  }
 });
 
 serwist.addEventListeners();

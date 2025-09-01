@@ -10,10 +10,7 @@ import {
 
 import { useCookies } from "@/hooks/useCookies";
 
-import type {
-  SettingsState,
-  SettingsContextValue,
-} from "@/types";
+import type { SettingsState, SettingsContextValue } from "@/types";
 import { Constants } from "@/constants";
 
 // ----------------------------------------------------------------------
@@ -26,11 +23,7 @@ export const SettingsConsumer = SettingsContext.Consumer;
 
 // ----------------------------------------------------------------------
 
-export function SettingsProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const values = useCookies<SettingsState>(
     Constants.Settings.COOKIE_KEY,
     Constants.Settings.DEFAULT_SETTINGS,

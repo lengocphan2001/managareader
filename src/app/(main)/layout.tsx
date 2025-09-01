@@ -7,10 +7,10 @@ import NextTopLoader from "nextjs-toploader";
 import { Constants } from "@/constants";
 
 export const metadata: Metadata = {
-  title: `${Constants.APP_NAME} - Truyện tranh chất lượng cao không quảng cáo`,
+  title: `${Constants.APP_NAME} - Truyện tranh chất lượng cao`,
   description: `Đọc truyện miễn phí, chất lượng cao và tham gia ủng hộ nhóm dịch trên ${Constants.APP_NAME}`,
   applicationName: Constants.APP_NAME,
-  authors: [{ name: "TruyenDex", url: "https://github.com/zennomi/truyendex" }],
+  authors: [{ name: "MangaApp", url: "https://github.com/lengocphan2001/managareader.git" }],
   keywords: [
     "manga",
     "manga",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: `${Constants.APP_NAME} - Truyện tranh chất lượng cao không quảng cáo`,
+    title: `${Constants.APP_NAME} - Truyện tranh chất lượng cao`,
     // startUpImage: [],
   },
   formatDetection: {

@@ -42,7 +42,7 @@ export default function FollowingSync() {
 
       <div className="text-base text-gray-300">
         <b>Note:</b> You can sync NetTruyen, TruyenQQ to CManga, then sync
-        CManga to TruyenDex.
+        CManga to MangaApp.
       </div>
 
       <div className={headingClassName}>Step 2:</div>

@@ -15,7 +15,7 @@ export default function NotFound() {
                   <img
                     src={"/images/logo.png"}
                     className="mx-auto"
-                    alt="truyendex logo"
+                    alt="mangaapp logo"
                     height={64}
                   />
                 </Link>

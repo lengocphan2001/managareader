@@ -19,7 +19,7 @@ export default function TopNav() {
           <img
             src={"/images/logo.png"}
             className="hidden h-6 dark:inline-block"
-            alt="truyendex logo"
+            alt="mangaapp logo"
             height={24}
           />
         </Link>

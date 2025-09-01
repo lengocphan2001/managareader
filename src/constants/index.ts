@@ -9,7 +9,7 @@ export class Constants {
   static readonly APP_URL = process.env.NEXT_PUBLIC_APP_URL || "";
   static readonly BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   static readonly APP_IMAGE_URL = process.env.NEXT_PUBLIC_APP_IMAGE_URL || "";
-  static readonly APP_NAME = "Truyendex";
+  static readonly APP_NAME = "MangaApp";
   static readonly APP_VERSION = "1.0.0";
   static readonly GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "";
   static readonly TURNSTILE_SITE_KEY =
@@ -34,7 +34,7 @@ export class Constants {
     },
     scanlationGroup: (id: string) => `/scanlation-group/${id}`,
     report: `https://www.messenger.com/t/443260942921638`,
-    github: "https://github.com/zennomi/truyendex",
+    github: "https://github.com/lengocphan2001/managareader.git",
     hako: "https://docln.sbs",
     login: "/login",
     loginWithRedirect: (redirectUrl: string) =>

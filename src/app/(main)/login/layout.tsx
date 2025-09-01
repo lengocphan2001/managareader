@@ -20,7 +20,7 @@ export default function AuthLayout({
                     <img
                       src={"/images/logo.png"}
                       className="mx-auto"
-                      alt="truyendex logo"
+                      alt="mangaapp logo"
                     />
                   </Link>
                 </div>

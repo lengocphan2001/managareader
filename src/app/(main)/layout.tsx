@@ -10,7 +10,12 @@ export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - Truyện tranh chất lượng cao`,
   description: `Đọc truyện miễn phí, chất lượng cao và tham gia ủng hộ nhóm dịch trên ${Constants.APP_NAME}`,
   applicationName: Constants.APP_NAME,
-  authors: [{ name: "MangaApp", url: "https://github.com/lengocphan2001/managareader.git" }],
+  authors: [
+    {
+      name: "MangaApp",
+      url: "https://github.com/lengocphan2001/managareader.git",
+    },
+  ],
   keywords: [
     "manga",
     "manga",

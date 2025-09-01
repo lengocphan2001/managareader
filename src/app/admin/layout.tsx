@@ -6,6 +6,7 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminAuthProvider } from "@/contexts/admin-auth";
 import { AdminSettingsProvider } from "@/contexts/admin-settings";
 import { AdminTitle } from "@/components/admin/AdminTitle";
+import { AdminGuard } from "@/components/admin/AdminGuard";
 import "./globals.css";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -24,22 +25,24 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <body className="bg-gray-50">
         <AdminAuthProvider>
           <AdminSettingsProvider>
-            <AdminTitle />
-            <div className="min-h-screen flex">
-              {/* Sidebar */}
-              <AdminSidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+            <AdminGuard>
+              <AdminTitle />
+              <div className="min-h-screen flex">
+                {/* Sidebar */}
+                <AdminSidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
 
-              {/* Main Content */}
-              <div className="flex-1 flex flex-col min-w-0">
-                {/* Top Navbar */}
-                <AdminNavbar onToggleSidebar={toggleSidebar} />
+                {/* Main Content */}
+                <div className="flex-1 flex flex-col min-w-0">
+                  {/* Top Navbar */}
+                  <AdminNavbar onToggleSidebar={toggleSidebar} />
 
-                {/* Page Content */}
-                <main className="flex-1 p-6 overflow-auto">
-                  {children}
-                </main>
+                  {/* Page Content */}
+                  <main className="flex-1 p-6 overflow-auto">
+                    {children}
+                  </main>
+                </div>
               </div>
-            </div>
+            </AdminGuard>
           </AdminSettingsProvider>
         </AdminAuthProvider>
       </body>

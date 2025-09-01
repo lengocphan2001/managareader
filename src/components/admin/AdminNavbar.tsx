@@ -70,28 +70,29 @@ export function AdminNavbar({ onToggleSidebar }: AdminNavbarProps) {
         {/* Right side - Actions and User */}
         <div className="flex items-center space-x-4">
 
-          {/* User Menu */}
-          <div className="relative">
-            <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-white" />
-              </div>
-              <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-gray-900">{adminUser?.name || "Admin"}</p>
-                <p className="text-xs text-gray-500">{adminUser?.email || "admin@truyendex.com"}</p>
-              </div>
-              <ChevronDown className="h-4 w-4 text-gray-400" />
-            </button>
+          {/* User Menu - Only show if user is authenticated */}
+          {adminUser ? (
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <User className="h-4 w-4 text-white" />
+                </div>
+                <div className="hidden md:block text-left">
+                  <p className="text-sm font-medium text-gray-900">{adminUser.name}</p>
+                  <p className="text-xs text-gray-500">{adminUser.email}</p>
+                </div>
+                <ChevronDown className="h-4 w-4 text-gray-400" />
+              </button>
 
             {/* User Dropdown */}
             {showUserMenu && (
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                 <div className="px-4 py-3 border-b border-gray-100">
-                  <p className="text-sm font-medium text-gray-900">{adminUser?.name || "Admin"}</p>
-                  <p className="text-xs text-gray-500">{adminUser?.email || "admin@truyendex.com"}</p>
+                  <p className="text-sm font-medium text-gray-900">{adminUser.name}</p>
+                  <p className="text-xs text-gray-500">{adminUser.email}</p>
                 </div>
                 
                 <div className="py-1">
@@ -123,7 +124,13 @@ export function AdminNavbar({ onToggleSidebar }: AdminNavbarProps) {
                 </div>
               </div>
             )}
-          </div>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2 text-gray-500">
+              <User className="h-4 w-4" />
+              <span className="text-sm">Not logged in</span>
+            </div>
+          )}
         </div>
       </div>
     </nav>

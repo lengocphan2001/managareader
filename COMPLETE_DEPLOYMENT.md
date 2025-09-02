@@ -132,10 +132,10 @@ systemctl status redis-server
 sudo -u postgres psql
 
 # Create database and user
-CREATE DATABASE truyendex;
-CREATE USER truyendex_user WITH PASSWORD 'your_secure_password_here';
-GRANT ALL PRIVILEGES ON DATABASE truyendex TO truyendex_user;
-ALTER USER truyendex_user CREATEDB;
+CREATE DATABASE mangareader;
+CREATE USER mangareader_user WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE mangareader TO mangareader_user;
+ALTER USER mangareader_user CREATEDB;
 
 # Exit PostgreSQL
 \q
@@ -203,8 +203,8 @@ NODE_ENV=production
 NEXT_PUBLIC_API_URL=https://xklduyenviet.net
 NEXT_PUBLIC_BACKEND_URL=https://xklduyenviet.net
 NEXT_PUBLIC_APP_URL=https://xklduyenviet.net
-NEXT_PUBLIC_CORS_URL=https://xklduyenviet.net
-NEXT_PUBLIC_CORS_V2_URL=https://xklduyenviet.net
+NEXT_PUBLIC_CORS_URL=https://proxy.xklduyenviet.net
+NEXT_PUBLIC_CORS_V2_URL=https://proxy.xklduyenviet.net
 NEXT_PUBLIC_GTM_ID="GTM-T8T8T8KF"
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
 # Other frontend variables
@@ -224,7 +224,7 @@ NODE_ENV=production
 PORT=8000
 
 # Database Configuration
-DATABASE_URL="postgresql://truyendex_user:truyendex123@localhost:5432/truyendex"
+DATABASE_URL="postgresql://mangareader_user:password@localhost:5432/mangareader"
 
 # JWT Configuration
 JWT_SECRET=your_jwt_secret_key_here
@@ -387,6 +387,8 @@ cat > /etc/nginx/sites-available/xklduyenviet.net << 'EOF'
 limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
 limit_req_zone $binary_remote_addr zone=login:10m rate=5r/m;
 
+# No cache zones needed - always fresh load
+
 # Upstream servers
 upstream backend {
     server 127.0.0.1:8000;
@@ -400,22 +402,14 @@ upstream frontend {
 server {
     listen 80;
     listen [::]:80;
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
     server_name xklduyenviet.net www.xklduyenviet.net;
 
-    # SSL Configuration (will be updated by Certbot)
-    ssl_certificate /etc/letsencrypt/live/xklduyenviet.net/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/xklduyenviet.net/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
-    # Security headers
+    # Security headers with proper CSP for Cloudflare Turnstile and Google Tag Manager
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header X-XSS-Protection "1; mode=block" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "no-referrer-when-downgrade" always;
-    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.xklduyenviet.net https://api.iconify.design https://challenges.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https: data: https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://challenges.cloudflare.com https://www.googletagmanager.com; img-src 'self' data: https: blob: https://resizer.f-ck.me https://mangadex.org https://www.googletagmanager.com; font-src 'self' data: https: https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'self';" always;
 
     # Gzip compression
     gzip on;
@@ -476,8 +470,56 @@ server {
         add_header Cache-Control "public, immutable";
     }
 
+    # Manga cover images - NO CACHING (always fresh load)
+    location ~* /covers/.*\.(jpg|jpeg|png|gif|webp)$ {
+        proxy_pass http://frontend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # NO CACHING - always fresh load
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        add_header Pragma "no-cache";
+        add_header Expires "0";
+        add_header X-Cache-Status "DISABLED";
+    }
+
+    # External manga cover images (MangaDex, resizer) - NO CACHING
+    location ~* ^/.*/covers/.*\.(jpg|jpeg|png|gif|webp)$ {
+        proxy_pass http://frontend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # NO CACHING - always fresh load
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        add_header Pragma "no-cache";
+        add_header Expires "0";
+        add_header X-Cache-Status "DISABLED";
+    }
+
+    # Other images - NO CACHING
+    location ~* \.(jpg|jpeg|png|gif|webp)$ {
+        proxy_pass http://frontend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Don't cache other images
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        add_header Pragma "no-cache";
+        add_header Expires "0";
+        add_header X-Cache-Status "DISABLED";
+    }
+
     # Other static files
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+    location ~* \.(js|css|ico|svg|woff|woff2|ttf|eot)$ {
         proxy_pass http://frontend;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
@@ -488,6 +530,20 @@ server {
         # Cache static files
         expires 1y;
         add_header Cache-Control "public, immutable";
+    }
+
+    # Service Worker - no caching
+    location /sw.js {
+        proxy_pass http://frontend;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        add_header Pragma "no-cache";
+        add_header Expires "0";
     }
 
     # Frontend - proxy to Next.js
@@ -514,6 +570,7 @@ EOF
 ```bash
 # Enable the site
 ln -s /etc/nginx/sites-available/xklduyenviet.net /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/proxy.xklduyenviet.net /etc/nginx/sites-enabled/
 
 # Remove default site
 rm -f /etc/nginx/sites-enabled/default
@@ -541,7 +598,7 @@ apt install -y certbot python3-certbot-nginx
 ```bash
 # Get SSL certificate
 certbot --nginx -d xklduyenviet.net -d www.xklduyenviet.net --non-interactive --agree-tos --email lengocphan503@gmail.com
-
+certbot --nginx -d proxy.xklduyenviet.net --non-interactive --agree-tos --email lengocphan503@gmail.com
 # Test automatic renewal
 certbot renew --dry-run
 ```

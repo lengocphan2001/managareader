@@ -18,11 +18,14 @@ interface AdminSettings {
   primaryColor: string;
   logoUrl: string;
   faviconUrl: string;
+  footerLogoUrl: string;
   enableDarkMode: boolean;
   metaKeywords: string;
   metaAuthor: string;
   googleAnalyticsId: string;
   facebookPixelId: string;
+  headerScripts: string;
+  footerScripts: string;
 }
 
 interface AdminSettingsContextValue {
@@ -31,7 +34,7 @@ interface AdminSettingsContextValue {
   updateSetting: (key: keyof AdminSettings, value: any) => void;
   resetSettings: () => void;
   loading: boolean;
-  uploadFile: (file: File, type: "logo" | "favicon") => Promise<string>;
+  uploadFile: (file: File, type: "logo" | "favicon" | "footerLogo") => Promise<string>;
   applyToWebsite: () => Promise<boolean>;
 }
 
@@ -45,11 +48,14 @@ const defaultSettings: AdminSettings = {
   primaryColor: "#3B82F6",
   logoUrl: "/logo.png",
   faviconUrl: "/favicon.ico",
+  footerLogoUrl: "/images/logo-footer.png",
   enableDarkMode: true,
   metaKeywords: "manga, anime, comics, reading, online",
   metaAuthor: "MangaReader Team",
   googleAnalyticsId: "",
   facebookPixelId: "",
+  headerScripts: "",
+  footerScripts: "",
 };
 
 const AdminSettingsContext = createContext<
@@ -86,6 +92,9 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
     // Save to localStorage
     try {
       localStorage.setItem("admin-settings", JSON.stringify(updated));
+      
+      // Dispatch custom event for same-tab updates
+      window.dispatchEvent(new CustomEvent("admin-settings-changed"));
     } catch (error) {
       console.error("Error saving admin settings:", error);
     }
@@ -107,7 +116,7 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
   // Upload file and return the new URL
   const uploadFile = async (
     file: File,
-    type: "logo" | "favicon",
+    type: "logo" | "favicon" | "footerLogo",
   ): Promise<string> => {
     try {
       // Create FormData for file upload
@@ -129,7 +138,13 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
 
       // Update the setting with the new URL
       const newUrl = result.url;
-      updateSetting(type === "logo" ? "logoUrl" : "faviconUrl", newUrl);
+      if (type === "logo") {
+        updateSetting("logoUrl", newUrl);
+      } else if (type === "favicon") {
+        updateSetting("faviconUrl", newUrl);
+      } else if (type === "footerLogo") {
+        updateSetting("footerLogoUrl", newUrl);
+      }
 
       return newUrl;
     } catch (error) {
@@ -199,15 +214,52 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
     }
     metaAuthor.setAttribute("content", settings.metaAuthor);
 
-    // Update favicon
-    let favicon = document.querySelector('link[rel="icon"]');
-    if (!favicon) {
-      favicon = document.createElement("link");
+    // Update favicon - handle multiple favicon types
+    const updateFavicon = (url: string) => {
+      // Remove existing favicon links
+      const existingFavicons = document.querySelectorAll('link[rel*="icon"]');
+      existingFavicons.forEach(link => link.remove());
+
+      // Add new favicon with cache busting
+      const timestamp = Date.now();
+      const faviconUrl = url.includes('?') ? `${url}&t=${timestamp}` : `${url}?t=${timestamp}`;
+      
+      // Create main favicon
+      const favicon = document.createElement("link");
       favicon.setAttribute("rel", "icon");
       favicon.setAttribute("type", "image/x-icon");
+      favicon.setAttribute("href", faviconUrl);
       document.head.appendChild(favicon);
-    }
-    favicon.setAttribute("href", settings.faviconUrl);
+
+      // Create shortcut icon (for older browsers)
+      const shortcutIcon = document.createElement("link");
+      shortcutIcon.setAttribute("rel", "shortcut icon");
+      shortcutIcon.setAttribute("type", "image/x-icon");
+      shortcutIcon.setAttribute("href", faviconUrl);
+      document.head.appendChild(shortcutIcon);
+
+      // Create apple-touch-icon
+      const appleIcon = document.createElement("link");
+      appleIcon.setAttribute("rel", "apple-touch-icon");
+      appleIcon.setAttribute("href", faviconUrl);
+      document.head.appendChild(appleIcon);
+
+      // Force browser to reload favicon
+      const link = document.createElement("link");
+      link.setAttribute("rel", "icon");
+      link.setAttribute("href", faviconUrl);
+      link.setAttribute("type", "image/x-icon");
+      document.head.appendChild(link);
+      
+      // Remove the temporary link after a short delay
+      setTimeout(() => {
+        if (link.parentNode) {
+          link.parentNode.removeChild(link);
+        }
+      }, 100);
+    };
+
+    updateFavicon(settings.faviconUrl);
 
     // Update logo in Open Graph tags
     let ogImage = document.querySelector('meta[property="og:image"]');

@@ -13,6 +13,7 @@ import {
   AlertCircle,
   ExternalLink,
   BarChart3,
+  Code,
 } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
@@ -29,7 +30,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/shadcn/tabs";
+import { Textarea } from "@/components/shadcn/textarea";
 import { useAdminSettings } from "@/contexts/admin-settings";
+import { DragDropUpload } from "./DragDropUpload";
 
 export function SiteSettings() {
   const {
@@ -84,7 +87,7 @@ export function SiteSettings() {
     }
   };
 
-  const handleFileUpload = async (file: File, type: "logo" | "favicon") => {
+  const handleFileUpload = async (file: File, type: "logo" | "favicon" | "footerLogo") => {
     try {
       setUploading(type);
       setError(null);
@@ -116,7 +119,7 @@ export function SiteSettings() {
 
   const handleFileSelect = (
     event: React.ChangeEvent<HTMLInputElement>,
-    type: "logo" | "favicon",
+    type: "logo" | "favicon" | "footerLogo",
   ) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -195,7 +198,7 @@ export function SiteSettings() {
 
       {/* Settings Tabs */}
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="general" className="flex items-center space-x-2">
             <Globe className="h-4 w-4" />
             <span className="hidden sm:inline">General</span>
@@ -217,6 +220,10 @@ export function SiteSettings() {
           >
             <BarChart3 className="h-4 w-4" />
             <span className="hidden sm:inline">Analytics</span>
+          </TabsTrigger>
+          <TabsTrigger value="scripts" className="flex items-center space-x-2">
+            <Code className="h-4 w-4" />
+            <span className="hidden sm:inline">Scripts</span>
           </TabsTrigger>
           <TabsTrigger value="security" className="flex items-center space-x-2">
             <Shield className="h-4 w-4" />
@@ -317,43 +324,45 @@ export function SiteSettings() {
                   <label className="mb-2 block text-sm font-medium text-gray-700">
                     Logo
                   </label>
-                  <div className="flex items-center space-x-4">
-                    {settings.logoUrl && (
-                      <img
-                        src={settings.logoUrl}
-                        alt="Current logo"
-                        className="h-16 w-16 rounded-lg border object-contain"
-                      />
+                  <p className="mb-3 text-xs text-gray-500">
+                    Upload a logo for your site. You can also enter a URL directly.
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <Input
+                      value={settings.logoUrl}
+                      onChange={(e) =>
+                        updateSetting("logoUrl", e.target.value)
+                      }
+                      placeholder="/logo.png or https://example.com/logo.png"
+                      className="text-sm"
+                    />
+                    
+                    <DragDropUpload
+                      onFileSelect={(file) => handleFileUpload(file, "logo")}
+                      accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                      maxSize={5 * 1024 * 1024} // 5MB
+                      disabled={uploading === "logo"}
+                      currentFile={settings.logoUrl}
+                      onRemove={() => updateSetting("logoUrl", "")}
+                      type="logo"
+                    />
+                    
+                    {uploading === "logo" && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span>Uploading logo...</span>
+                          <span>{uploadProgress.logo || 0}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                            style={{ width: `${uploadProgress.logo || 0}%` }}
+                          ></div>
+                        </div>
+                      </div>
                     )}
-                    <div className="flex-1">
-                      <Input
-                        value={settings.logoUrl}
-                        onChange={(e) =>
-                          updateSetting("logoUrl", e.target.value)
-                        }
-                        placeholder="/logo.png"
-                        className="mb-2"
-                      />
-                      <Button
-                        onClick={() => triggerFileInput("logo")}
-                        disabled={uploading === "logo"}
-                        variant="outline"
-                        className="w-full"
-                      >
-                        <Upload className="mr-2 h-4 w-4" />
-                        {uploading === "logo"
-                          ? `Uploading... ${uploadProgress.logo || 0}%`
-                          : "Upload New Logo"}
-                      </Button>
-                    </div>
                   </div>
-                  <input
-                    ref={logoInputRef}
-                    type="file"
-                    accept="image/png,image/jpeg,image/svg+xml,image/webp"
-                    onChange={(e) => handleFileSelect(e, "logo")}
-                    className="hidden"
-                  />
                 </div>
 
                 {/* Favicon Upload */}
@@ -361,43 +370,91 @@ export function SiteSettings() {
                   <label className="mb-2 block text-sm font-medium text-gray-700">
                     Favicon
                   </label>
-                  <div className="flex items-center space-x-4">
-                    {settings.faviconUrl && (
-                      <img
-                        src={settings.faviconUrl}
-                        alt="Current favicon"
-                        className="h-8 w-8 rounded border object-contain"
-                      />
+                  <p className="mb-3 text-xs text-gray-500">
+                    Upload a favicon for your site. You can also enter a URL directly.
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <Input
+                      value={settings.faviconUrl}
+                      onChange={(e) =>
+                        updateSetting("faviconUrl", e.target.value)
+                      }
+                      placeholder="/favicon.ico or https://example.com/favicon.ico"
+                      className="text-sm"
+                    />
+                    
+                    <DragDropUpload
+                      onFileSelect={(file) => handleFileUpload(file, "favicon")}
+                      accept="image/x-icon,image/png,image/svg+xml"
+                      maxSize={1 * 1024 * 1024} // 1MB
+                      disabled={uploading === "favicon"}
+                      currentFile={settings.faviconUrl}
+                      onRemove={() => updateSetting("faviconUrl", "")}
+                      type="favicon"
+                    />
+                    
+                    {uploading === "favicon" && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span>Uploading favicon...</span>
+                          <span>{uploadProgress.favicon || 0}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                            style={{ width: `${uploadProgress.favicon || 0}%` }}
+                          ></div>
+                        </div>
+                      </div>
                     )}
-                    <div className="flex-1">
-                      <Input
-                        value={settings.faviconUrl}
-                        onChange={(e) =>
-                          updateSetting("faviconUrl", e.target.value)
-                        }
-                        placeholder="/favicon.ico"
-                        className="mb-2"
-                      />
-                      <Button
-                        onClick={() => triggerFileInput("favicon")}
-                        disabled={uploading === "favicon"}
-                        variant="outline"
-                        className="w-full"
-                      >
-                        <Upload className="mr-2 h-4 w-4" />
-                        {uploading === "favicon"
-                          ? `Uploading... ${uploadProgress.favicon || 0}%`
-                          : "Upload New Favicon"}
-                      </Button>
-                    </div>
                   </div>
-                  <input
-                    ref={faviconInputRef}
-                    type="file"
-                    accept="image/x-icon,image/png,image/svg+xml"
-                    onChange={(e) => handleFileSelect(e, "favicon")}
-                    className="hidden"
-                  />
+                </div>
+
+                {/* Footer Logo Upload */}
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-gray-700">
+                    Footer Logo
+                  </label>
+                  <p className="mb-3 text-xs text-gray-500">
+                    Upload a footer logo for your site. You can also enter a URL directly.
+                  </p>
+                  
+                  <div className="space-y-4">
+                    <Input
+                      value={settings.footerLogoUrl}
+                      onChange={(e) =>
+                        updateSetting("footerLogoUrl", e.target.value)
+                      }
+                      placeholder="/images/logo-footer.png or https://example.com/footer-logo.png"
+                      className="text-sm"
+                    />
+                    
+                    <DragDropUpload
+                      onFileSelect={(file) => handleFileUpload(file, "footerLogo")}
+                      accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                      maxSize={5 * 1024 * 1024} // 5MB
+                      disabled={uploading === "footerLogo"}
+                      currentFile={settings.footerLogoUrl}
+                      onRemove={() => updateSetting("footerLogoUrl", "")}
+                      type="logo"
+                    />
+                    
+                    {uploading === "footerLogo" && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <span>Uploading footer logo...</span>
+                          <span>{uploadProgress.footerLogo || 0}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                            style={{ width: `${uploadProgress.footerLogo || 0}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Primary Color */}
@@ -511,6 +568,89 @@ export function SiteSettings() {
                     }
                     placeholder="XXXXXXXXXX"
                   />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Scripts Settings */}
+        <TabsContent value="scripts" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Code className="mr-2 h-5 w-5" />
+                Custom Scripts
+              </CardTitle>
+              <p className="text-sm text-gray-600">
+                Add custom JavaScript code to be injected into the client panel
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Header Scripts */}
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-700">
+                  Header Scripts
+                </label>
+                <p className="mb-3 text-xs text-gray-500">
+                  Scripts that will be injected into the &lt;head&gt; section of all client pages.
+                  Perfect for analytics, tracking, or external libraries.
+                </p>
+                <Textarea
+                  value={settings.headerScripts}
+                  onChange={(e) =>
+                    updateSetting("headerScripts", e.target.value)
+                  }
+                  placeholder={`<!-- Example: Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GA_MEASUREMENT_ID');
+</script>`}
+                  className="min-h-[200px] font-mono text-sm"
+                  rows={10}
+                />
+              </div>
+
+              {/* Footer Scripts */}
+              <div>
+                <label className="mb-2 block text-sm font-medium text-gray-700">
+                  Footer Scripts
+                </label>
+                <p className="mb-3 text-xs text-gray-500">
+                  Scripts that will be injected before the closing &lt;/body&gt; tag.
+                  Perfect for performance tracking, chat widgets, or custom functionality.
+                </p>
+                <Textarea
+                  value={settings.footerScripts}
+                  onChange={(e) =>
+                    updateSetting("footerScripts", e.target.value)
+                  }
+                  placeholder={`<!-- Example: Chat Widget -->
+<script>
+  // Your custom JavaScript code here
+  console.log('Footer script loaded');
+</script>`}
+                  className="min-h-[200px] font-mono text-sm"
+                  rows={10}
+                />
+              </div>
+
+              {/* Warning */}
+              <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                <div className="flex items-start">
+                  <AlertCircle className="mr-3 h-5 w-5 text-yellow-400 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-medium text-yellow-800">
+                      Important Security Notice
+                    </h4>
+                    <p className="mt-1 text-sm text-yellow-700">
+                      Only add scripts from trusted sources. Malicious scripts can compromise your site's security and user data.
+                      Always review and test scripts before applying them to production.
+                    </p>
+                  </div>
                 </div>
               </div>
             </CardContent>

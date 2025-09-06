@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Inter } from "next/font/google";
 import MainNav from "@/components/nettrom/layout/main-nav";
 import Header from "@/components/nettrom/layout/header";
@@ -11,6 +10,7 @@ import { Suspense } from "react";
 import NextTopLoader from "nextjs-toploader";
 import SettingsDialog from "@/components/nettrom/settings-dialog";
 import VerifyMailAlert from "@/components/nettrom/verify-mail-alert";
+import Footer from "@/components/core/Footer";
 
 export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - High quality manga without ads`,
@@ -40,7 +40,6 @@ export default function NettromLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const copyrightYear = new Date().getFullYear();
   return (
     <LayoutWrapper id="nettrom">
       <NextTopLoader
@@ -74,49 +73,7 @@ export default function NettromLayout({
       >
         <div className="container">{children}</div>
       </main>
-      <footer className="footer border-t bg-[#000]">
-        <div className="container">
-          <div className="row">
-            <div
-              className="col-sm-4 copyright"
-              itemType="http://schema.org/Organization"
-            >
-              <Link itemProp="url" href="/">
-                <img
-                  itemProp="logo"
-                  src={"/images/logo-footer.png"}
-                  // style={{ aspectRatio: 5 }}
-                  alt={`${Constants.APP_NAME} - Online Manga`}
-                />
-              </Link>
-              <div className="mrt10 row">
-                <div className="col-xs-6">
-                  {/* <a
-                    href="https://mangadex.org/about"
-                    rel="nofollow noopener"
-                    target="_blank"
-                  >
-                    MangaDex
-                  </a> */}
-                </div>
-                {/* <div className="col-xs-6">
-                      <a href="/chinh-sach-bao-mat">Chính sách bảo mật</a>
-                    </div> */}
-              </div>
-              <p></p>
-              <p>
-                Copyright © {copyrightYear}{" "}
-                <Link
-                  href="/"
-                  className="text-web-title transition hover:!bg-transparent hover:bg-web-titleLighter hover:underline"
-                >
-                  {Constants.APP_NAME}
-                </Link>
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer variant="default" />
       <SettingsDialog />
     </LayoutWrapper>
   );

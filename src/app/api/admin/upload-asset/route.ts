@@ -13,9 +13,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    if (!type || !["logo", "favicon"].includes(type)) {
+    if (!type || !["logo", "favicon", "footerLogo"].includes(type)) {
       return NextResponse.json(
-        { error: "Invalid type. Must be logo or favicon" },
+        { error: "Invalid type. Must be logo, favicon, or footerLogo" },
         { status: 400 },
       );
     }
@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
     const allowedTypes = {
       logo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
       favicon: ["image/x-icon", "image/png", "image/svg+xml"],
+      footerLogo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
     };
 
     if (!allowedTypes[type as keyof typeof allowedTypes].includes(file.type)) {
@@ -35,8 +36,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (max 5MB for logo, 1MB for favicon)
-    const maxSize = type === "logo" ? 5 * 1024 * 1024 : 1 * 1024 * 1024;
+    // Validate file size (max 5MB for logo/footerLogo, 1MB for favicon)
+    const maxSize = type === "favicon" ? 1 * 1024 * 1024 : 5 * 1024 * 1024;
     if (file.size > maxSize) {
       return NextResponse.json(
         {

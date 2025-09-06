@@ -29,6 +29,40 @@ const menuItemClassName =
 export default function Header() {
   const [openMenu, setOpenMenu] = useState(false);
   const pathname = usePathname();
+  
+  // Get admin settings for logo
+  const [adminLogoUrl, setAdminLogoUrl] = useState("");
+  
+  useEffect(() => {
+    const loadAdminLogo = () => {
+      try {
+        if (typeof window !== "undefined") {
+          const savedSettings = localStorage.getItem("admin-settings");
+          if (savedSettings) {
+            const parsed = JSON.parse(savedSettings);
+            setAdminLogoUrl(parsed.logoUrl || "");
+          }
+        }
+      } catch (error) {
+        console.error("Error loading admin settings for header logo:", error);
+      }
+    };
+
+    loadAdminLogo();
+
+    // Listen for storage changes to update logo in real-time
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "admin-settings") {
+        loadAdminLogo();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
   const params = useSearchParams();
 
   useEffect(() => {
@@ -51,8 +85,8 @@ export default function Header() {
               >
                 <img
                   alt="Logo NetTrom"
-                  src={"/images/logo.png"}
-                  className="my-auto w-[110px]"
+                  src={adminLogoUrl || "/images/logo.png"}
+                  className="my-auto w-[120px]"
                 />
               </Link>
             </div>

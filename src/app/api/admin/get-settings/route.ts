@@ -27,6 +27,7 @@ export async function GET() {
       primaryColor: "#3B82F6",
       logoUrl: "/logo.png",
       faviconUrl: "/favicon.ico",
+      footerLogoUrl: "/images/logo-footer.png",
       metaKeywords: "manga, anime, comics, reading, online",
       metaAuthor: "MangaReader Team",
       googleAnalyticsId: "",

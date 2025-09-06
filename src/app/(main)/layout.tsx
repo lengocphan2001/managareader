@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 
 import { Constants } from "@/constants";
+import Footer from "@/components/core/Footer";
 
 export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - Truyện tranh chất lượng cao`,
@@ -58,7 +59,8 @@ export default function CoreLayout({
         <div class="bar bg-indigo-500" role="bar"><div class="peg"></div></div> 
   <div class="spinner text-indigo-500" role="spinner"><div class="spinner-icon"></div></div>`}
       />
-      <main>{children}</main>
+      <main className="min-h-screen">{children}</main>
+      <Footer variant="minimal" />
     </LayoutWrapper>
   );
 }

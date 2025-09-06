@@ -57,6 +57,7 @@ async function updateEnvironmentFile(settings: any) {
       NEXT_PUBLIC_PRIMARY_COLOR: settings.primaryColor,
       NEXT_PUBLIC_LOGO_URL: settings.logoUrl,
       NEXT_PUBLIC_FAVICON_URL: settings.faviconUrl,
+      NEXT_PUBLIC_FOOTER_LOGO_URL: settings.footerLogoUrl,
       NEXT_PUBLIC_META_KEYWORDS: settings.metaKeywords,
       NEXT_PUBLIC_META_AUTHOR: settings.metaAuthor,
       NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: settings.googleAnalyticsId,

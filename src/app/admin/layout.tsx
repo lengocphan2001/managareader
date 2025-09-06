@@ -7,6 +7,8 @@ import { AdminAuthProvider } from "@/contexts/admin-auth";
 import { AdminSettingsProvider } from "@/contexts/admin-settings";
 import { AdminTitle } from "@/components/admin/AdminTitle";
 import { AdminGuard } from "@/components/admin/AdminGuard";
+import Footer from "@/components/core/Footer";
+import FaviconUpdater from "@/components/core/FaviconUpdater";
 import "./globals.css";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -26,6 +28,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <AdminAuthProvider>
           <AdminSettingsProvider>
             <AdminGuard>
+              <FaviconUpdater />
               <AdminTitle />
               <div className="flex min-h-screen">
                 {/* Sidebar */}
@@ -41,6 +44,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
                   {/* Page Content */}
                   <main className="flex-1 overflow-auto p-6">{children}</main>
+                  
+                  {/* Footer */}
+                  <Footer variant="admin" />
                 </div>
               </div>
             </AdminGuard>

@@ -12,6 +12,8 @@ import { MangadexContextProvider } from "@/contexts/mangadex";
 import { Constants } from "@/constants";
 import { SettingsProvider } from "@/contexts/settings";
 import { SkeletonTheme } from "react-loading-skeleton";
+import ScriptInjector from "./core/ScriptInjector";
+import FaviconUpdater from "./core/FaviconUpdater";
 
 // Remove server-side cookies usage - handle on client side
 export const LayoutWrapper = ({
@@ -44,7 +46,11 @@ export const LayoutWrapper = ({
       <body data-layout-id={props.id}>
         <SettingsProvider>
           <SkeletonTheme baseColor="#202020" highlightColor="#444">
-            <MangadexContextProvider>{children}</MangadexContextProvider>
+            <MangadexContextProvider>
+              <ScriptInjector type="header" />
+              <FaviconUpdater />
+              {children}
+            </MangadexContextProvider>
           </SkeletonTheme>
         </SettingsProvider>
         <ToastContainer theme="dark" />

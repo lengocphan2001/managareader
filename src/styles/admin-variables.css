@@ -1,25 +1,15 @@
 /* Auto-generated CSS variables from admin settings */
 :root {
-  --primary-color: #3b82f6;
+  --primary-color: #3B82F6;
   --primary-color-hover: #276ee2;
   --primary-color-light: #4f96ff;
-  --site-name: "MangaReader100";
+  --site-name: "MangaReader";
   --site-description: "Your ultimate manga reading experience";
 }
 
 /* Primary color utility classes */
-.bg-primary {
-  background-color: var(--primary-color);
-}
-.text-primary {
-  color: var(--primary-color);
-}
-.border-primary {
-  border-color: var(--primary-color);
-}
-.hover\:bg-primary:hover {
-  background-color: var(--primary-color-hover);
-}
-.hover\:text-primary:hover {
-  color: var(--primary-color-hover);
-}
+.bg-primary { background-color: var(--primary-color); }
+.text-primary { color: var(--primary-color); }
+.border-primary { border-color: var(--primary-color); }
+.hover\:bg-primary:hover { background-color: var(--primary-color-hover); }
+.hover\:text-primary:hover { color: var(--primary-color-hover); }

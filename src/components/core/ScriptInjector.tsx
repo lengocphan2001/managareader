@@ -28,7 +28,6 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
           );
           setScripts(scriptContent || "");
         } else {
-          console.log("ScriptInjector: Failed to load settings from API");
         }
       } catch (error) {
         console.error("Error loading admin settings from API:", error);
@@ -40,11 +39,9 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
 
   useEffect(() => {
     if (!scripts || scripts.trim() === "") {
-      console.log("ScriptInjector: No scripts to inject for", type);
       return;
     }
 
-    console.log("ScriptInjector: Injecting scripts for", type, scripts);
 
     // Create a temporary div to parse the HTML
     const tempDiv = document.createElement("div");

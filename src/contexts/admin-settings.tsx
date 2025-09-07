@@ -215,7 +215,6 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
     }
     metaDescription.setAttribute("content", settings.siteDescription);
 
-
     // Update logo in Open Graph tags
     let ogImage = document.querySelector('meta[property="og:image"]');
     if (!ogImage) {
@@ -248,7 +247,6 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
       adjustColor(settings.primaryColor, 20),
     );
   };
-
 
   // Helper function to adjust color brightness
   const adjustColor = (color: string, amount: number): string => {

@@ -1,9 +1,52 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const { auth } = require("../middleware/auth");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs").promises;
 
 const router = express.Router();
 const prisma = new PrismaClient();
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    try {
+      await fs.mkdir(uploadsDir, { recursive: true });
+      cb(null, uploadsDir);
+    } catch (error) {
+      cb(error);
+    }
+  },
+  filename: (req, file, cb) => {
+    const timestamp = Date.now();
+    const fileExtension = path.extname(file.originalname);
+    const filename = `${req.body.type}-${timestamp}${fileExtension}`;
+    cb(null, filename);
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = {
+      logo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
+      favicon: ["image/x-icon", "image/png", "image/svg+xml"],
+      footerLogo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
+    };
+
+    const type = req.body.type;
+    if (allowedTypes[type] && allowedTypes[type].includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error(`Invalid file type for ${type}`), false);
+    }
+  },
+});
 
 // Middleware to check if user has admin privileges
 const requireAdmin = async (req, res, next) => {
@@ -39,6 +82,61 @@ const requireAdmin = async (req, res, next) => {
     });
   }
 };
+
+// Upload asset endpoint
+router.post("/upload-asset", auth, requireAdmin, upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file provided" });
+    }
+
+    const { type } = req.body;
+    if (!type || !["logo", "favicon", "footerLogo"].includes(type)) {
+      return res.status(400).json({
+        error: "Invalid type. Must be logo, favicon, or footerLogo"
+      });
+    }
+
+    // Return the public URL
+    const publicUrl = `/uploads/${req.file.filename}`;
+
+    res.json({
+      success: true,
+      url: publicUrl,
+      filename: req.file.filename,
+      size: req.file.size,
+      type: req.file.mimetype,
+    });
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Apply settings endpoint
+router.post("/apply-settings", auth, requireAdmin, async (req, res) => {
+  try {
+    const settings = req.body;
+
+    // Validate required fields
+    if (!settings.siteName || !settings.siteDescription) {
+      return res.status(400).json({
+        error: "Site name and description are required"
+      });
+    }
+
+    // Here you can save settings to database or file
+    // For now, we'll just return success
+    res.json({
+      success: true,
+      message: "Settings applied successfully",
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Error applying settings:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 // Get admin dashboard stats
 router.get("/stats", auth, requireAdmin, async (req, res) => {

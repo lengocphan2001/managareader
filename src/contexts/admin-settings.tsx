@@ -125,9 +125,16 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
       formData.append("type", type);
 
       // Upload to backend API
-      const response = await fetch("/api/admin/upload-asset", {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+      const response = await fetch(`${backendUrl}/api/admin/upload-asset`, {
         method: "POST",
         body: formData,
+        headers: {
+          // Add authorization header if needed
+          ...(typeof window !== "undefined" && localStorage.getItem("admin-token") 
+            ? { Authorization: `Bearer ${localStorage.getItem("admin-token")}` }
+            : {}),
+        },
       });
 
       if (!response.ok) {
@@ -157,10 +164,15 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
   const applyToWebsite = async (): Promise<boolean> => {
     try {
       // Call backend API to apply settings
-      const response = await fetch("/api/admin/apply-settings", {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+      const response = await fetch(`${backendUrl}/api/admin/apply-settings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          // Add authorization header if needed
+          ...(typeof window !== "undefined" && localStorage.getItem("admin-token") 
+            ? { Authorization: `Bearer ${localStorage.getItem("admin-token")}` }
+            : {}),
         },
         body: JSON.stringify(settings),
       });

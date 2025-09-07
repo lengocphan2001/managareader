@@ -100,3 +100,24 @@ model Follow {
   @@unique([user_id, series_id])
   @@map("follows")
 }
+
+model Settings {
+  id               Int      @id @default(autoincrement())
+  site_name        String   @default("MangaReader")
+  site_description String   @default("Your ultimate manga reading experience")
+  site_url         String   @default("https://mangareader.com")
+  admin_email      String   @default("admin@mangareader.com")
+  timezone         String   @default("UTC")
+  language         String   @default("en")
+  primary_color    String   @default("#3B82F6")
+  logo_url         String   @default("/logo.png")
+  favicon_url      String   @default("/favicon.ico")
+  footer_logo_url  String   @default("/images/logo-footer.png")
+  enable_dark_mode Boolean  @default(true)
+  header_scripts   String   @default("")
+  footer_scripts   String   @default("")
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  @@map("settings")
+}

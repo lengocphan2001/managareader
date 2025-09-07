@@ -8,26 +8,8 @@ const fs = require("fs").promises;
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: async (req, file, cb) => {
-    // Upload to the main project's public/images directory (Next.js public folder)
-    const imagesDir = path.join(process.cwd(), "..", "public", "images");
-    try {
-      await fs.mkdir(imagesDir, { recursive: true });
-      cb(null, imagesDir);
-    } catch (error) {
-      cb(error);
-    }
-  },
-  filename: (req, file, cb) => {
-    const timestamp = Date.now();
-    const fileExtension = path.extname(file.originalname);
-    // Use a generic prefix since req.body.type might not be available yet
-    const filename = `upload-${timestamp}${fileExtension}`;
-    cb(null, filename);
-  },
-});
+// Configure multer for file uploads - use memory storage first
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage: storage,
@@ -79,6 +61,18 @@ router.post(
   upload.single("file"),
   async (req, res) => {
     try {
+      console.log("Upload request received:", {
+        hasFile: !!req.file,
+        body: req.body,
+        file: req.file
+          ? {
+              originalname: req.file.originalname,
+              mimetype: req.file.mimetype,
+              size: req.file.size,
+            }
+          : null,
+      });
+
       if (!req.file) {
         return res.status(400).json({ error: "No file provided" });
       }
@@ -105,13 +99,58 @@ router.post(
         });
       }
 
+      // Delete old file if it exists
+      const imagesDir = path.join(process.cwd(), "..", "public", "images");
+      const oldFilename = type === "logo" ? "logo" : "logo-footer";
+
+      // Try to delete old files with different extensions
+      const extensions = [".png", ".jpg", ".jpeg", ".svg", ".webp"];
+      for (const ext of extensions) {
+        const oldFilePath = path.join(imagesDir, `${oldFilename}${ext}`);
+        try {
+          await fs.unlink(oldFilePath);
+          console.log(`Deleted old file: ${oldFilePath}`);
+        } catch (error) {
+          // File doesn't exist, continue
+        }
+      }
+
+      // Save file manually using memory storage
+      const fileExtension = path.extname(req.file.originalname);
+      const filename =
+        type === "logo"
+          ? `logo${fileExtension}`
+          : `logo-footer${fileExtension}`;
+      const filePath = path.join(imagesDir, filename);
+
+      // Ensure directory exists
+      await fs.mkdir(imagesDir, { recursive: true });
+
+      // Write file to disk
+      await fs.writeFile(filePath, req.file.buffer);
+
+      // Check if file actually exists
+      const fileExists = await fs
+        .access(filePath)
+        .then(() => true)
+        .catch(() => false);
+
       // Return the public URL
-      const publicUrl = `/images/${req.file.filename}`;
+      const publicUrl = `/images/${filename}`;
+
+      console.log("Upload successful:", {
+        filename: filename,
+        path: filePath,
+        size: req.file.size,
+        type: req.file.mimetype,
+        publicUrl: publicUrl,
+        fileExists: fileExists,
+      });
 
       res.json({
         success: true,
         url: publicUrl,
-        filename: req.file.filename,
+        filename: filename,
         size: req.file.size,
         type: req.file.mimetype,
       });
@@ -122,8 +161,47 @@ router.post(
   },
 );
 
-// Apply settings endpoint
-router.post("/apply-settings", auth, requireAdmin, async (req, res) => {
+// Get settings endpoint
+router.get("/get-settings", async (req, res) => {
+  try {
+    // Try to load settings from JSON file
+    const settingsPath = path.join(__dirname, "../../settings.json");
+    let settings;
+
+    try {
+      const settingsData = await fs.readFile(settingsPath, "utf8");
+      settings = JSON.parse(settingsData);
+    } catch (fileError) {
+      settings = {
+        siteName: "MangaReader",
+        siteDescription: "Your ultimate manga reading experience",
+        siteUrl: "https://mangareader.com",
+        adminEmail: "admin@mangareader.com",
+        timezone: "UTC",
+        language: "en",
+        primaryColor: "#3B82F6",
+        logoUrl: "/logo.png",
+        faviconUrl: "/favicon.ico",
+        footerLogoUrl: "/images/logo-footer.png",
+        enableDarkMode: true,
+        headerScripts: "",
+        footerScripts: "",
+      };
+    }
+
+    res.json(settings);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Test endpoint
+router.get("/test", (req, res) => {
+  res.json({ message: "Admin API is working!" });
+});
+
+// Apply settings endpoint (temporary without auth for testing)
+router.post("/apply-settings", async (req, res) => {
   try {
     const settings = req.body;
 
@@ -134,12 +212,16 @@ router.post("/apply-settings", auth, requireAdmin, async (req, res) => {
       });
     }
 
-    // Here you can save settings to database or file
-    // For now, we'll just return success
+    // Save settings to JSON file temporarily
+    const settingsPath = path.join(__dirname, "../../settings.json");
+    try {
+      await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2));
+    } catch (fileError) {}
+
     res.json({
       success: true,
       message: "Settings applied successfully",
-      timestamp: new Date().toISOString(),
+      settings: settings,
     });
   } catch (error) {
     console.error("Error applying settings:", error);

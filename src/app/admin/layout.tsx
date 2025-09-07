@@ -8,6 +8,7 @@ import { AdminSettingsProvider } from "@/contexts/admin-settings";
 import { AdminTitle } from "@/components/admin/AdminTitle";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import Footer from "@/components/core/Footer";
+import ScriptInjector from "@/components/core/ScriptInjector";
 import "./globals.css";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -24,6 +25,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className="bg-gray-50">
+        <ScriptInjector type="header" />
         <AdminAuthProvider>
           <AdminSettingsProvider>
             <AdminGuard>
@@ -50,6 +52,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             </AdminGuard>
           </AdminSettingsProvider>
         </AdminAuthProvider>
+        <ScriptInjector type="footer" />
       </body>
     </html>
   );

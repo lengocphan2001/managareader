@@ -10,41 +10,41 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
   const [scripts, setScripts] = useState<string>("");
 
   useEffect(() => {
-    // Load scripts from localStorage (admin settings)
-    const loadScripts = () => {
+    // Load scripts from API
+    const loadScripts = async () => {
       try {
-        const savedSettings = localStorage.getItem("admin-settings");
-        if (savedSettings) {
-          const parsed = JSON.parse(savedSettings);
+        const backendUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+        const response = await fetch(`${backendUrl}/api/admin/get-settings`);
+
+        if (response.ok) {
+          const data = await response.json();
           const scriptContent =
-            type === "header" ? parsed.headerScripts : parsed.footerScripts;
+            type === "header" ? data.headerScripts : data.footerScripts;
+          console.log(
+            "ScriptInjector: Loaded scripts from API for",
+            type,
+            scriptContent,
+          );
           setScripts(scriptContent || "");
+        } else {
+          console.log("ScriptInjector: Failed to load settings from API");
         }
       } catch (error) {
-        console.error("Error loading admin settings for scripts:", error);
+        console.error("Error loading admin settings from API:", error);
       }
     };
 
     loadScripts();
-
-    // Listen for changes to admin settings
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "admin-settings") {
-        loadScripts();
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
   }, [type]);
 
   useEffect(() => {
     if (!scripts || scripts.trim() === "") {
+      console.log("ScriptInjector: No scripts to inject for", type);
       return;
     }
+
+    console.log("ScriptInjector: Injecting scripts for", type, scripts);
 
     // Create a temporary div to parse the HTML
     const tempDiv = document.createElement("div");
@@ -74,6 +74,24 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
         document.head.appendChild(newScript);
       } else {
         document.body.appendChild(newScript);
+      }
+    });
+
+    // Find all noscript tags
+    const noscriptTags = tempDiv.querySelectorAll("noscript");
+
+    noscriptTags.forEach((noscriptTag) => {
+      // Create a new noscript element
+      const newNoscript = document.createElement("noscript");
+
+      // Copy innerHTML (noscript content)
+      newNoscript.innerHTML = noscriptTag.innerHTML;
+
+      // Inject the noscript
+      if (type === "header") {
+        document.head.appendChild(newNoscript);
+      } else {
+        document.body.appendChild(newNoscript);
       }
     });
 

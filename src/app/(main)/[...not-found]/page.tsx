@@ -16,7 +16,7 @@ export default function NotFound() {
                     src={"/images/logo.png"}
                     className="mx-auto"
                     alt="ruyendex logo"
-                    height={64}
+                    width={500}
                   />
                 </Link>
               </div>
@@ -27,29 +27,29 @@ export default function NotFound() {
                   icon="hugeicons:file-not-found"
                 />
                 <h1 className="mb-6 mt-3 text-3xl font-bold md:text-5xl">
-                  4 lẻ 4 nót phao
+                  404 Not Found
                 </h1>
                 <p className="text-slate-400">
-                  Trang bạn đang truy cập không tồn tại
+                  The page you are looking for does not exist
                 </p>
                 <div className="mt-4">
                   <Link
                     href="/"
                     className="inline-block rounded-md border border-indigo-600 bg-indigo-600 px-5 py-2 text-center align-middle text-base font-semibold tracking-wide text-white duration-500 hover:border-indigo-700 hover:bg-indigo-700"
                   >
-                    Trở về trang chủ
+                    Back to Home
                   </Link>
                 </div>
               </div>
               <div className="text-center">
                 <p className="mb-0 text-slate-400">
-                  Hoặc bạn có thể báo lỗi{" "}
+                  Or you can report an issue{" "}
                   <a
                     href={Constants.Routes.report}
                     target="_blank"
                     className="text-reset"
                   >
-                    tại đây
+                    here
                   </a>
                   .
                 </p>

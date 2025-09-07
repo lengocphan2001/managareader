@@ -16,19 +16,13 @@ export interface WebsiteSettings {
 
 export async function loadWebsiteSettings(): Promise<WebsiteSettings | null> {
   try {
-    // Try to load from localStorage first (for immediate access)
-    if (typeof window !== "undefined") {
-      const savedSettings = localStorage.getItem("admin-settings");
-      if (savedSettings) {
-        return JSON.parse(savedSettings);
-      }
-    }
-
-    // Fallback to API call
-    const response = await fetch("/api/admin/get-settings");
+    // Load from API
+    const backendUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+    const response = await fetch(`${backendUrl}/api/admin/get-settings`);
     if (response.ok) {
       const data = await response.json();
-      return data.settings;
+      return data;
     }
 
     return null;

@@ -34,14 +34,17 @@ export default function Header() {
   const [adminLogoUrl, setAdminLogoUrl] = useState("");
 
   useEffect(() => {
-    const loadAdminLogo = () => {
+    const loadAdminLogo = async () => {
       try {
-        if (typeof window !== "undefined") {
-          const savedSettings = localStorage.getItem("admin-settings");
-          if (savedSettings) {
-            const parsed = JSON.parse(savedSettings);
-            setAdminLogoUrl(parsed.logoUrl || "");
-          }
+        const backendUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+        const response = await fetch(`${backendUrl}/api/admin/get-settings`);
+
+        if (response.ok) {
+          const data = await response.json();
+          setAdminLogoUrl(data.logoUrl || "");
+        } else {
+          console.log("Failed to load admin settings from API for header logo");
         }
       } catch (error) {
         console.error("Error loading admin settings for header logo:", error);
@@ -49,19 +52,6 @@ export default function Header() {
     };
 
     loadAdminLogo();
-
-    // Listen for storage changes to update logo in real-time
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "admin-settings") {
-        loadAdminLogo();
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
   }, []);
   const params = useSearchParams();
 

@@ -62,16 +62,21 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load settings from localStorage or API
-    const loadSettings = () => {
+    // Load settings from API
+    const loadSettings = async () => {
       try {
-        const savedSettings = localStorage.getItem("admin-settings");
-        if (savedSettings) {
-          const parsed = JSON.parse(savedSettings);
-          setSettings({ ...defaultSettings, ...parsed });
+        const backendUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+        const response = await fetch(`${backendUrl}/api/admin/get-settings`);
+
+        if (response.ok) {
+          const data = await response.json();
+          setSettings({ ...defaultSettings, ...data });
+        } else {
+          console.log("Failed to load settings from API, using defaults");
         }
       } catch (error) {
-        console.error("Error loading admin settings:", error);
+        console.error("Error loading admin settings from API:", error);
       } finally {
         setLoading(false);
       }
@@ -83,16 +88,7 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
   const updateSettings = (newSettings: Partial<AdminSettings>) => {
     const updated = { ...settings, ...newSettings };
     setSettings(updated);
-
-    // Save to localStorage
-    try {
-      localStorage.setItem("admin-settings", JSON.stringify(updated));
-
-      // Dispatch custom event for same-tab updates
-      window.dispatchEvent(new CustomEvent("admin-settings-changed"));
-    } catch (error) {
-      console.error("Error saving admin settings:", error);
-    }
+    // Settings will be saved via applyToWebsite() API call
   };
 
   const updateSetting = (key: keyof AdminSettings, value: any) => {
@@ -219,9 +215,6 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
     }
     metaDescription.setAttribute("content", settings.siteDescription);
 
-    // Update favicon - let FaviconUpdater component handle this
-    // We'll just dispatch the event to trigger FaviconUpdater
-    window.dispatchEvent(new CustomEvent("admin-settings-changed"));
 
     // Update logo in Open Graph tags
     let ogImage = document.querySelector('meta[property="og:image"]');
@@ -255,6 +248,7 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
       adjustColor(settings.primaryColor, 20),
     );
   };
+
 
   // Helper function to adjust color brightness
   const adjustColor = (color: string, amount: number): string => {

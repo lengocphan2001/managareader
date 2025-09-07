@@ -6,6 +6,7 @@ import NextTopLoader from "nextjs-toploader";
 
 import { Constants } from "@/constants";
 import Footer from "@/components/core/Footer";
+import ScriptInjector from "@/components/core/ScriptInjector";
 
 export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - Truyện tranh chất lượng cao`,
@@ -49,6 +50,7 @@ export default function CoreLayout({
 }) {
   return (
     <LayoutWrapper id="core">
+      <ScriptInjector type="header" />
       <NextTopLoader
         zIndex={1000}
         easing="ease-in-out"
@@ -61,6 +63,7 @@ export default function CoreLayout({
       />
       <main className="min-h-screen">{children}</main>
       <Footer variant="minimal" />
+      <ScriptInjector type="footer" />
     </LayoutWrapper>
   );
 }

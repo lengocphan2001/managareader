@@ -26,14 +26,17 @@ export default function Footer({
   const [adminFooterLogoUrl, setAdminFooterLogoUrl] = useState("");
 
   useEffect(() => {
-    const loadAdminFooterLogo = () => {
+    const loadAdminFooterLogo = async () => {
       try {
-        if (typeof window !== "undefined") {
-          const savedSettings = localStorage.getItem("admin-settings");
-          if (savedSettings) {
-            const parsed = JSON.parse(savedSettings);
-            setAdminFooterLogoUrl(parsed.footerLogoUrl || "");
-          }
+        const backendUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+        const response = await fetch(`${backendUrl}/api/admin/get-settings`);
+
+        if (response.ok) {
+          const data = await response.json();
+          setAdminFooterLogoUrl(data.footerLogoUrl || "");
+        } else {
+          console.log("Failed to load admin settings from API for footer logo");
         }
       } catch (error) {
         console.error("Error loading admin settings for footer logo:", error);
@@ -41,19 +44,6 @@ export default function Footer({
     };
 
     loadAdminFooterLogo();
-
-    // Listen for storage changes to update logo in real-time
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "admin-settings") {
-        loadAdminFooterLogo();
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
   }, []);
 
   // Minimal footer for admin or simple pages

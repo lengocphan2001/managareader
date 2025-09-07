@@ -11,6 +11,7 @@ import NextTopLoader from "nextjs-toploader";
 import SettingsDialog from "@/components/nettrom/settings-dialog";
 import VerifyMailAlert from "@/components/nettrom/verify-mail-alert";
 import Footer from "@/components/core/Footer";
+import ScriptInjector from "@/components/core/ScriptInjector";
 
 export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - High quality manga without ads`,
@@ -42,6 +43,7 @@ export default function NettromLayout({
 }) {
   return (
     <LayoutWrapper id="nettrom">
+      <ScriptInjector type="header" />
       <NextTopLoader
         zIndex={1000}
         easing="ease-in-out"
@@ -75,6 +77,7 @@ export default function NettromLayout({
       </main>
       <Footer variant="default" />
       <SettingsDialog />
+      <ScriptInjector type="footer" />
     </LayoutWrapper>
   );
 }

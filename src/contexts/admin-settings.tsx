@@ -119,45 +119,24 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
       formData.append("file", file);
       formData.append("type", type);
 
-      // Upload to Next.js API route with fallback
-      const isProduction = typeof window !== "undefined" && window.location.hostname !== "localhost";
+      // Use backend API like other APIs (auth, comments, users, etc.)
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const endpoint = `${backendUrl}/api/admin/upload-asset`;
+
+      // Add authorization header like other APIs
+      const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
       
-      // Try multiple endpoints in order
-      const endpoints = isProduction 
-        ? [
-            `${window.location.origin}/api/admin/upload-asset`,
-            `${window.location.origin}/api/upload-asset`,
-            `${window.location.origin}/api/upload`,
-          ]
-        : [
-            "/api/admin/upload-asset",
-            "/api/upload-asset", 
-            "/api/upload",
-          ];
-      
-      let response: Response | null = null;
-      let lastError = "";
-      
-      for (const endpoint of endpoints) {
-        try {
-          response = await fetch(endpoint, {
-            method: "POST",
-            body: formData,
-          });
-          
-          if (response.ok) {
-            break;
-          } else {
-            const errorText = await response.text();
-            lastError = `${endpoint}: ${response.status} ${errorText}`;
-          }
-        } catch (error) {
-          lastError = `${endpoint}: ${error}`;
-        }
-      }
-      
-      if (!response || !response.ok) {
-        throw new Error(`All upload endpoints failed. Last error: ${lastError}`);
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: formData,
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Upload failed: ${response.status} ${errorText}`);
       }
 
       const result = await response.json();
@@ -182,48 +161,25 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
   // Apply settings to the actual website (update env vars, meta tags, etc.)
   const applyToWebsite = async (): Promise<boolean> => {
     try {
-      // Call Next.js API route to apply settings with fallback
-      const isProduction = typeof window !== "undefined" && window.location.hostname !== "localhost";
+      // Use backend API like other APIs (auth, comments, users, etc.)
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const endpoint = `${backendUrl}/api/admin/apply-settings`;
       
-      // Try multiple endpoints in order
-      const endpoints = isProduction 
-        ? [
-            `${window.location.origin}/api/admin/apply-settings`,
-            `${window.location.origin}/api/apply-settings`,
-            `${window.location.origin}/api/settings`,
-          ]
-        : [
-            "/api/admin/apply-settings",
-            "/api/apply-settings",
-            "/api/settings",
-          ];
+      // Add authorization header like other APIs
+      const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
       
-      let response: Response | null = null;
-      let lastError = "";
-      
-      for (const endpoint of endpoints) {
-        try {
-          response = await fetch(endpoint, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(settings),
-          });
-          
-          if (response.ok) {
-            break;
-          } else {
-            const errorText = await response.text();
-            lastError = `${endpoint}: ${response.status} ${errorText}`;
-          }
-        } catch (error) {
-          lastError = `${endpoint}: ${error}`;
-        }
-      }
-      
-      if (!response || !response.ok) {
-        throw new Error(`All apply settings endpoints failed. Last error: ${lastError}`);
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(settings),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to apply settings: ${response.status} ${errorText}`);
       }
 
       // Update meta tags on the current page

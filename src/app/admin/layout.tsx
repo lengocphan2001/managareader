@@ -26,8 +26,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <body className="bg-gray-50">
         <AdminAuthProvider>
           <AdminSettingsProvider>
-                  <AdminGuard>
-                    <AdminTitle />
+            <AdminGuard>
+              <AdminTitle />
               <div className="flex min-h-screen">
                 {/* Sidebar */}
                 <AdminSidebar

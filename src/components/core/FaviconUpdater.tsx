@@ -96,7 +96,7 @@ export default function FaviconUpdater() {
         "admin-settings-changed",
         handleCustomStorageChange,
       );
-      
+
       // Clean up favicon elements
       faviconElementsRef.current.forEach((element) => {
         try {

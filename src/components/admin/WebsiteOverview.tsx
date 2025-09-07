@@ -155,7 +155,6 @@ export function WebsiteOverview() {
                 </span>
               </div>
             )}
-
           </CardContent>
         </Card>
 
@@ -189,7 +188,6 @@ export function WebsiteOverview() {
             <div className="truncate text-xs text-gray-500">
               {settings.metaAuthor || "Not set"}
             </div>
-
           </CardContent>
         </Card>
 
@@ -260,8 +258,6 @@ export function WebsiteOverview() {
             <div className="text-xs text-gray-500">
               {settings.language || "en"}
             </div>
-
-           
           </CardContent>
         </Card>
       </div>

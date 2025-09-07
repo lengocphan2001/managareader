@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     if (!type || !["logo", "footerLogo"].includes(type)) {
       return NextResponse.json(
         { error: "Invalid type. Must be logo or footerLogo" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     if (!allowedTypes[type as keyof typeof allowedTypes]?.includes(file.type)) {
       return NextResponse.json(
         { error: `Invalid file type for ${type}` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { error: "File size too large. Maximum 5MB allowed." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     // Generate filename
     const timestamp = Date.now();
-    const fileExtension = file.name.split('.').pop();
+    const fileExtension = file.name.split(".").pop();
     const filename = `${type}-${timestamp}.${fileExtension}`;
     const filepath = join(uploadsDir, filename);
 
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     console.error("Upload error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

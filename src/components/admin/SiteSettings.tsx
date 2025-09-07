@@ -434,8 +434,6 @@ export function SiteSettings() {
           </Card>
         </TabsContent>
 
-
-
         {/* Scripts Settings */}
         <TabsContent value="scripts" className="space-y-6">
           <Card>
@@ -522,7 +520,6 @@ export function SiteSettings() {
             </CardContent>
           </Card>
         </TabsContent>
-
       </Tabs>
     </div>
   );

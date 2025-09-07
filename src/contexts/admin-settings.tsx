@@ -191,7 +191,6 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
     }
     metaDescription.setAttribute("content", settings.siteDescription);
 
-
     // Update favicon - let FaviconUpdater component handle this
     // We'll just dispatch the event to trigger FaviconUpdater
     window.dispatchEvent(new CustomEvent("admin-settings-changed"));

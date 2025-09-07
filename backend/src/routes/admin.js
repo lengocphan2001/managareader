@@ -95,11 +95,11 @@ router.post(
       }
 
       const { type } = req.body;
-    if (!type || !["logo", "footerLogo"].includes(type)) {
-      return res.status(400).json({
-        error: "Invalid type. Must be logo or footerLogo",
-      });
-    }
+      if (!type || !["logo", "footerLogo"].includes(type)) {
+        return res.status(400).json({
+          error: "Invalid type. Must be logo or footerLogo",
+        });
+      }
 
       // Return the public URL
       const publicUrl = `/uploads/${req.file.filename}`;

@@ -95,7 +95,7 @@ module.exports = async (phase) => {
             {
               key: "Content-Security-Policy",
               value:
-                "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.xklduyenviet.net https://api.iconify.design https://challenges.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://challenges.cloudflare.com https://www.googletagmanager.com; img-src 'self' data: https: blob: https://resizer.f-ck.me https://mangadex.org https://www.googletagmanager.com; font-src 'self' data: https:; object-src 'none'; base-uri 'self';",
+                "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.nettruyen-vn.com https://api.iconify.design https://challenges.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://challenges.cloudflare.com https://www.googletagmanager.com; img-src 'self' data: https: blob: https://resizer.f-ck.me https://mangadex.org https://www.googletagmanager.com; font-src 'self' data: https:; object-src 'none'; base-uri 'self';",
             },
             {
               key: "X-Frame-Options",

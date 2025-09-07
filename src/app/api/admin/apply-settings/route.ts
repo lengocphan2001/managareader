@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     if (!settings.siteName || !settings.siteDescription) {
       return NextResponse.json(
         { error: "Site name and description are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -24,7 +24,8 @@ export async function POST(request: NextRequest) {
       NEXT_PUBLIC_LANGUAGE: settings.language || "en",
       NEXT_PUBLIC_PRIMARY_COLOR: settings.primaryColor || "#3B82F6",
       NEXT_PUBLIC_LOGO_URL: settings.logoUrl || "/logo.png",
-      NEXT_PUBLIC_FOOTER_LOGO_URL: settings.footerLogoUrl || "/images/logo-footer.png",
+      NEXT_PUBLIC_FOOTER_LOGO_URL:
+        settings.footerLogoUrl || "/images/logo-footer.png",
       NEXT_PUBLIC_ENABLE_DARK_MODE: settings.enableDarkMode ? "true" : "false",
       NEXT_PUBLIC_HEADER_SCRIPTS: settings.headerScripts || "",
       NEXT_PUBLIC_FOOTER_SCRIPTS: settings.footerScripts || "",
@@ -69,7 +70,7 @@ export async function POST(request: NextRequest) {
     console.error("Apply settings error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

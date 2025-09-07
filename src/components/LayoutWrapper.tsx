@@ -45,10 +45,10 @@ export const LayoutWrapper = ({
       <body data-layout-id={props.id}>
         <SettingsProvider>
           <SkeletonTheme baseColor="#202020" highlightColor="#444">
-                <MangadexContextProvider>
-                  <ScriptInjector type="header" />
-                  {children}
-                </MangadexContextProvider>
+            <MangadexContextProvider>
+              <ScriptInjector type="header" />
+              {children}
+            </MangadexContextProvider>
           </SkeletonTheme>
         </SettingsProvider>
         <ToastContainer theme="dark" />

@@ -11,7 +11,8 @@ const prisma = new PrismaClient();
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    // Upload to the main project's public/uploads directory, not backend/public/uploads
+    const uploadsDir = path.join(process.cwd(), "..", "public", "uploads");
     try {
       await fs.mkdir(uploadsDir, { recursive: true });
       cb(null, uploadsDir);
@@ -22,7 +23,8 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const timestamp = Date.now();
     const fileExtension = path.extname(file.originalname);
-    const filename = `${req.body.type}-${timestamp}${fileExtension}`;
+    // Use a generic prefix since req.body.type might not be available yet
+    const filename = `upload-${timestamp}${fileExtension}`;
     cb(null, filename);
   },
 });
@@ -31,19 +33,6 @@ const upload = multer({
   storage: storage,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
-  },
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = {
-      logo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
-      footerLogo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
-    };
-
-    const type = req.body.type;
-    if (allowedTypes[type] && allowedTypes[type].includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error(`Invalid file type for ${type}`), false);
-    }
   },
 });
 
@@ -98,6 +87,18 @@ router.post(
       if (!type || !["logo", "footerLogo"].includes(type)) {
         return res.status(400).json({
           error: "Invalid type. Must be logo or footerLogo",
+        });
+      }
+
+      // Validate file type
+      const allowedTypes = {
+        logo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
+        footerLogo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
+      };
+
+      if (!allowedTypes[type] || !allowedTypes[type].includes(req.file.mimetype)) {
+        return res.status(400).json({
+          error: `Invalid file type for ${type}. Allowed types: ${allowedTypes[type].join(", ")}`,
         });
       }
 

@@ -120,12 +120,16 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
       formData.append("type", type);
 
       // Use backend API like other APIs (auth, comments, users, etc.)
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
       const endpoint = `${backendUrl}/api/admin/upload-asset`;
 
       // Add authorization header like other APIs
-      const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
-      
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("auth_token")
+          : null;
+
       const response = await fetch(endpoint, {
         method: "POST",
         body: formData,
@@ -162,12 +166,16 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
   const applyToWebsite = async (): Promise<boolean> => {
     try {
       // Use backend API like other APIs (auth, comments, users, etc.)
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
       const endpoint = `${backendUrl}/api/admin/apply-settings`;
-      
+
       // Add authorization header like other APIs
-      const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
-      
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("auth_token")
+          : null;
+
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -179,7 +187,9 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Failed to apply settings: ${response.status} ${errorText}`);
+        throw new Error(
+          `Failed to apply settings: ${response.status} ${errorText}`,
+        );
       }
 
       // Update meta tags on the current page

@@ -11,11 +11,11 @@ const prisma = new PrismaClient();
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
-    // Upload to the main project's public/uploads directory (Next.js public folder)
-    const uploadsDir = path.join(process.cwd(), "..", "public", "uploads");
+    // Upload to the main project's public/images directory (Next.js public folder)
+    const imagesDir = path.join(process.cwd(), "..", "public", "images");
     try {
-      await fs.mkdir(uploadsDir, { recursive: true });
-      cb(null, uploadsDir);
+      await fs.mkdir(imagesDir, { recursive: true });
+      cb(null, imagesDir);
     } catch (error) {
       cb(error);
     }
@@ -106,7 +106,7 @@ router.post(
       }
 
       // Return the public URL
-      const publicUrl = `/uploads/${req.file.filename}`;
+      const publicUrl = `/images/${req.file.filename}`;
 
       res.json({
         success: true,

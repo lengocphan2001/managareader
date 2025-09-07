@@ -1,6 +1,6 @@
 // Example usage of Footer component with different variants
 
-import Footer from './Footer';
+import Footer from "./Footer";
 
 // Example 1: Default footer (for nettrom layout)
 export function DefaultFooterExample() {
@@ -20,8 +20,8 @@ export function AdminFooterExample() {
 // Example 4: Custom footer with additional props
 export function CustomFooterExample() {
   return (
-    <Footer 
-      variant="default" 
+    <Footer
+      variant="default"
       className="mt-8"
       showSocialLinks={true}
       showNewsletter={false}
@@ -31,10 +31,5 @@ export function CustomFooterExample() {
 
 // Example 5: Footer without social links
 export function FooterWithoutSocialExample() {
-  return (
-    <Footer 
-      variant="default" 
-      showSocialLinks={false}
-    />
-  );
+  return <Footer variant="default" showSocialLinks={false} />;
 }

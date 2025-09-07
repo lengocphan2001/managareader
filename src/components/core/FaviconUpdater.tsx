@@ -29,12 +29,14 @@ export default function FaviconUpdater() {
 
       // Remove existing favicon links
       const existingFavicons = document.querySelectorAll('link[rel*="icon"]');
-      existingFavicons.forEach(link => link.remove());
+      existingFavicons.forEach((link) => link.remove());
 
       // Add cache busting to force reload
       const timestamp = Date.now();
-      const faviconUrl = url.includes('?') ? `${url}&t=${timestamp}` : `${url}?t=${timestamp}`;
-      
+      const faviconUrl = url.includes("?")
+        ? `${url}&t=${timestamp}`
+        : `${url}?t=${timestamp}`;
+
       // Create main favicon
       const favicon = document.createElement("link");
       favicon.setAttribute("rel", "icon");
@@ -61,11 +63,16 @@ export default function FaviconUpdater() {
       tempLink.setAttribute("href", faviconUrl);
       tempLink.setAttribute("type", "image/x-icon");
       document.head.appendChild(tempLink);
-      
+
       // Remove the temporary link after a short delay
       setTimeout(() => {
-        if (tempLink.parentNode) {
-          tempLink.parentNode.removeChild(tempLink);
+        try {
+          if (tempLink && tempLink.parentNode) {
+            tempLink.parentNode.removeChild(tempLink);
+          }
+        } catch (error) {
+          // Element might already be removed, ignore error
+          console.debug("Temporary favicon link already removed");
         }
       }, 100);
 
@@ -88,11 +95,17 @@ export default function FaviconUpdater() {
     };
 
     window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("admin-settings-changed", handleCustomStorageChange);
+    window.addEventListener(
+      "admin-settings-changed",
+      handleCustomStorageChange,
+    );
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("admin-settings-changed", handleCustomStorageChange);
+      window.removeEventListener(
+        "admin-settings-changed",
+        handleCustomStorageChange,
+      );
     };
   }, [faviconUrl]);
 

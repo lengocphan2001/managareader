@@ -30,39 +30,42 @@ import Footer from '@/components/core/Footer';
 ### Advanced Usage
 
 ```tsx
-import Footer from '@/components/core/Footer';
+import Footer from "@/components/core/Footer";
 
 // Custom footer with additional props
-<Footer 
-  variant="default" 
+<Footer
+  variant="default"
   className="mt-8"
   showSocialLinks={true}
   showNewsletter={false}
-/>
+/>;
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `"default" \| "minimal" \| "admin"` | `"default"` | Footer variant to display |
-| `className` | `string` | `""` | Additional CSS classes |
-| `showSocialLinks` | `boolean` | `true` | Whether to show social media links |
-| `showNewsletter` | `boolean` | `false` | Whether to show newsletter signup |
+| Prop              | Type                                | Default     | Description                        |
+| ----------------- | ----------------------------------- | ----------- | ---------------------------------- |
+| `variant`         | `"default" \| "minimal" \| "admin"` | `"default"` | Footer variant to display          |
+| `className`       | `string`                            | `""`        | Additional CSS classes             |
+| `showSocialLinks` | `boolean`                           | `true`      | Whether to show social media links |
+| `showNewsletter`  | `boolean`                           | `false`     | Whether to show newsletter signup  |
 
 ## Variants
 
 ### Default Variant
+
 - Full footer with logo, links, and social media
 - Used in nettrom layout
 - Includes quick links, account links, support links, and about section
 
 ### Minimal Variant
+
 - Simple footer with just copyright
 - Used in main layout
 - Clean and minimal design
 
 ### Admin Variant
+
 - Admin-specific footer with admin panel branding
 - Used in admin layout
 - Includes back to site link and admin-specific styling
@@ -72,6 +75,7 @@ import Footer from '@/components/core/Footer';
 The component uses Tailwind CSS classes and can be customized with additional classes via the `className` prop.
 
 ### CSS Classes Used
+
 - `footer`: Main footer container
 - `container`: Content container
 - `row`/`col-*`: Bootstrap grid system

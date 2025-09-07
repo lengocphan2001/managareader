@@ -1,18 +1,22 @@
 "use client";
 
 import { useAdminSettings } from "@/contexts/admin-settings";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/shadcn/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/shadcn/card";
 import { Badge } from "@/components/shadcn/badge";
-import { 
-  Globe, 
-  Palette, 
-  Image, 
-  FileText, 
-  BarChart3, 
+import {
+  Globe,
+  Palette,
+  FileText,
+  BarChart3,
   Code,
   CheckCircle,
   XCircle,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 
 export function WebsiteOverview() {
@@ -64,7 +68,7 @@ export function WebsiteOverview() {
                 {getStatusBadge(settings.siteName, true)}
               </div>
             </div>
-            <div className="text-xs text-gray-500 truncate">
+            <div className="truncate text-xs text-gray-500">
               {settings.siteName || "Not set"}
             </div>
 
@@ -75,7 +79,7 @@ export function WebsiteOverview() {
                 {getStatusBadge(settings.siteDescription, true)}
               </div>
             </div>
-            <div className="text-xs text-gray-500 truncate">
+            <div className="truncate text-xs text-gray-500">
               {settings.siteDescription || "Not set"}
             </div>
 
@@ -86,7 +90,7 @@ export function WebsiteOverview() {
                 {getStatusBadge(settings.siteUrl)}
               </div>
             </div>
-            <div className="text-xs text-gray-500 truncate">
+            <div className="truncate text-xs text-gray-500">
               {settings.siteUrl || "Not set"}
             </div>
 
@@ -97,7 +101,7 @@ export function WebsiteOverview() {
                 {getStatusBadge(settings.adminEmail)}
               </div>
             </div>
-            <div className="text-xs text-gray-500 truncate">
+            <div className="truncate text-xs text-gray-500">
               {settings.adminEmail || "Not set"}
             </div>
           </CardContent>
@@ -121,12 +125,12 @@ export function WebsiteOverview() {
             </div>
             {settings.logoUrl && (
               <div className="flex items-center space-x-2">
-                <img 
-                  src={settings.logoUrl} 
-                  alt="Logo" 
+                <img
+                  src={settings.logoUrl}
+                  alt="Logo"
                   className="h-8 w-8 rounded border object-contain"
                 />
-                <span className="text-xs text-gray-500 truncate">
+                <span className="truncate text-xs text-gray-500">
                   {settings.logoUrl}
                 </span>
               </div>
@@ -141,12 +145,12 @@ export function WebsiteOverview() {
             </div>
             {settings.footerLogoUrl && (
               <div className="flex items-center space-x-2">
-                <img 
-                  src={settings.footerLogoUrl} 
-                  alt="Footer Logo" 
+                <img
+                  src={settings.footerLogoUrl}
+                  alt="Footer Logo"
                   className="h-6 w-6 rounded border object-contain"
                 />
-                <span className="text-xs text-gray-500 truncate">
+                <span className="truncate text-xs text-gray-500">
                   {settings.footerLogoUrl}
                 </span>
               </div>
@@ -161,12 +165,12 @@ export function WebsiteOverview() {
             </div>
             {settings.faviconUrl && (
               <div className="flex items-center space-x-2">
-                <img 
-                  src={settings.faviconUrl} 
-                  alt="Favicon" 
+                <img
+                  src={settings.faviconUrl}
+                  alt="Favicon"
                   className="h-4 w-4 rounded border object-contain"
                 />
-                <span className="text-xs text-gray-500 truncate">
+                <span className="truncate text-xs text-gray-500">
                   {settings.faviconUrl}
                 </span>
               </div>
@@ -181,7 +185,7 @@ export function WebsiteOverview() {
             </div>
             {settings.primaryColor && (
               <div className="flex items-center space-x-2">
-                <div 
+                <div
                   className="h-4 w-4 rounded border"
                   style={{ backgroundColor: settings.primaryColor }}
                 ></div>
@@ -209,7 +213,7 @@ export function WebsiteOverview() {
                 {getStatusBadge(settings.metaKeywords)}
               </div>
             </div>
-            <div className="text-xs text-gray-500 truncate">
+            <div className="truncate text-xs text-gray-500">
               {settings.metaKeywords || "Not set"}
             </div>
 
@@ -220,7 +224,7 @@ export function WebsiteOverview() {
                 {getStatusBadge(settings.metaAuthor)}
               </div>
             </div>
-            <div className="text-xs text-gray-500 truncate">
+            <div className="truncate text-xs text-gray-500">
               {settings.metaAuthor || "Not set"}
             </div>
 
@@ -231,7 +235,7 @@ export function WebsiteOverview() {
                 {getStatusBadge(settings.googleAnalyticsId)}
               </div>
             </div>
-            <div className="text-xs text-gray-500 truncate">
+            <div className="truncate text-xs text-gray-500">
               {settings.googleAnalyticsId || "Not configured"}
             </div>
 
@@ -242,7 +246,7 @@ export function WebsiteOverview() {
                 {getStatusBadge(settings.facebookPixelId)}
               </div>
             </div>
-            <div className="text-xs text-gray-500 truncate">
+            <div className="truncate text-xs text-gray-500">
               {settings.facebookPixelId || "Not configured"}
             </div>
           </CardContent>
@@ -265,10 +269,9 @@ export function WebsiteOverview() {
               </div>
             </div>
             <div className="text-xs text-gray-500">
-              {settings.headerScripts ? 
-                `${settings.headerScripts.length} characters` : 
-                "No scripts"
-              }
+              {settings.headerScripts
+                ? `${settings.headerScripts.length} characters`
+                : "No scripts"}
             </div>
 
             <div className="flex items-center justify-between">
@@ -279,10 +282,9 @@ export function WebsiteOverview() {
               </div>
             </div>
             <div className="text-xs text-gray-500">
-              {settings.footerScripts ? 
-                `${settings.footerScripts.length} characters` : 
-                "No scripts"
-              }
+              {settings.footerScripts
+                ? `${settings.footerScripts.length} characters`
+                : "No scripts"}
             </div>
           </CardContent>
         </Card>
@@ -322,7 +324,9 @@ export function WebsiteOverview() {
               <span className="text-sm font-medium">Dark Mode</span>
               <div className="flex items-center space-x-2">
                 {getStatusIcon(settings.enableDarkMode ? "enabled" : "")}
-                <Badge variant={settings.enableDarkMode ? "default" : "secondary"}>
+                <Badge
+                  variant={settings.enableDarkMode ? "default" : "secondary"}
+                >
                   {settings.enableDarkMode ? "Enabled" : "Disabled"}
                 </Badge>
               </div>
@@ -340,43 +344,50 @@ export function WebsiteOverview() {
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">
-                {[
-                  settings.siteName,
-                  settings.siteDescription,
-                  settings.logoUrl,
-                  settings.faviconUrl,
-                  settings.primaryColor
-                ].filter(Boolean).length}
+                {
+                  [
+                    settings.siteName,
+                    settings.siteDescription,
+                    settings.logoUrl,
+                    settings.faviconUrl,
+                    settings.primaryColor,
+                  ].filter(Boolean).length
+                }
               </div>
               <div className="text-sm text-gray-500">Essential Settings</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">
-                {[
-                  settings.metaKeywords,
-                  settings.metaAuthor,
-                  settings.googleAnalyticsId,
-                  settings.facebookPixelId
-                ].filter(Boolean).length}
+                {
+                  [
+                    settings.metaKeywords,
+                    settings.metaAuthor,
+                    settings.googleAnalyticsId,
+                    settings.facebookPixelId,
+                  ].filter(Boolean).length
+                }
               </div>
               <div className="text-sm text-gray-500">SEO & Analytics</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-600">
-                {[
-                  settings.headerScripts,
-                  settings.footerScripts
-                ].filter(Boolean).length}
+                {
+                  [settings.headerScripts, settings.footerScripts].filter(
+                    Boolean,
+                  ).length
+                }
               </div>
               <div className="text-sm text-gray-500">Custom Scripts</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-orange-600">
-                {[
-                  settings.footerLogoUrl,
-                  settings.siteUrl,
-                  settings.adminEmail
-                ].filter(Boolean).length}
+                {
+                  [
+                    settings.footerLogoUrl,
+                    settings.siteUrl,
+                    settings.adminEmail,
+                  ].filter(Boolean).length
+                }
               </div>
               <div className="text-sm text-gray-500">Optional Settings</div>
             </div>

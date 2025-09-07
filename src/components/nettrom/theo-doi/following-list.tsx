@@ -21,8 +21,14 @@ export default function FollowingList() {
     useMangadex();
   const [page, setPage] = useState(1);
   const { data, mutate, isLoading, error } = useReadList(page);
-  const { isOpen, title, message, onConfirm, openConfirmModal, closeConfirmModal } =
-    useConfirmModal();
+  const {
+    isOpen,
+    title,
+    message,
+    onConfirm,
+    openConfirmModal,
+    closeConfirmModal,
+  } = useConfirmModal();
 
   const unfollow = useCallback(
     async (mangaId: string) => {

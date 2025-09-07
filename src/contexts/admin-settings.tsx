@@ -34,7 +34,10 @@ interface AdminSettingsContextValue {
   updateSetting: (key: keyof AdminSettings, value: any) => void;
   resetSettings: () => void;
   loading: boolean;
-  uploadFile: (file: File, type: "logo" | "favicon" | "footerLogo") => Promise<string>;
+  uploadFile: (
+    file: File,
+    type: "logo" | "favicon" | "footerLogo",
+  ) => Promise<string>;
   applyToWebsite: () => Promise<boolean>;
 }
 
@@ -92,7 +95,7 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
     // Save to localStorage
     try {
       localStorage.setItem("admin-settings", JSON.stringify(updated));
-      
+
       // Dispatch custom event for same-tab updates
       window.dispatchEvent(new CustomEvent("admin-settings-changed"));
     } catch (error) {
@@ -125,13 +128,15 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
       formData.append("type", type);
 
       // Upload to backend API
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
       const response = await fetch(`${backendUrl}/api/admin/upload-asset`, {
         method: "POST",
         body: formData,
         headers: {
           // Add authorization header if needed
-          ...(typeof window !== "undefined" && localStorage.getItem("admin-token") 
+          ...(typeof window !== "undefined" &&
+          localStorage.getItem("admin-token")
             ? { Authorization: `Bearer ${localStorage.getItem("admin-token")}` }
             : {}),
         },
@@ -164,13 +169,15 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
   const applyToWebsite = async (): Promise<boolean> => {
     try {
       // Call backend API to apply settings
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
       const response = await fetch(`${backendUrl}/api/admin/apply-settings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           // Add authorization header if needed
-          ...(typeof window !== "undefined" && localStorage.getItem("admin-token") 
+          ...(typeof window !== "undefined" &&
+          localStorage.getItem("admin-token")
             ? { Authorization: `Bearer ${localStorage.getItem("admin-token")}` }
             : {}),
         },
@@ -230,12 +237,14 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
     const updateFavicon = (url: string) => {
       // Remove existing favicon links
       const existingFavicons = document.querySelectorAll('link[rel*="icon"]');
-      existingFavicons.forEach(link => link.remove());
+      existingFavicons.forEach((link) => link.remove());
 
       // Add new favicon with cache busting
       const timestamp = Date.now();
-      const faviconUrl = url.includes('?') ? `${url}&t=${timestamp}` : `${url}?t=${timestamp}`;
-      
+      const faviconUrl = url.includes("?")
+        ? `${url}&t=${timestamp}`
+        : `${url}?t=${timestamp}`;
+
       // Create main favicon
       const favicon = document.createElement("link");
       favicon.setAttribute("rel", "icon");
@@ -262,7 +271,7 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
       link.setAttribute("href", faviconUrl);
       link.setAttribute("type", "image/x-icon");
       document.head.appendChild(link);
-      
+
       // Remove the temporary link after a short delay
       setTimeout(() => {
         if (link.parentNode) {

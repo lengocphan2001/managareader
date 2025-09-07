@@ -84,34 +84,40 @@ const requireAdmin = async (req, res, next) => {
 };
 
 // Upload asset endpoint
-router.post("/upload-asset", auth, requireAdmin, upload.single("file"), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file provided" });
-    }
+router.post(
+  "/upload-asset",
+  auth,
+  requireAdmin,
+  upload.single("file"),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file provided" });
+      }
 
-    const { type } = req.body;
-    if (!type || !["logo", "favicon", "footerLogo"].includes(type)) {
-      return res.status(400).json({
-        error: "Invalid type. Must be logo, favicon, or footerLogo"
+      const { type } = req.body;
+      if (!type || !["logo", "favicon", "footerLogo"].includes(type)) {
+        return res.status(400).json({
+          error: "Invalid type. Must be logo, favicon, or footerLogo",
+        });
+      }
+
+      // Return the public URL
+      const publicUrl = `/uploads/${req.file.filename}`;
+
+      res.json({
+        success: true,
+        url: publicUrl,
+        filename: req.file.filename,
+        size: req.file.size,
+        type: req.file.mimetype,
       });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-
-    // Return the public URL
-    const publicUrl = `/uploads/${req.file.filename}`;
-
-    res.json({
-      success: true,
-      url: publicUrl,
-      filename: req.file.filename,
-      size: req.file.size,
-      type: req.file.mimetype,
-    });
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+  },
+);
 
 // Apply settings endpoint
 router.post("/apply-settings", auth, requireAdmin, async (req, res) => {
@@ -121,7 +127,7 @@ router.post("/apply-settings", auth, requireAdmin, async (req, res) => {
     // Validate required fields
     if (!settings.siteName || !settings.siteDescription) {
       return res.status(400).json({
-        error: "Site name and description are required"
+        error: "Site name and description are required",
       });
     }
 

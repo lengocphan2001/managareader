@@ -44,7 +44,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
                   {/* Page Content */}
                   <main className="flex-1 overflow-auto p-6">{children}</main>
-                  
+
                   {/* Footer */}
                   <Footer variant="admin" />
                 </div>

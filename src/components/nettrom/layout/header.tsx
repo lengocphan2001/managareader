@@ -29,10 +29,10 @@ const menuItemClassName =
 export default function Header() {
   const [openMenu, setOpenMenu] = useState(false);
   const pathname = usePathname();
-  
+
   // Get admin settings for logo
   const [adminLogoUrl, setAdminLogoUrl] = useState("");
-  
+
   useEffect(() => {
     const loadAdminLogo = () => {
       try {

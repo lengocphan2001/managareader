@@ -16,7 +16,8 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
         const savedSettings = localStorage.getItem("admin-settings");
         if (savedSettings) {
           const parsed = JSON.parse(savedSettings);
-          const scriptContent = type === "header" ? parsed.headerScripts : parsed.footerScripts;
+          const scriptContent =
+            type === "header" ? parsed.headerScripts : parsed.footerScripts;
           setScripts(scriptContent || "");
         }
       } catch (error) {
@@ -34,7 +35,7 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
     };
 
     window.addEventListener("storage", handleStorageChange);
-    
+
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
@@ -51,23 +52,23 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
 
     // Find all script tags
     const scriptTags = tempDiv.querySelectorAll("script");
-    
+
     scriptTags.forEach((scriptTag) => {
       // Create a new script element
       const newScript = document.createElement("script");
-      
+
       // Copy attributes
       Array.from(scriptTag.attributes).forEach((attr) => {
         newScript.setAttribute(attr.name, attr.value);
       });
-      
+
       // Copy content
       if (scriptTag.src) {
         newScript.src = scriptTag.src;
       } else {
         newScript.textContent = scriptTag.textContent;
       }
-      
+
       // Inject the script
       if (type === "header") {
         document.head.appendChild(newScript);
@@ -85,7 +86,7 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
       if (scriptContent.trim()) {
         const newScript = document.createElement("script");
         newScript.textContent = scriptContent;
-        
+
         if (type === "header") {
           document.head.appendChild(newScript);
         } else {

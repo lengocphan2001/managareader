@@ -16,13 +16,13 @@ export class UrlUtils {
   getBackendUrl() {
     if (typeof window !== "undefined") {
       if (window.location.hostname !== "localhost") {
-        // Use the same domain without /api path for production (since URLs already include /api)
-        return `${window.location.protocol}//${window.location.hostname}`;
+        // In production, use the same domain with /api path
+        return `${window.location.protocol}//${window.location.hostname}/api`;
       }
     }
-    // For localhost development, use backend server without /api
+    // For localhost development, use backend server with /api
     return (
-      Constants.BACKEND_URL?.replace("/api", "") || "http://localhost:8000"
+      Constants.BACKEND_URL || "http://localhost:8000/api"
     );
   }
 

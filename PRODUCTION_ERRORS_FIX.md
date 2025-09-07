@@ -6,15 +6,18 @@
 
 **Vấn đề:** Frontend gọi `/api/user` nhưng nhận được 401 Unauthorized.
 
-**Nguyên nhân:** 
+**Nguyên nhân:**
+
 - Backend URL không đúng trong production
 - `getBackendUrl()` trả về domain không có `/api` path
 
 **Giải pháp:**
+
 - Sửa `src/utils/url.ts` để trả về đúng URL với `/api` path
 - Đảm bảo backend server chạy và accessible
 
 **Code đã sửa:**
+
 ```typescript
 getBackendUrl() {
   if (typeof window !== "undefined") {
@@ -34,15 +37,18 @@ getBackendUrl() {
 
 **Vấn đề:** Manifest sử dụng `/favicon.ico` cho tất cả kích thước, gây lỗi "Resource size is not correct".
 
-**Nguyên nhân:** 
+**Nguyên nhân:**
+
 - Favicon.ico không có kích thước 192x192 và 512x512
 - Manifest yêu cầu các kích thước cụ thể
 
 **Giải pháp:**
+
 - Sử dụng `/favicon.ico` cho kích thước nhỏ (16x16, 32x32, 48x48)
 - Sử dụng `/logo.png` cho kích thước lớn (192x192, 512x512)
 
 **Code đã sửa:**
+
 ```typescript
 icons: [
   {
@@ -67,15 +73,18 @@ icons: [
 
 **Vấn đề:** `TypeError: Cannot read properties of null (reading 'removeChild')` trong FaviconUpdater.
 
-**Nguyên nhân:** 
+**Nguyên nhân:**
+
 - Code cố gắng remove element đã bị remove
 - Race condition trong DOM manipulation
 
 **Giải pháp:**
+
 - Thêm try-catch để handle lỗi
 - Kiểm tra element tồn tại trước khi remove
 
 **Code đã sửa:**
+
 ```typescript
 setTimeout(() => {
   try {
@@ -92,6 +101,7 @@ setTimeout(() => {
 ## Các bước kiểm tra sau khi deploy:
 
 1. **Kiểm tra Backend API:**
+
    ```bash
    curl https://nettruyen-vn.com/api/user
    # Should return 401 (expected for unauthenticated requests)

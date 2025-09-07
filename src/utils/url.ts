@@ -16,14 +16,12 @@ export class UrlUtils {
   getBackendUrl() {
     if (typeof window !== "undefined") {
       if (window.location.hostname !== "localhost") {
-        // In production, use the same domain with /api path
-        return `${window.location.protocol}//${window.location.hostname}/api`;
+        // In production, use the same domain without /api path (since URLs already include /api)
+        return `${window.location.protocol}//${window.location.hostname}`;
       }
     }
-    // For localhost development, use backend server with /api
-    return (
-      Constants.BACKEND_URL || "http://localhost:8000/api"
-    );
+    // For localhost development, use backend server without /api
+    return Constants.BACKEND_URL?.replace("/api", "") || "http://localhost:8000";
   }
 
   getGoogleAuthUrl() {

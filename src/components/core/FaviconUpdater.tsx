@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 export default function FaviconUpdater() {
-  const [faviconUrl, setFaviconUrl] = useState("");
+  const faviconElementsRef = useRef<HTMLLinkElement[]>([]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const loadFavicon = () => {
       try {
         if (typeof window !== "undefined") {
@@ -13,10 +13,7 @@ export default function FaviconUpdater() {
           if (savedSettings) {
             const parsed = JSON.parse(savedSettings);
             const newFaviconUrl = parsed.faviconUrl || "";
-            if (newFaviconUrl !== faviconUrl) {
-              setFaviconUrl(newFaviconUrl);
-              updateFavicon(newFaviconUrl);
-            }
+            updateFavicon(newFaviconUrl);
           }
         }
       } catch (error) {
@@ -27,9 +24,17 @@ export default function FaviconUpdater() {
     const updateFavicon = (url: string) => {
       if (!url) return;
 
-      // Remove existing favicon links
-      const existingFavicons = document.querySelectorAll('link[rel*="icon"]');
-      existingFavicons.forEach((link) => link.remove());
+      // Clean up previous favicon elements
+      faviconElementsRef.current.forEach((element) => {
+        try {
+          if (element && element.parentNode) {
+            element.parentNode.removeChild(element);
+          }
+        } catch (error) {
+          // Element might already be removed, ignore error
+        }
+      });
+      faviconElementsRef.current = [];
 
       // Add cache busting to force reload
       const timestamp = Date.now();
@@ -43,6 +48,7 @@ export default function FaviconUpdater() {
       favicon.setAttribute("type", "image/x-icon");
       favicon.setAttribute("href", faviconUrl);
       document.head.appendChild(favicon);
+      faviconElementsRef.current.push(favicon);
 
       // Create shortcut icon (for older browsers)
       const shortcutIcon = document.createElement("link");
@@ -50,31 +56,14 @@ export default function FaviconUpdater() {
       shortcutIcon.setAttribute("type", "image/x-icon");
       shortcutIcon.setAttribute("href", faviconUrl);
       document.head.appendChild(shortcutIcon);
+      faviconElementsRef.current.push(shortcutIcon);
 
       // Create apple-touch-icon
       const appleIcon = document.createElement("link");
       appleIcon.setAttribute("rel", "apple-touch-icon");
       appleIcon.setAttribute("href", faviconUrl);
       document.head.appendChild(appleIcon);
-
-      // Force browser to reload favicon by temporarily changing href
-      const tempLink = document.createElement("link");
-      tempLink.setAttribute("rel", "icon");
-      tempLink.setAttribute("href", faviconUrl);
-      tempLink.setAttribute("type", "image/x-icon");
-      document.head.appendChild(tempLink);
-
-      // Remove the temporary link after a short delay
-      setTimeout(() => {
-        try {
-          if (tempLink && tempLink.parentNode) {
-            tempLink.parentNode.removeChild(tempLink);
-          }
-        } catch (error) {
-          // Element might already be removed, ignore error
-          console.debug("Temporary favicon link already removed");
-        }
-      }, 100);
+      faviconElementsRef.current.push(appleIcon);
 
       console.log("Favicon updated to:", faviconUrl);
     };
@@ -100,14 +89,27 @@ export default function FaviconUpdater() {
       handleCustomStorageChange,
     );
 
+    // Cleanup function
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener(
         "admin-settings-changed",
         handleCustomStorageChange,
       );
+      
+      // Clean up favicon elements
+      faviconElementsRef.current.forEach((element) => {
+        try {
+          if (element && element.parentNode) {
+            element.parentNode.removeChild(element);
+          }
+        } catch (error) {
+          // Element might already be removed, ignore error
+        }
+      });
+      faviconElementsRef.current = [];
     };
-  }, [faviconUrl]);
+  }, []);
 
   return null; // This component doesn't render anything visible
 }

@@ -233,59 +233,9 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
     }
     metaAuthor.setAttribute("content", settings.metaAuthor);
 
-    // Update favicon - handle multiple favicon types
-    const updateFavicon = (url: string) => {
-      // Remove existing favicon links
-      const existingFavicons = document.querySelectorAll('link[rel*="icon"]');
-      existingFavicons.forEach((link) => link.remove());
-
-      // Add new favicon with cache busting
-      const timestamp = Date.now();
-      const faviconUrl = url.includes("?")
-        ? `${url}&t=${timestamp}`
-        : `${url}?t=${timestamp}`;
-
-      // Create main favicon
-      const favicon = document.createElement("link");
-      favicon.setAttribute("rel", "icon");
-      favicon.setAttribute("type", "image/x-icon");
-      favicon.setAttribute("href", faviconUrl);
-      document.head.appendChild(favicon);
-
-      // Create shortcut icon (for older browsers)
-      const shortcutIcon = document.createElement("link");
-      shortcutIcon.setAttribute("rel", "shortcut icon");
-      shortcutIcon.setAttribute("type", "image/x-icon");
-      shortcutIcon.setAttribute("href", faviconUrl);
-      document.head.appendChild(shortcutIcon);
-
-      // Create apple-touch-icon
-      const appleIcon = document.createElement("link");
-      appleIcon.setAttribute("rel", "apple-touch-icon");
-      appleIcon.setAttribute("href", faviconUrl);
-      document.head.appendChild(appleIcon);
-
-      // Force browser to reload favicon
-      const link = document.createElement("link");
-      link.setAttribute("rel", "icon");
-      link.setAttribute("href", faviconUrl);
-      link.setAttribute("type", "image/x-icon");
-      document.head.appendChild(link);
-
-      // Remove the temporary link after a short delay
-      setTimeout(() => {
-        try {
-          if (link && link.parentNode) {
-            link.parentNode.removeChild(link);
-          }
-        } catch (error) {
-          // Element might already be removed, ignore error
-          console.debug("Temporary favicon link already removed");
-        }
-      }, 100);
-    };
-
-    updateFavicon(settings.faviconUrl);
+    // Update favicon - let FaviconUpdater component handle this
+    // We'll just dispatch the event to trigger FaviconUpdater
+    window.dispatchEvent(new CustomEvent("admin-settings-changed"));
 
     // Update logo in Open Graph tags
     let ogImage = document.querySelector('meta[property="og:image"]');

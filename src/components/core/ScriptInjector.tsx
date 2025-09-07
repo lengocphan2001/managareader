@@ -21,11 +21,6 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
           const data = await response.json();
           const scriptContent =
             type === "header" ? data.headerScripts : data.footerScripts;
-          console.log(
-            "ScriptInjector: Loaded scripts from API for",
-            type,
-            scriptContent,
-          );
           setScripts(scriptContent || "");
         } else {
         }
@@ -41,7 +36,6 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
     if (!scripts || scripts.trim() === "") {
       return;
     }
-
 
     // Create a temporary div to parse the HTML
     const tempDiv = document.createElement("div");

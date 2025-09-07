@@ -43,8 +43,8 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Serve static files from uploads directory
-app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
+// Serve static files from uploads directory (main project's public folder)
+app.use("/uploads", express.static(path.join(__dirname, "..", "public", "uploads")));
 
 // Health check endpoints
 app.get("/health", (req, res) => {

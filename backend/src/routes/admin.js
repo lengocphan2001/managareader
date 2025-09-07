@@ -11,8 +11,8 @@ const prisma = new PrismaClient();
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
-    // Upload to backend/public/uploads and serve via static middleware
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    // Upload to the main project's public/uploads directory (Next.js public folder)
+    const uploadsDir = path.join(process.cwd(), "..", "public", "uploads");
     try {
       await fs.mkdir(uploadsDir, { recursive: true });
       cb(null, uploadsDir);

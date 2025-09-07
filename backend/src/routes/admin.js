@@ -11,8 +11,8 @@ const prisma = new PrismaClient();
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
-    // Upload to the main project's public/uploads directory, not backend/public/uploads
-    const uploadsDir = path.join(process.cwd(), "..", "public", "uploads");
+    // Upload to backend/public/uploads and serve via static middleware
+    const uploadsDir = path.join(process.cwd(), "public", "uploads");
     try {
       await fs.mkdir(uploadsDir, { recursive: true });
       cb(null, uploadsDir);
@@ -96,7 +96,10 @@ router.post(
         footerLogo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
       };
 
-      if (!allowedTypes[type] || !allowedTypes[type].includes(req.file.mimetype)) {
+      if (
+        !allowedTypes[type] ||
+        !allowedTypes[type].includes(req.file.mimetype)
+      ) {
         return res.status(400).json({
           error: `Invalid file type for ${type}. Allowed types: ${allowedTypes[type].join(", ")}`,
         });

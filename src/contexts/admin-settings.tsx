@@ -274,8 +274,13 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
 
       // Remove the temporary link after a short delay
       setTimeout(() => {
-        if (link.parentNode) {
-          link.parentNode.removeChild(link);
+        try {
+          if (link && link.parentNode) {
+            link.parentNode.removeChild(link);
+          }
+        } catch (error) {
+          // Element might already be removed, ignore error
+          console.debug("Temporary favicon link already removed");
         }
       }, 100);
     };

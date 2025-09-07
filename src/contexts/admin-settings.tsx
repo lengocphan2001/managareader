@@ -119,14 +119,45 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
       formData.append("file", file);
       formData.append("type", type);
 
-      // Upload to Next.js API route
-      const response = await fetch("/api/admin/upload-asset", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Upload failed");
+      // Upload to Next.js API route with fallback
+      const isProduction = typeof window !== "undefined" && window.location.hostname !== "localhost";
+      
+      // Try multiple endpoints in order
+      const endpoints = isProduction 
+        ? [
+            `${window.location.origin}/api/admin/upload-asset`,
+            `${window.location.origin}/api/upload-asset`,
+            `${window.location.origin}/api/upload`,
+          ]
+        : [
+            "/api/admin/upload-asset",
+            "/api/upload-asset", 
+            "/api/upload",
+          ];
+      
+      let response: Response | null = null;
+      let lastError = "";
+      
+      for (const endpoint of endpoints) {
+        try {
+          response = await fetch(endpoint, {
+            method: "POST",
+            body: formData,
+          });
+          
+          if (response.ok) {
+            break;
+          } else {
+            const errorText = await response.text();
+            lastError = `${endpoint}: ${response.status} ${errorText}`;
+          }
+        } catch (error) {
+          lastError = `${endpoint}: ${error}`;
+        }
+      }
+      
+      if (!response || !response.ok) {
+        throw new Error(`All upload endpoints failed. Last error: ${lastError}`);
       }
 
       const result = await response.json();
@@ -151,17 +182,48 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
   // Apply settings to the actual website (update env vars, meta tags, etc.)
   const applyToWebsite = async (): Promise<boolean> => {
     try {
-      // Call Next.js API route to apply settings
-      const response = await fetch("/api/admin/apply-settings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(settings),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to apply settings");
+      // Call Next.js API route to apply settings with fallback
+      const isProduction = typeof window !== "undefined" && window.location.hostname !== "localhost";
+      
+      // Try multiple endpoints in order
+      const endpoints = isProduction 
+        ? [
+            `${window.location.origin}/api/admin/apply-settings`,
+            `${window.location.origin}/api/apply-settings`,
+            `${window.location.origin}/api/settings`,
+          ]
+        : [
+            "/api/admin/apply-settings",
+            "/api/apply-settings",
+            "/api/settings",
+          ];
+      
+      let response: Response | null = null;
+      let lastError = "";
+      
+      for (const endpoint of endpoints) {
+        try {
+          response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(settings),
+          });
+          
+          if (response.ok) {
+            break;
+          } else {
+            const errorText = await response.text();
+            lastError = `${endpoint}: ${response.status} ${errorText}`;
+          }
+        } catch (error) {
+          lastError = `${endpoint}: ${error}`;
+        }
+      }
+      
+      if (!response || !response.ok) {
+        throw new Error(`All apply settings endpoints failed. Last error: ${lastError}`);
       }
 
       // Update meta tags on the current page

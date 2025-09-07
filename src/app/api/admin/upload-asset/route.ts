@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
-import { existsSync } from "fs";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,53 +12,49 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    if (!type || !["logo", "favicon", "footerLogo"].includes(type)) {
+    if (!type || !["logo", "footerLogo"].includes(type)) {
       return NextResponse.json(
-        { error: "Invalid type. Must be logo, favicon, or footerLogo" },
-        { status: 400 },
+        { error: "Invalid type. Must be logo or footerLogo" },
+        { status: 400 }
       );
     }
 
     // Validate file type
     const allowedTypes = {
       logo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
-      favicon: ["image/x-icon", "image/png", "image/svg+xml"],
       footerLogo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
     };
 
-    if (!allowedTypes[type as keyof typeof allowedTypes].includes(file.type)) {
+    if (!allowedTypes[type as keyof typeof allowedTypes]?.includes(file.type)) {
       return NextResponse.json(
-        {
-          error: `Invalid file type for ${type}. Allowed: ${allowedTypes[type as keyof typeof allowedTypes].join(", ")}`,
-        },
-        { status: 400 },
+        { error: `Invalid file type for ${type}` },
+        { status: 400 }
       );
     }
 
-    // Validate file size (max 5MB for logo/footerLogo, 1MB for favicon)
-    const maxSize = type === "favicon" ? 1 * 1024 * 1024 : 5 * 1024 * 1024;
-    if (file.size > maxSize) {
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
-        {
-          error: `File too large. Max size for ${type}: ${maxSize / (1024 * 1024)}MB`,
-        },
-        { status: 400 },
+        { error: "File size too large. Maximum 5MB allowed." },
+        { status: 400 }
       );
     }
 
     // Create uploads directory if it doesn't exist
     const uploadsDir = join(process.cwd(), "public", "uploads");
-    if (!existsSync(uploadsDir)) {
+    try {
       await mkdir(uploadsDir, { recursive: true });
+    } catch (error) {
+      // Directory might already exist, ignore error
     }
 
-    // Generate unique filename
+    // Generate filename
     const timestamp = Date.now();
-    const fileExtension = file.name.split(".").pop();
+    const fileExtension = file.name.split('.').pop();
     const filename = `${type}-${timestamp}.${fileExtension}`;
     const filepath = join(uploadsDir, filename);
 
-    // Convert file to buffer and save
+    // Write file
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     await writeFile(filepath, buffer);
@@ -71,14 +66,12 @@ export async function POST(request: NextRequest) {
       success: true,
       url: publicUrl,
       filename: filename,
-      size: file.size,
-      type: file.type,
     });
   } catch (error) {
-    console.error("Error uploading file:", error);
+    console.error("Upload error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

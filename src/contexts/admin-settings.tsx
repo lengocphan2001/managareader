@@ -20,10 +20,6 @@ interface AdminSettings {
   faviconUrl: string;
   footerLogoUrl: string;
   enableDarkMode: boolean;
-  metaKeywords: string;
-  metaAuthor: string;
-  googleAnalyticsId: string;
-  facebookPixelId: string;
   headerScripts: string;
   footerScripts: string;
 }
@@ -53,10 +49,6 @@ const defaultSettings: AdminSettings = {
   faviconUrl: "/favicon.ico",
   footerLogoUrl: "/images/logo-footer.png",
   enableDarkMode: true,
-  metaKeywords: "manga, anime, comics, reading, online",
-  metaAuthor: "MangaReader Team",
-  googleAnalyticsId: "",
-  facebookPixelId: "",
   headerScripts: "",
   footerScripts: "",
 };
@@ -127,19 +119,10 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
       formData.append("file", file);
       formData.append("type", type);
 
-      // Upload to backend API
-      const backendUrl =
-        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
-      const response = await fetch(`${backendUrl}/api/admin/upload-asset`, {
+      // Upload to Next.js API route
+      const response = await fetch("/api/admin/upload-asset", {
         method: "POST",
         body: formData,
-        headers: {
-          // Add authorization header if needed
-          ...(typeof window !== "undefined" &&
-          localStorage.getItem("admin-token")
-            ? { Authorization: `Bearer ${localStorage.getItem("admin-token")}` }
-            : {}),
-        },
       });
 
       if (!response.ok) {
@@ -168,18 +151,11 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
   // Apply settings to the actual website (update env vars, meta tags, etc.)
   const applyToWebsite = async (): Promise<boolean> => {
     try {
-      // Call backend API to apply settings
-      const backendUrl =
-        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
-      const response = await fetch(`${backendUrl}/api/admin/apply-settings`, {
+      // Call Next.js API route to apply settings
+      const response = await fetch("/api/admin/apply-settings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Add authorization header if needed
-          ...(typeof window !== "undefined" &&
-          localStorage.getItem("admin-token")
-            ? { Authorization: `Bearer ${localStorage.getItem("admin-token")}` }
-            : {}),
         },
         body: JSON.stringify(settings),
       });
@@ -215,23 +191,6 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
     }
     metaDescription.setAttribute("content", settings.siteDescription);
 
-    // Update meta keywords
-    let metaKeywords = document.querySelector('meta[name="keywords"]');
-    if (!metaKeywords) {
-      metaKeywords = document.createElement("meta");
-      metaKeywords.setAttribute("name", "keywords");
-      document.head.appendChild(metaKeywords);
-    }
-    metaKeywords.setAttribute("content", settings.metaKeywords);
-
-    // Update meta author
-    let metaAuthor = document.querySelector('meta[name="author"]');
-    if (!metaAuthor) {
-      metaAuthor = document.createElement("meta");
-      metaAuthor.setAttribute("name", "author");
-      document.head.appendChild(metaAuthor);
-    }
-    metaAuthor.setAttribute("content", settings.metaAuthor);
 
     // Update favicon - let FaviconUpdater component handle this
     // We'll just dispatch the event to trigger FaviconUpdater

@@ -35,7 +35,6 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const allowedTypes = {
       logo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
-      favicon: ["image/x-icon", "image/png", "image/svg+xml"],
       footerLogo: ["image/png", "image/jpeg", "image/svg+xml", "image/webp"],
     };
 
@@ -96,11 +95,11 @@ router.post(
       }
 
       const { type } = req.body;
-      if (!type || !["logo", "favicon", "footerLogo"].includes(type)) {
-        return res.status(400).json({
-          error: "Invalid type. Must be logo, favicon, or footerLogo",
-        });
-      }
+    if (!type || !["logo", "footerLogo"].includes(type)) {
+      return res.status(400).json({
+        error: "Invalid type. Must be logo or footerLogo",
+      });
+    }
 
       // Return the public URL
       const publicUrl = `/uploads/${req.file.filename}`;

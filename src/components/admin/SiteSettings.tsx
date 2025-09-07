@@ -6,12 +6,9 @@ import {
   RefreshCw,
   Globe,
   Palette,
-  Shield,
-  FileText,
   CheckCircle,
   AlertCircle,
   ExternalLink,
-  BarChart3,
   Code,
 } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
@@ -200,7 +197,7 @@ export function SiteSettings() {
 
       {/* Settings Tabs */}
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="general" className="flex items-center space-x-2">
             <Globe className="h-4 w-4" />
             <span className="hidden sm:inline">General</span>
@@ -212,24 +209,9 @@ export function SiteSettings() {
             <Palette className="h-4 w-4" />
             <span className="hidden sm:inline">Appearance</span>
           </TabsTrigger>
-          <TabsTrigger value="seo" className="flex items-center space-x-2">
-            <FileText className="h-4 w-4" />
-            <span className="hidden sm:inline">SEO</span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="analytics"
-            className="flex items-center space-x-2"
-          >
-            <BarChart3 className="h-4 w-4" />
-            <span className="hidden sm:inline">Analytics</span>
-          </TabsTrigger>
           <TabsTrigger value="scripts" className="flex items-center space-x-2">
             <Code className="h-4 w-4" />
             <span className="hidden sm:inline">Scripts</span>
-          </TabsTrigger>
-          <TabsTrigger value="security" className="flex items-center space-x-2">
-            <Shield className="h-4 w-4" />
-            <span className="hidden sm:inline">Security</span>
           </TabsTrigger>
         </TabsList>
 
@@ -365,55 +347,6 @@ export function SiteSettings() {
                     )}
                   </div>
                 </div>
-
-                {/* Favicon Upload */}
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
-                    Favicon
-                  </label>
-                  <p className="mb-3 text-xs text-gray-500">
-                    Upload a favicon for your site. You can also enter a URL
-                    directly.
-                  </p>
-
-                  <div className="space-y-4">
-                    <Input
-                      value={settings.faviconUrl}
-                      onChange={(e) =>
-                        updateSetting("faviconUrl", e.target.value)
-                      }
-                      placeholder="/favicon.ico or https://example.com/favicon.ico"
-                      className="text-sm"
-                    />
-
-                    <DragDropUpload
-                      onFileSelect={(file) => handleFileUpload(file, "favicon")}
-                      accept="image/x-icon,image/png,image/svg+xml"
-                      maxSize={1 * 1024 * 1024} // 1MB
-                      disabled={uploading === "favicon"}
-                      currentFile={settings.faviconUrl}
-                      onRemove={() => updateSetting("faviconUrl", "")}
-                      type="favicon"
-                    />
-
-                    {uploading === "favicon" && (
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm">
-                          <span>Uploading favicon...</span>
-                          <span>{uploadProgress.favicon || 0}%</span>
-                        </div>
-                        <div className="h-2 w-full rounded-full bg-gray-200">
-                          <div
-                            className="h-2 rounded-full bg-blue-600 transition-all duration-300"
-                            style={{ width: `${uploadProgress.favicon || 0}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Footer Logo Upload */}
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-700">
                     Footer Logo
@@ -501,85 +434,7 @@ export function SiteSettings() {
           </Card>
         </TabsContent>
 
-        {/* SEO Settings */}
-        <TabsContent value="seo" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <FileText className="mr-2 h-5 w-5" />
-                SEO Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="md:col-span-2">
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
-                    Meta Keywords
-                  </label>
-                  <Input
-                    value={settings.metaKeywords}
-                    onChange={(e) =>
-                      updateSetting("metaKeywords", e.target.value)
-                    }
-                    placeholder="manga, anime, comics, reading, online"
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
-                    Meta Author
-                  </label>
-                  <Input
-                    value={settings.metaAuthor}
-                    onChange={(e) =>
-                      updateSetting("metaAuthor", e.target.value)
-                    }
-                    placeholder="MangaReader Team"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
-        {/* Analytics Settings */}
-        <TabsContent value="analytics" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <BarChart3 className="mr-2 h-5 w-5" />
-                Analytics Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
-                    Google Analytics ID
-                  </label>
-                  <Input
-                    value={settings.googleAnalyticsId}
-                    onChange={(e) =>
-                      updateSetting("googleAnalyticsId", e.target.value)
-                    }
-                    placeholder="G-XXXXXXXXXX"
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
-                    Facebook Pixel ID
-                  </label>
-                  <Input
-                    value={settings.facebookPixelId}
-                    onChange={(e) =>
-                      updateSetting("facebookPixelId", e.target.value)
-                    }
-                    placeholder="XXXXXXXXXX"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* Scripts Settings */}
         <TabsContent value="scripts" className="space-y-6">
@@ -668,85 +523,6 @@ export function SiteSettings() {
           </Card>
         </TabsContent>
 
-        {/* Security Settings */}
-        <TabsContent value="security" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Shield className="mr-2 h-5 w-5" />
-                Security Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">
-                      Enable User Registration
-                    </label>
-                    <p className="text-xs text-gray-500">
-                      Allow new users to create accounts
-                    </p>
-                  </div>
-                  <Switch checked={true} disabled className="opacity-50" />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">
-                      Require Email Verification
-                    </label>
-                    <p className="text-xs text-gray-500">
-                      Users must verify their email before accessing the site
-                    </p>
-                  </div>
-                  <Switch checked={true} disabled className="opacity-50" />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">
-                      Enable Two-Factor Authentication
-                    </label>
-                    <p className="text-xs text-gray-500">
-                      Add an extra layer of security to user accounts
-                    </p>
-                  </div>
-                  <Switch checked={false} disabled className="opacity-50" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
-                    Max Login Attempts
-                  </label>
-                  <Input
-                    type="number"
-                    value={5}
-                    disabled
-                    className="opacity-50"
-                    min="1"
-                    max="10"
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-700">
-                    Session Timeout (hours)
-                  </label>
-                  <Input
-                    type="number"
-                    value={24}
-                    disabled
-                    className="opacity-50"
-                    min="1"
-                    max="168"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
     </div>
   );

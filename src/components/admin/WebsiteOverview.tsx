@@ -156,44 +156,6 @@ export function WebsiteOverview() {
               </div>
             )}
 
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Favicon</span>
-              <div className="flex items-center space-x-2">
-                {getStatusIcon(settings.faviconUrl)}
-                {getStatusBadge(settings.faviconUrl)}
-              </div>
-            </div>
-            {settings.faviconUrl && (
-              <div className="flex items-center space-x-2">
-                <img
-                  src={settings.faviconUrl}
-                  alt="Favicon"
-                  className="h-4 w-4 rounded border object-contain"
-                />
-                <span className="truncate text-xs text-gray-500">
-                  {settings.faviconUrl}
-                </span>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Primary Color</span>
-              <div className="flex items-center space-x-2">
-                {getStatusIcon(settings.primaryColor)}
-                {getStatusBadge(settings.primaryColor)}
-              </div>
-            </div>
-            {settings.primaryColor && (
-              <div className="flex items-center space-x-2">
-                <div
-                  className="h-4 w-4 rounded border"
-                  style={{ backgroundColor: settings.primaryColor }}
-                ></div>
-                <span className="text-xs text-gray-500">
-                  {settings.primaryColor}
-                </span>
-              </div>
-            )}
           </CardContent>
         </Card>
 
@@ -228,27 +190,6 @@ export function WebsiteOverview() {
               {settings.metaAuthor || "Not set"}
             </div>
 
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Google Analytics</span>
-              <div className="flex items-center space-x-2">
-                {getStatusIcon(settings.googleAnalyticsId)}
-                {getStatusBadge(settings.googleAnalyticsId)}
-              </div>
-            </div>
-            <div className="truncate text-xs text-gray-500">
-              {settings.googleAnalyticsId || "Not configured"}
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Facebook Pixel</span>
-              <div className="flex items-center space-x-2">
-                {getStatusIcon(settings.facebookPixelId)}
-                {getStatusBadge(settings.facebookPixelId)}
-              </div>
-            </div>
-            <div className="truncate text-xs text-gray-500">
-              {settings.facebookPixelId || "Not configured"}
-            </div>
           </CardContent>
         </Card>
 
@@ -320,80 +261,10 @@ export function WebsiteOverview() {
               {settings.language || "en"}
             </div>
 
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Dark Mode</span>
-              <div className="flex items-center space-x-2">
-                {getStatusIcon(settings.enableDarkMode ? "enabled" : "")}
-                <Badge
-                  variant={settings.enableDarkMode ? "default" : "secondary"}
-                >
-                  {settings.enableDarkMode ? "Enabled" : "Disabled"}
-                </Badge>
-              </div>
-            </div>
+           
           </CardContent>
         </Card>
       </div>
-
-      {/* Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Configuration Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
-                {
-                  [
-                    settings.siteName,
-                    settings.siteDescription,
-                    settings.logoUrl,
-                    settings.faviconUrl,
-                    settings.primaryColor,
-                  ].filter(Boolean).length
-                }
-              </div>
-              <div className="text-sm text-gray-500">Essential Settings</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
-                {
-                  [
-                    settings.metaKeywords,
-                    settings.metaAuthor,
-                    settings.googleAnalyticsId,
-                    settings.facebookPixelId,
-                  ].filter(Boolean).length
-                }
-              </div>
-              <div className="text-sm text-gray-500">SEO & Analytics</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">
-                {
-                  [settings.headerScripts, settings.footerScripts].filter(
-                    Boolean,
-                  ).length
-                }
-              </div>
-              <div className="text-sm text-gray-500">Custom Scripts</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">
-                {
-                  [
-                    settings.footerLogoUrl,
-                    settings.siteUrl,
-                    settings.adminEmail,
-                  ].filter(Boolean).length
-                }
-              </div>
-              <div className="text-sm text-gray-500">Optional Settings</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

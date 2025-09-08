@@ -8,7 +8,7 @@ interface ScriptInjectorProps {
 
 export default function ScriptInjector({ type }: ScriptInjectorProps) {
   const [scripts, setScripts] = useState<string>("");
-
+  
   useEffect(() => {
     // Load scripts from API
     const loadScripts = async () => {
@@ -21,8 +21,10 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
           const data = await response.json();
           const scriptContent =
             type === "header" ? data.headerScripts : data.footerScripts;
+
           setScripts(scriptContent || "");
         } else {
+          console.log(`Failed to load ${type} scripts from API`);
         }
       } catch (error) {
         console.error("Error loading admin settings from API:", error);
@@ -34,9 +36,9 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
 
   useEffect(() => {
     if (!scripts || scripts.trim() === "") {
+      console.log(`No ${type} scripts to inject`);
       return;
     }
-
     // Create a temporary div to parse the HTML
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = scripts;
@@ -64,6 +66,7 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
       if (type === "header") {
         document.head.appendChild(newScript);
       } else {
+        // For footer scripts, append to the very end of body
         document.body.appendChild(newScript);
       }
     });
@@ -82,6 +85,7 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
       if (type === "header") {
         document.head.appendChild(newNoscript);
       } else {
+        // For footer noscript, append to the very end of body
         document.body.appendChild(newNoscript);
       }
     });
@@ -99,6 +103,7 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
         if (type === "header") {
           document.head.appendChild(newScript);
         } else {
+          // For footer inline scripts, append to the very end of body
           document.body.appendChild(newScript);
         }
       }
@@ -112,6 +117,5 @@ export default function ScriptInjector({ type }: ScriptInjectorProps) {
     };
   }, [scripts, type]);
 
-  // This component doesn't render anything
   return null;
 }

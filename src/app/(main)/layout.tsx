@@ -63,7 +63,6 @@ export default function CoreLayout({
       />
       <main className="min-h-screen">{children}</main>
       <Footer variant="minimal" />
-      <ScriptInjector type="footer" />
     </LayoutWrapper>
   );
 }

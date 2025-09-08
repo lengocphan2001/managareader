@@ -52,6 +52,7 @@ export const LayoutWrapper = ({
           </SkeletonTheme>
         </SettingsProvider>
         <ToastContainer theme="dark" />
+        <ScriptInjector type="footer" />
       </body>
     </html>
   );

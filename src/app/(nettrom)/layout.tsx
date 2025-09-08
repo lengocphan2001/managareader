@@ -77,7 +77,6 @@ export default function NettromLayout({
       </main>
       <Footer variant="default" />
       <SettingsDialog />
-      <ScriptInjector type="footer" />
     </LayoutWrapper>
   );
 }

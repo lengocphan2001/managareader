@@ -3,14 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Constants } from "@/constants";
-import ScriptInjector from "./ScriptInjector";
 
 interface FooterProps {
   variant?: "default" | "minimal" | "admin";
   className?: string;
   showSocialLinks?: boolean;
   showNewsletter?: boolean;
-  injectScripts?: boolean;
 }
 
 export default function Footer({
@@ -18,7 +16,6 @@ export default function Footer({
   className = "",
   showSocialLinks = true,
   showNewsletter = false,
-  injectScripts = true,
 }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
@@ -67,7 +64,6 @@ export default function Footer({
             </div>
           </div>
         </footer>
-        {injectScripts && <ScriptInjector type="footer" />}
       </>
     );
   }
@@ -112,7 +108,6 @@ export default function Footer({
             </div>
           </div>
         </footer>
-        {injectScripts && <ScriptInjector type="footer" />}
       </>
     );
   }
@@ -288,7 +283,6 @@ export default function Footer({
           </div>
         </div>
       </footer>
-      {injectScripts && <ScriptInjector type="footer" />}
     </>
   );
 }

@@ -9,7 +9,10 @@ export const getReadList = async (query: { page?: number } = {}) => {
   return data;
 };
 
-export const updateLibraryStatus = async (series_uuid: string, status: string | null) => {
+export const updateLibraryStatus = async (
+  series_uuid: string,
+  status: string | null,
+) => {
   const { data } = await axios({
     method: "POST",
     url: "/api/user/library/update-status",
@@ -28,7 +31,9 @@ export const getLibraryStatus = async (series_uuid: string) => {
   return data;
 };
 
-export const getLibrary = async (query: { status?: string; page?: number; limit?: number } = {}) => {
+export const getLibrary = async (
+  query: { status?: string; page?: number; limit?: number } = {},
+) => {
   const { data } = await axios<{
     success: boolean;
     data: string[];

@@ -1,13 +1,12 @@
-import { GoogleTagManager } from "@next/third-parties/google";
 import { PropsWithChildren } from "react";
-import { Constants } from "@/constants";
 import dynamic from "next/dynamic";
 import "react-toastify/dist/ReactToastify.css";
 
 // Minimal ToastContainer for auth pages only
 const ToastContainer = dynamic(
-  () => import("react-toastify").then((mod) => ({ default: mod.ToastContainer })),
-  { ssr: false }
+  () =>
+    import("react-toastify").then((mod) => ({ default: mod.ToastContainer })),
+  { ssr: false },
 );
 
 // Minimal layout wrapper for auth pages (login, signup, etc.)
@@ -26,4 +25,3 @@ export const MinimalLayoutWrapper = ({
     </>
   );
 };
-

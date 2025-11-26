@@ -8,9 +8,12 @@ import { Constants } from "@/constants";
 import dynamic from "next/dynamic";
 
 // Dynamic import ScriptInjector to avoid SSR issues
-const ScriptInjector = dynamic(() => import("@/components/core/ScriptInjector"), {
-  ssr: false,
-});
+const ScriptInjector = dynamic(
+  () => import("@/components/core/ScriptInjector"),
+  {
+    ssr: false,
+  },
+);
 
 export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - Truyện tranh chất lượng cao`,

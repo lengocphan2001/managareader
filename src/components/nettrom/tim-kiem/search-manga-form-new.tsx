@@ -3,9 +3,18 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "nextjs-toploader/app";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, Suspense } from "react";
+import { useEffect, Suspense } from "react";
 import { twMerge } from "tailwind-merge";
-import { FaArrowDown, FaArrowUp, FaRedo, FaSearch, FaList, FaTh, FaThLarge, FaMinus, FaPlus } from "react-icons/fa";
+import {
+  FaArrowDown,
+  FaArrowUp,
+  FaSearch,
+  FaList,
+  FaTh,
+  FaThLarge,
+  FaMinus,
+  FaPlus,
+} from "react-icons/fa";
 
 import { MangadexApi } from "@/api";
 import { Utils } from "@/utils";
@@ -45,12 +54,15 @@ function SearchMangaFormContent() {
     // Always include default values
     const searchData = {
       ...data,
-      originalLanguage: data.originalLanguage && data.originalLanguage.length > 0 
-        ? data.originalLanguage 
-        : ["en"],
-      availableTranslatedLanguage: data.availableTranslatedLanguage && data.availableTranslatedLanguage.length > 0
-        ? data.availableTranslatedLanguage
-        : ["en", "ja-ro"],
+      originalLanguage:
+        data.originalLanguage && data.originalLanguage.length > 0
+          ? data.originalLanguage
+          : ["en"],
+      availableTranslatedLanguage:
+        data.availableTranslatedLanguage &&
+        data.availableTranslatedLanguage.length > 0
+          ? data.availableTranslatedLanguage
+          : ["en", "ja-ro"],
     };
     router.push(Utils.Url.getSearchNetTromUrl(searchData));
   };
@@ -82,10 +94,16 @@ function SearchMangaFormContent() {
         normalizedParams.orderType = "5";
     }
     // Set default values if not in params
-    if (!normalizedParams.originalLanguage || normalizedParams.originalLanguage.length === 0) {
+    if (
+      !normalizedParams.originalLanguage ||
+      normalizedParams.originalLanguage.length === 0
+    ) {
       normalizedParams.originalLanguage = ["en"];
     }
-    if (!normalizedParams.availableTranslatedLanguage || normalizedParams.availableTranslatedLanguage.length === 0) {
+    if (
+      !normalizedParams.availableTranslatedLanguage ||
+      normalizedParams.availableTranslatedLanguage.length === 0
+    ) {
       normalizedParams.availableTranslatedLanguage = ["en", "ja-ro"];
     }
     reset({ ...normalizedParams });
@@ -120,9 +138,10 @@ function SearchMangaFormContent() {
   }, [values.orderType, setValue]);
 
   const currentYearValue = new Date().getFullYear();
-  const yearOptions = Array.from({ length: 100 }, (_, i) => currentYearValue - i).map(
-    (year) => ({ value: year.toString(), label: year.toString() })
-  );
+  const yearOptions = Array.from(
+    { length: 100 },
+    (_, i) => currentYearValue - i,
+  ).map((year) => ({ value: year.toString(), label: year.toString() }));
 
   return (
     <>
@@ -136,14 +155,20 @@ function SearchMangaFormContent() {
               placeholder="Search"
               icon={<FaSearch className="h-6 w-6" />}
               {...register("title")}
-              className="bg-neutral-800 border-neutral-700 text-white text-xl placeholder-neutral-500 h-16"
+              className="h-16 border-neutral-700 bg-neutral-800 text-xl text-white placeholder-neutral-500"
             />
           </div>
           <Button
-            className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xl px-8 h-16"
+            className="h-16 rounded-lg bg-orange-500 px-8 text-xl text-white hover:bg-orange-600"
             type="button"
             onClick={toggle}
-            icon={showFilter ? <FaArrowUp className="h-5 w-5" /> : <FaArrowDown className="h-5 w-5" />}
+            icon={
+              showFilter ? (
+                <FaArrowUp className="h-5 w-5" />
+              ) : (
+                <FaArrowDown className="h-5 w-5" />
+              )
+            }
           >
             {showFilter ? "Hide filters" : "Show filters"}
           </Button>
@@ -152,14 +177,14 @@ function SearchMangaFormContent() {
         {/* Filters - 2 Rows Layout */}
         <div
           className={twMerge(
-            "transition-[max-height] duration-300 ease-in-out mb-6",
+            "mb-6 transition-[max-height] duration-300 ease-in-out",
             showFilter ? "max-h-[2000px]" : "max-h-0 overflow-hidden",
           )}
         >
           {/* First Row */}
           <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-5">
             <div>
-              <label className="block text-white text-lg font-medium mb-2">
+              <label className="mb-2 block text-lg font-medium text-white">
                 Sort by
               </label>
               <div className="relative">
@@ -193,14 +218,14 @@ function SearchMangaFormContent() {
             </div>
 
             <div>
-              <label className="block text-white text-lg font-medium mb-2">
+              <label className="mb-2 block text-lg font-medium text-white">
                 Filter tags
               </label>
               <FilterTag values={values} setValue={setValue} />
             </div>
 
             <div>
-              <label className="block text-white text-lg font-medium mb-2">
+              <label className="mb-2 block text-lg font-medium text-white">
                 Content Rating
               </label>
               <MultiSelectDropdown
@@ -221,7 +246,7 @@ function SearchMangaFormContent() {
             </div>
 
             <div>
-              <label className="block text-white text-lg font-medium mb-2">
+              <label className="mb-2 block text-lg font-medium text-white">
                 Magazine Demographic
               </label>
               <MultiSelectDropdown
@@ -240,7 +265,7 @@ function SearchMangaFormContent() {
             </div>
 
             <div>
-              <label className="block text-white text-lg font-medium mb-2">
+              <label className="mb-2 block text-lg font-medium text-white">
                 Authors
               </label>
               <AuthorSearchInput
@@ -254,7 +279,7 @@ function SearchMangaFormContent() {
           {/* Second Row */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
             <div>
-              <label className="block text-white text-lg font-medium mb-2">
+              <label className="mb-2 block text-lg font-medium text-white">
                 Artists
               </label>
               <AuthorSearchInput
@@ -265,7 +290,7 @@ function SearchMangaFormContent() {
             </div>
 
             <div>
-              <label className="block text-white text-lg font-medium mb-2">
+              <label className="mb-2 block text-lg font-medium text-white">
                 Original languages
               </label>
               <MultiSelectDropdown
@@ -283,15 +308,17 @@ function SearchMangaFormContent() {
             </div>
 
             <div>
-              <label className="block text-white text-lg font-medium mb-2">
+              <label className="mb-2 block text-lg font-medium text-white">
                 Publication year
               </label>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-neutral-600 bg-neutral-800 text-white hover:bg-neutral-700 transition-colors"
+                  className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-neutral-600 bg-neutral-800 text-white transition-colors hover:bg-neutral-700"
                   onClick={() => {
-                    const yearValue = values.year ? parseInt(values.year.toString()) : currentYearValue;
+                    const yearValue = values.year
+                      ? parseInt(values.year.toString())
+                      : currentYearValue;
                     if (yearValue > 1900) {
                       setValue("year", (yearValue - 1).toString());
                     }
@@ -329,9 +356,11 @@ function SearchMangaFormContent() {
                 </div>
                 <button
                   type="button"
-                  className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-neutral-600 bg-neutral-800 text-white hover:bg-neutral-700 transition-colors"
+                  className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-neutral-600 bg-neutral-800 text-white transition-colors hover:bg-neutral-700"
                   onClick={() => {
-                    const yearValue = values.year ? parseInt(values.year.toString()) : currentYearValue;
+                    const yearValue = values.year
+                      ? parseInt(values.year.toString())
+                      : currentYearValue;
                     if (yearValue < currentYearValue) {
                       setValue("year", (yearValue + 1).toString());
                     }
@@ -343,7 +372,7 @@ function SearchMangaFormContent() {
             </div>
 
             <div>
-              <label className="block text-white text-lg font-medium mb-2">
+              <label className="mb-2 block text-lg font-medium text-white">
                 Publication Status
               </label>
               <MultiSelectDropdown
@@ -367,7 +396,7 @@ function SearchMangaFormContent() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex gap-3">
             <Button
-              className="rounded-lg bg-transparent text-red-500 hover:bg-neutral-800 border border-transparent hover:border-red-500 text-xl px-8 h-14"
+              className="h-14 rounded-lg border border-transparent bg-transparent px-8 text-xl text-red-500 hover:border-red-500 hover:bg-neutral-800"
               type="button"
               onClick={() => {
                 reset();
@@ -376,7 +405,7 @@ function SearchMangaFormContent() {
               Reset filters
             </Button>
             <Button
-              className="rounded-lg bg-neutral-700 hover:bg-neutral-600 text-white text-xl px-8 h-14"
+              className="h-14 rounded-lg bg-neutral-700 px-8 text-xl text-white hover:bg-neutral-600"
               type="button"
               onClick={() => {
                 const randomOptions = { random: true };
@@ -387,22 +416,22 @@ function SearchMangaFormContent() {
             </Button>
             <Button
               icon={<FaSearch className="h-6 w-6" />}
-              className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xl px-8 h-14"
+              className="h-14 rounded-lg bg-orange-500 px-8 text-xl text-white hover:bg-orange-600"
               type="submit"
             >
               Search
             </Button>
           </div>
           {/* Display Mode Icons */}
-          <div className="flex items-center gap-2 bg-neutral-800 rounded-lg p-1">
+          <div className="flex items-center gap-2 rounded-lg bg-neutral-800 p-1">
             <button
               type="button"
               onClick={() => setDisplayMode("list")}
               className={twMerge(
-                "p-4 rounded transition-colors",
+                "rounded p-4 transition-colors",
                 displayMode === "list"
                   ? "bg-orange-500 text-white"
-                  : "text-white hover:bg-neutral-700"
+                  : "text-white hover:bg-neutral-700",
               )}
               title="List view"
               aria-label="List view"
@@ -413,10 +442,10 @@ function SearchMangaFormContent() {
               type="button"
               onClick={() => setDisplayMode("compact-grid")}
               className={twMerge(
-                "p-4 rounded transition-colors",
+                "rounded p-4 transition-colors",
                 displayMode === "compact-grid"
                   ? "bg-orange-500 text-white"
-                  : "text-white hover:bg-neutral-700"
+                  : "text-white hover:bg-neutral-700",
               )}
               title="Compact grid view"
               aria-label="Compact grid view"
@@ -427,10 +456,10 @@ function SearchMangaFormContent() {
               type="button"
               onClick={() => setDisplayMode("large-grid")}
               className={twMerge(
-                "p-4 rounded transition-colors",
+                "rounded p-4 transition-colors",
                 displayMode === "large-grid"
                   ? "bg-orange-500 text-white"
-                  : "text-white hover:bg-neutral-700"
+                  : "text-white hover:bg-neutral-700",
               )}
               title="Large grid view"
               aria-label="Large grid view"
@@ -460,4 +489,3 @@ const ORDER_TYPE: Record<string, string> = {
   "4": "most relevant",
   "5": "highest rated",
 };
-

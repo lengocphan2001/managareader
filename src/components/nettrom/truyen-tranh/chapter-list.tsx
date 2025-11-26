@@ -40,7 +40,9 @@ export default function ListChapter({
     });
   }, [groupedChapters]);
 
-  const [expandedVolumes, setExpandedVolumes] = useState<Set<string | null>>(new Set());
+  const [expandedVolumes, setExpandedVolumes] = useState<Set<string | null>>(
+    new Set(),
+  );
 
   const toggleVolume = (volume: string | null) => {
     setExpandedVolumes((prev) => {
@@ -56,8 +58,8 @@ export default function ListChapter({
 
   return (
     <div id="nt_listchapter">
-      <div className="mb-3 sm:mb-4 flex items-center">
-        <button className="rounded bg-gray-700/50 px-3 sm:px-4 py-1.5 sm:py-2 text-xl sm:text-xl md:text-xl lg:text-2xl text-white hover:bg-gray-700">
+      <div className="mb-3 flex items-center sm:mb-4">
+        <button className="rounded bg-gray-700/50 px-3 py-1.5 text-xl text-white hover:bg-gray-700 sm:px-4 sm:py-2 sm:text-xl md:text-xl lg:text-2xl">
           Descending
         </button>
       </div>
@@ -75,12 +77,12 @@ export default function ListChapter({
               .map((c) => parseFloat(c.attributes.chapter || "0"))
               .filter((n) => n > 0)
               .sort((a, b) => b - a);
-            
+
             const firstChapter = chapterNumbers[chapterNumbers.length - 1];
             const lastChapter = chapterNumbers[0];
-            const chapterRange = 
-              firstChapter === lastChapter 
-                ? `Ch. ${firstChapter}` 
+            const chapterRange =
+              firstChapter === lastChapter
+                ? `Ch. ${firstChapter}`
                 : `Ch. ${firstChapter} - ${lastChapter}`;
 
             const isExpanded = expandedVolumes.has(volume);
@@ -90,20 +92,20 @@ export default function ListChapter({
                 {volume && (
                   <button
                     onClick={() => toggleVolume(volume)}
-                    className="mb-2 sm:mb-3 flex w-full items-center justify-between hover:bg-gray-800/30 rounded p-2 sm:p-3"
+                    className="mb-2 flex w-full items-center justify-between rounded p-2 hover:bg-gray-800/30 sm:mb-3 sm:p-3"
                   >
-                    <h3 className="text-xl sm:text-xl md:text-xl lg:text-2xl font-semibold text-white">
+                    <h3 className="text-xl font-semibold text-white sm:text-xl md:text-xl lg:text-2xl">
                       Volume {volume}
                     </h3>
                     <div className="flex items-center gap-2">
-                      <span className="text-xl sm:text-xl md:text-xl lg:text-2xl text-gray-400">
+                      <span className="text-xl text-gray-400 sm:text-xl md:text-xl lg:text-2xl">
                         {chapterRange}
                       </span>
                       <Iconify
                         icon={isExpanded ? "fa:chevron-up" : "fa:chevron-down"}
-                        className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gray-400"
+                        className="h-4 w-4 text-gray-400 sm:h-5 sm:w-5 md:h-6 md:w-6"
                       />
-                      <span className="text-xl sm:text-xl md:text-xl lg:text-2xl text-gray-400">
+                      <span className="text-xl text-gray-400 sm:text-xl md:text-xl lg:text-2xl">
                         {sortedChapters.length}
                       </span>
                     </div>
@@ -112,23 +114,32 @@ export default function ListChapter({
                 {(!volume || isExpanded) && (
                   <div className="space-y-1">
                     {sortedChapters.map((chapter) => {
-                      const chapterTitle = Utils.Mangadex.getChapterTitle(chapter);
-                      const readableAt = new Date(chapter.attributes.readableAt);
+                      const chapterTitle =
+                        Utils.Mangadex.getChapterTitle(chapter);
+                      const readableAt = new Date(
+                        chapter.attributes.readableAt,
+                      );
                       const timeAgo = Utils.Date.formatNowDistance(readableAt);
-                      const groupName = chapter.scanlation_group?.attributes?.name || "No Group";
-                      const uploader = (chapter as any).user?.attributes?.username || "Unknown";
-                      const language = chapter.attributes.translatedLanguage || "en";
-                      const commentCount = (chapter as any).comments?.repliesCount || 0;
-                      
+                      const groupName =
+                        chapter.scanlation_group?.attributes?.name ||
+                        "No Group";
+                      const uploader =
+                        (chapter as any).user?.attributes?.username ||
+                        "Unknown";
+                      const language =
+                        chapter.attributes.translatedLanguage || "en";
+                      const commentCount =
+                        (chapter as any).comments?.repliesCount || 0;
+
                       return (
                         <div
                           key={chapter.id}
-                          className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 md:gap-4 border-b border-gray-700/50 py-2 sm:py-2.5 md:py-3 hover:bg-gray-800/30"
+                          className="flex flex-wrap items-center gap-2 border-b border-gray-700/50 py-2 hover:bg-gray-800/30 sm:flex-nowrap sm:gap-3 sm:py-2.5 md:gap-4 md:py-3"
                         >
-                          <div className="flex items-center gap-2 flex-shrink-0">
+                          <div className="flex flex-shrink-0 items-center gap-2">
                             <Iconify
                               icon="fa:eye"
-                              className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gray-500"
+                              className="h-4 w-4 text-gray-500 sm:h-5 sm:w-5 md:h-6 md:w-6"
                             />
                             <Iconify
                               icon={`circle-flags:${language}`}
@@ -137,20 +148,30 @@ export default function ListChapter({
                           </div>
                           <Link
                             href={Constants.Routes.nettrom.chapter(chapter.id)}
-                            className="flex-1 min-w-0 text-xl sm:text-xl md:text-xl lg:text-2xl text-white hover:text-orange-500 truncate"
+                            className="min-w-0 flex-1 truncate text-xl text-white hover:text-orange-500 sm:text-xl md:text-xl lg:text-2xl"
                           >
                             {chapterTitle}
                           </Link>
-                          <span className="text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-400 flex-shrink-0 hidden sm:inline">{groupName}</span>
-                          <span className="text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-500 flex-shrink-0 hidden md:inline">{timeAgo} ago</span>
-                          <span className="text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-400 flex-shrink-0 hidden lg:inline">N/A</span>
-                          <span className="text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-400 flex-shrink-0 hidden xl:inline">{uploader}</span>
-                          <div className="flex items-center gap-1 flex-shrink-0">
+                          <span className="hidden flex-shrink-0 text-xl text-gray-400 sm:inline sm:text-xl md:text-xl lg:text-xl xl:text-2xl">
+                            {groupName}
+                          </span>
+                          <span className="hidden flex-shrink-0 text-xl text-gray-500 sm:text-xl md:inline md:text-xl lg:text-xl xl:text-2xl">
+                            {timeAgo} ago
+                          </span>
+                          <span className="hidden flex-shrink-0 text-xl text-gray-400 sm:text-xl md:text-xl lg:inline lg:text-xl xl:text-2xl">
+                            N/A
+                          </span>
+                          <span className="hidden flex-shrink-0 text-xl text-gray-400 sm:text-xl md:text-xl lg:text-xl xl:inline xl:text-2xl">
+                            {uploader}
+                          </span>
+                          <div className="flex flex-shrink-0 items-center gap-1">
                             <Iconify
                               icon="fa:comment"
-                              className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gray-500"
+                              className="h-4 w-4 text-gray-500 sm:h-5 sm:w-5 md:h-6 md:w-6"
                             />
-                            <span className="text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-400">{commentCount}</span>
+                            <span className="text-xl text-gray-400 sm:text-xl md:text-xl lg:text-xl xl:text-2xl">
+                              {commentCount}
+                            </span>
                           </div>
                         </div>
                       );
@@ -161,8 +182,8 @@ export default function ListChapter({
             );
           })}
           {groupedChapters.length === 0 && (
-            <div className="py-6 sm:py-8 text-center text-gray-400">
-              <div className="mb-2 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium">
+            <div className="py-6 text-center text-gray-400 sm:py-8">
+              <div className="mb-2 text-xl font-medium sm:text-xl md:text-xl lg:text-2xl">
                 No chapters found
               </div>
               <div className="text-xl sm:text-xl md:text-xl">
@@ -174,12 +195,13 @@ export default function ListChapter({
         </div>
       </DataLoader>
       <div className="mt-6 flex flex-col items-center gap-4">
-        <div className="w-full flex justify-center">
+        <div className="flex w-full justify-center">
           <PaginationNew
             currentPage={props.page}
             totalPages={
               Math.floor(
-                (props.data?.total || 0) / Constants.Mangadex.CHAPTER_LIST_LIMIT,
+                (props.data?.total || 0) /
+                  Constants.Mangadex.CHAPTER_LIST_LIMIT,
               ) + 1
             }
             onPageChange={(page) => {
@@ -187,7 +209,7 @@ export default function ListChapter({
             }}
           />
         </div>
-        <p className="mb-0 py-2 sm:py-4 text-center text-xl sm:text-xl md:text-xl lg:text-xl text-gray-400">
+        <p className="mb-0 py-2 text-center text-xl text-gray-400 sm:py-4 sm:text-xl md:text-xl lg:text-xl">
           Showing{" "}
           <span className="text-white">
             {groupedChapters.length} / {props.data?.total || 0}

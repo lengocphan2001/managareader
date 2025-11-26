@@ -31,7 +31,7 @@ export default function FirstChapterButton({ mangaId }: { mangaId: string }) {
     <Button
       onClick={readFirstChapter}
       variant="outline"
-      className="border-white/20 text-white hover:bg-white/10 whitespace-nowrap"
+      className="whitespace-nowrap border-white/20 text-white hover:bg-white/10"
       icon={
         loading ? <Iconify icon="uil:spinner" /> : <Iconify icon="fa:book" />
       }

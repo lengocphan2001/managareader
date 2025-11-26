@@ -8,15 +8,15 @@ export default function DisplayModeSelector() {
   const { displayMode, setDisplayMode } = useDisplayMode();
 
   return (
-    <div className="flex items-center gap-2 bg-neutral-800 rounded-lg p-1">
+    <div className="flex items-center gap-2 rounded-lg bg-neutral-800 p-1">
       <button
         type="button"
         onClick={() => setDisplayMode("list")}
         className={twMerge(
-          "p-4 rounded transition-colors",
+          "rounded p-4 transition-colors",
           displayMode === "list"
             ? "bg-orange-500 text-white"
-            : "text-white hover:bg-neutral-700"
+            : "text-white hover:bg-neutral-700",
         )}
         title="List view"
         aria-label="List view"
@@ -27,10 +27,10 @@ export default function DisplayModeSelector() {
         type="button"
         onClick={() => setDisplayMode("compact-grid")}
         className={twMerge(
-          "p-4 rounded transition-colors",
+          "rounded p-4 transition-colors",
           displayMode === "compact-grid"
             ? "bg-orange-500 text-white"
-            : "text-white hover:bg-neutral-700"
+            : "text-white hover:bg-neutral-700",
         )}
         title="Compact grid view"
         aria-label="Compact grid view"
@@ -41,10 +41,10 @@ export default function DisplayModeSelector() {
         type="button"
         onClick={() => setDisplayMode("large-grid")}
         className={twMerge(
-          "p-4 rounded transition-colors",
+          "rounded p-4 transition-colors",
           displayMode === "large-grid"
             ? "bg-orange-500 text-white"
-            : "text-white hover:bg-neutral-700"
+            : "text-white hover:bg-neutral-700",
         )}
         title="Large grid view"
         aria-label="Large grid view"
@@ -54,4 +54,3 @@ export default function DisplayModeSelector() {
     </div>
   );
 }
-

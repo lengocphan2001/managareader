@@ -13,7 +13,6 @@ import { DataLoader } from "@/components/DataLoader";
 import { Utils } from "@/utils";
 import useReadingHistory from "@/hooks/useReadingHistory";
 import { useSettingsContext } from "@/contexts/settings";
-import { AspectRatio } from "@/components/shadcn/aspect-ratio";
 import Link from "next/link";
 import LanguageIcon from "@/components/language-icon";
 
@@ -73,7 +72,7 @@ export default function LatestUpdatesGrid() {
   const allEntries = Object.entries(updates);
   const pcEntries = allEntries.slice(0, 24); // Lấy tối đa 24 items cho PC (4 cột x 6 items)
   const mobileEntries = allEntries.slice(0, 10); // Lấy tối đa 10 items cho mobile
-  
+
   // Chia thành 4 cột cho PC
   pcEntries.forEach((entry, index) => {
     const columnIndex = index % 4;
@@ -81,9 +80,12 @@ export default function LatestUpdatesGrid() {
   });
 
   return (
-    <div className="Module Module-163 px-2 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6" id="latest-updates">
+    <div
+      className="Module Module-163 px-2 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6"
+      id="latest-updates"
+    >
       <div className="ModuleContent">
-        <h1 className="my-0 mb-3 sm:mb-4 md:mb-6 flex items-center gap-2 sm:gap-3 text-2xl sm:text-3xl md:text-4xl font-semibold text-white">
+        <h1 className="my-0 mb-3 flex items-center gap-2 text-2xl font-semibold text-white sm:mb-4 sm:gap-3 sm:text-3xl md:mb-6 md:text-4xl">
           <span>Latest Updates</span>
         </h1>
         <DataLoader isLoading={isLoading} error={error}>
@@ -97,9 +99,10 @@ export default function LatestUpdatesGrid() {
               const mangaTitle = Utils.Mangadex.getMangaTitle(manga);
               const readedChapters = history[mangaId];
               const latestChapter = chapterList[0];
-              const chapterTitle = Utils.Mangadex.getChapterTitle(latestChapter);
+              const chapterTitle =
+                Utils.Mangadex.getChapterTitle(latestChapter);
               const chapterTime = Utils.Date.formatNowDistance(
-                new Date(latestChapter.attributes.readableAt)
+                new Date(latestChapter.attributes.readableAt),
               );
               const stats = mangaStatistics[mangaId];
 
@@ -115,7 +118,10 @@ export default function LatestUpdatesGrid() {
                   >
                     <div
                       className="relative overflow-hidden rounded"
-                      style={{ width: "80px", aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO }}
+                      style={{
+                        width: "80px",
+                        aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO,
+                      }}
                     >
                       <img
                         src={coverArt}
@@ -126,52 +132,59 @@ export default function LatestUpdatesGrid() {
                   </Link>
 
                   {/* Nội dung */}
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <Link
                       href={Constants.Routes.nettrom.manga(mangaId)}
                       className="block no-underline hover:no-underline"
                     >
-                      <h3 className="text-xl font-semibold text-white mb-2 truncate">
+                      <h3 className="mb-2 truncate text-xl font-semibold text-white">
                         {mangaTitle}
                       </h3>
                     </Link>
 
                     {/* Description */}
                     {manga.attributes.description && (
-                      <p className="text-xl text-neutral-400 mb-2 line-clamp-2">
-                        {Utils.Mangadex.transLocalizedStr(manga.attributes.description)}
+                      <p className="mb-2 line-clamp-2 text-xl text-neutral-400">
+                        {Utils.Mangadex.transLocalizedStr(
+                          manga.attributes.description,
+                        )}
                       </p>
                     )}
 
                     {latestChapter && (
                       <div className="mb-2">
                         <Link
-                          href={Constants.Routes.nettrom.chapter(latestChapter.id)}
-                          className="block text-xl text-white hover:text-orange-500 transition-colors truncate no-underline hover:no-underline"
+                          href={Constants.Routes.nettrom.chapter(
+                            latestChapter.id,
+                          )}
+                          className="block truncate text-xl text-white no-underline transition-colors hover:text-orange-500 hover:no-underline"
                         >
                           {chapterTitle}
                         </Link>
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="mt-1 flex items-center gap-2">
                           <LanguageIcon
-                            languageCode={latestChapter?.attributes?.translatedLanguage || "en"}
-                            className="w-5 h-5 flex-shrink-0"
+                            languageCode={
+                              latestChapter?.attributes?.translatedLanguage ||
+                              "en"
+                            }
+                            className="h-5 w-5 flex-shrink-0"
                           />
-                          <span className="text-xl text-white truncate">
+                          <span className="truncate text-xl text-white">
                             {latestChapter?.relationships?.find(
-                              (r) => r.type === "scanlation_group"
+                              (r) => r.type === "scanlation_group",
                             )?.attributes?.name || "No Group"}
                           </span>
                         </div>
                       </div>
                     )}
 
-                    <div className="flex items-center gap-4 sm:gap-5 text-xl text-white">
-                      <div className="flex items-center gap-2 shrink-0">
-                        <FaClock className="w-5 h-5" />
+                    <div className="flex items-center gap-4 text-xl text-white sm:gap-5">
+                      <div className="flex shrink-0 items-center gap-2">
+                        <FaClock className="h-5 w-5" />
                         <span>{chapterTime} ago</span>
                       </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <FaComment className="w-5 h-5" />
+                      <div className="flex shrink-0 items-center gap-2">
+                        <FaComment className="h-5 w-5" />
                         <span>0</span>
                       </div>
                     </div>
@@ -182,9 +195,12 @@ export default function LatestUpdatesGrid() {
           </div>
 
           {/* PC: Grid 4 cột */}
-          <div className="hidden lg:grid lg:grid-cols-4 gap-6">
+          <div className="hidden gap-6 lg:grid lg:grid-cols-4">
             {columns.map((column, columnIndex) => (
-              <div key={columnIndex} className="flex flex-col gap-3 bg-neutral-800/50 rounded-lg p-4">
+              <div
+                key={columnIndex}
+                className="flex flex-col gap-3 rounded-lg bg-neutral-800/50 p-4"
+              >
                 {column.map(([mangaId, chapterList]) => {
                   const manga = mangas[mangaId];
                   if (!manga) return null;
@@ -193,9 +209,10 @@ export default function LatestUpdatesGrid() {
                   const mangaTitle = Utils.Mangadex.getMangaTitle(manga);
                   const readedChapters = history[mangaId];
                   const latestChapter = chapterList[0];
-                  const chapterTitle = Utils.Mangadex.getChapterTitle(latestChapter);
+                  const chapterTitle =
+                    Utils.Mangadex.getChapterTitle(latestChapter);
                   const chapterTime = Utils.Date.formatNowDistance(
-                    new Date(latestChapter.attributes.readableAt)
+                    new Date(latestChapter.attributes.readableAt),
                   );
                   const stats = mangaStatistics[mangaId];
 
@@ -211,7 +228,10 @@ export default function LatestUpdatesGrid() {
                       >
                         <div
                           className="relative overflow-hidden rounded"
-                          style={{ width: "80px", aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO }}
+                          style={{
+                            width: "80px",
+                            aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO,
+                          }}
                         >
                           <img
                             src={coverArt}
@@ -222,52 +242,59 @@ export default function LatestUpdatesGrid() {
                       </Link>
 
                       {/* Nội dung */}
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <Link
                           href={Constants.Routes.nettrom.manga(mangaId)}
                           className="block no-underline hover:no-underline"
                         >
-                          <h3 className="text-xl font-semibold text-white mb-2 truncate">
+                          <h3 className="mb-2 truncate text-xl font-semibold text-white">
                             {mangaTitle}
                           </h3>
                         </Link>
 
                         {/* Description */}
                         {manga.attributes.description && (
-                          <p className="text-xl text-neutral-400 mb-2 line-clamp-2">
-                            {Utils.Mangadex.transLocalizedStr(manga.attributes.description)}
+                          <p className="mb-2 line-clamp-2 text-xl text-neutral-400">
+                            {Utils.Mangadex.transLocalizedStr(
+                              manga.attributes.description,
+                            )}
                           </p>
                         )}
 
                         {latestChapter && (
                           <div className="mb-2">
                             <Link
-                              href={Constants.Routes.nettrom.chapter(latestChapter.id)}
-                              className="block text-xl text-white hover:text-orange-500 transition-colors truncate no-underline hover:no-underline"
+                              href={Constants.Routes.nettrom.chapter(
+                                latestChapter.id,
+                              )}
+                              className="block truncate text-xl text-white no-underline transition-colors hover:text-orange-500 hover:no-underline"
                             >
                               {chapterTitle}
                             </Link>
-                            <div className="flex items-center gap-2 mt-1">
+                            <div className="mt-1 flex items-center gap-2">
                               <LanguageIcon
-                                languageCode={latestChapter?.attributes?.translatedLanguage || "en"}
-                                className="w-5 h-5 flex-shrink-0"
+                                languageCode={
+                                  latestChapter?.attributes
+                                    ?.translatedLanguage || "en"
+                                }
+                                className="h-5 w-5 flex-shrink-0"
                               />
-                              <span className="text-xl text-white truncate">
+                              <span className="truncate text-xl text-white">
                                 {latestChapter?.relationships?.find(
-                                  (r) => r.type === "scanlation_group"
+                                  (r) => r.type === "scanlation_group",
                                 )?.attributes?.name || "No Group"}
                               </span>
                             </div>
                           </div>
                         )}
 
-                        <div className="flex items-center gap-4 sm:gap-5 text-xl text-white">
-                          <div className="flex items-center gap-2 shrink-0">
-                            <FaClock className="w-5 h-5" />
+                        <div className="flex items-center gap-4 text-xl text-white sm:gap-5">
+                          <div className="flex shrink-0 items-center gap-2">
+                            <FaClock className="h-5 w-5" />
                             <span>{chapterTime} ago</span>
                           </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <FaComment className="w-5 h-5" />
+                          <div className="flex shrink-0 items-center gap-2">
+                            <FaComment className="h-5 w-5" />
                             <span>0</span>
                           </div>
                         </div>
@@ -283,4 +310,3 @@ export default function LatestUpdatesGrid() {
     </div>
   );
 }
-

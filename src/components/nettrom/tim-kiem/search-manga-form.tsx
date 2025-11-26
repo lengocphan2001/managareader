@@ -5,7 +5,14 @@ import { useRouter } from "nextjs-toploader/app";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, Suspense } from "react";
 import { twMerge } from "tailwind-merge";
-import { FaArrowDown, FaArrowUp, FaRedo, FaSearch, FaList, FaTh, FaThLarge } from "react-icons/fa";
+import {
+  FaArrowDown,
+  FaArrowUp,
+  FaSearch,
+  FaList,
+  FaTh,
+  FaThLarge,
+} from "react-icons/fa";
 
 import { MangadexApi } from "@/api";
 import { Utils } from "@/utils";
@@ -133,11 +140,11 @@ function SearchMangaFormContent() {
               placeholder="Search"
               icon={<FaSearch />}
               {...register("title")}
-              className="bg-neutral-800 border-neutral-700 text-white placeholder-neutral-500"
+              className="border-neutral-700 bg-neutral-800 text-white placeholder-neutral-500"
             />
           </div>
           <Button
-            className="rounded-lg bg-neutral-700 hover:bg-neutral-600 text-white"
+            className="rounded-lg bg-neutral-700 text-white hover:bg-neutral-600"
             type="button"
             onClick={toggle}
             icon={showFilter ? <FaArrowUp /> : <FaArrowDown />}
@@ -297,7 +304,7 @@ function SearchMangaFormContent() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex gap-3">
             <Button
-              className="rounded-lg bg-transparent text-red-500 hover:bg-neutral-800 border border-transparent hover:border-red-500"
+              className="rounded-lg border border-transparent bg-transparent text-red-500 hover:border-red-500 hover:bg-neutral-800"
               type="button"
               onClick={() => {
                 reset();
@@ -306,7 +313,7 @@ function SearchMangaFormContent() {
               Reset filters
             </Button>
             <Button
-              className="rounded-lg bg-neutral-700 hover:bg-neutral-600 text-white"
+              className="rounded-lg bg-neutral-700 text-white hover:bg-neutral-600"
               type="button"
               onClick={() => {
                 // I'm feeling lucky - random search
@@ -318,7 +325,7 @@ function SearchMangaFormContent() {
             </Button>
             <Button
               icon={<FaSearch />}
-              className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white"
+              className="rounded-lg bg-orange-500 text-white hover:bg-orange-600"
               type="submit"
             >
               Search
@@ -328,7 +335,7 @@ function SearchMangaFormContent() {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="p-2 text-white hover:bg-neutral-700 rounded transition-colors"
+              className="rounded p-2 text-white transition-colors hover:bg-neutral-700"
               title="List view"
               aria-label="List view"
             >
@@ -336,7 +343,7 @@ function SearchMangaFormContent() {
             </button>
             <button
               type="button"
-              className="p-2 text-white hover:bg-neutral-700 rounded transition-colors"
+              className="rounded p-2 text-white transition-colors hover:bg-neutral-700"
               title="Compact grid view"
               aria-label="Compact grid view"
             >
@@ -344,7 +351,7 @@ function SearchMangaFormContent() {
             </button>
             <button
               type="button"
-              className="p-2 text-white hover:bg-neutral-700 rounded transition-colors"
+              className="rounded p-2 text-white transition-colors hover:bg-neutral-700"
               title="Large grid view"
               aria-label="Large grid view"
             >

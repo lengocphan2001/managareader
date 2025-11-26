@@ -15,7 +15,6 @@ import { useSidebar } from "@/contexts/sidebar";
 import { Constants } from "@/constants";
 import { Utils } from "@/utils";
 import { ErrorDisplay } from "../error-display";
-import { AspectRatio } from "@/components/shadcn/aspect-ratio";
 
 export default function PopularNewTitles() {
   const {
@@ -37,13 +36,13 @@ export default function PopularNewTitles() {
       setIsDesktop(window.innerWidth >= 1024); // lg breakpoint
     };
     checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
   }, []);
 
   if (isLoading) {
     return (
-      <div className="relative h-[300px] sm:h-[350px] md:h-[400px] w-full overflow-hidden rounded-lg bg-neutral-800">
+      <div className="relative h-[300px] w-full overflow-hidden rounded-lg bg-neutral-800 sm:h-[350px] md:h-[400px]">
         <Skeleton height="100%" width="100%" />
       </div>
     );
@@ -71,10 +70,10 @@ export default function PopularNewTitles() {
       .join(" ") || "";
 
   return (
-    <div 
-      className="relative -mt-16 overflow-hidden bg-neutral-800" 
-      style={{ 
-        position: 'relative',
+    <div
+      className="relative -mt-16 overflow-hidden bg-neutral-800"
+      style={{
+        position: "relative",
         left: 0,
         right: 0,
       }}
@@ -84,7 +83,7 @@ export default function PopularNewTitles() {
         autoplay={{ delay: 5000 }}
         pagination={{ clickable: true }}
         loop={true}
-        className="popular-titles-swiper h-[300px] sm:h-[350px] md:h-[400px] w-full"
+        className="popular-titles-swiper h-[300px] w-full sm:h-[350px] md:h-[400px]"
         style={
           {
             "--swiper-pagination-color": "#f97316",
@@ -106,7 +105,7 @@ export default function PopularNewTitles() {
 
           return (
             <SwiperSlide key={manga.id}>
-              <div className="relative flex h-[300px] sm:h-[350px] md:h-[400px] w-full items-center">
+              <div className="relative flex h-[300px] w-full items-center sm:h-[350px] md:h-[400px]">
                 {/* Background Image - Full Width */}
                 <div
                   className="absolute bg-cover bg-center bg-no-repeat"
@@ -128,26 +127,26 @@ export default function PopularNewTitles() {
                 <div className="absolute inset-0 bg-gradient-to-r from-neutral-900/80 via-neutral-900/60 to-neutral-900/40" />
 
                 {/* Content */}
-                <div 
+                <div
                   className={`relative z-10 px-4 sm:px-6 md:px-12 lg:px-24 xl:px-12 2xl:px-24`}
                   style={{
-                    width: '100%',
-                    maxWidth: isDesktop && isOpen ? 'calc(100vw - 384px)' : '100%',
-                    marginLeft: isDesktop && isOpen ? '384px' : 'auto',
-                    marginRight: 'auto',
+                    width: "100%",
+                    maxWidth:
+                      isDesktop && isOpen ? "calc(100vw - 384px)" : "100%",
+                    marginLeft: isDesktop && isOpen ? "384px" : "auto",
+                    marginRight: "auto",
                   }}
                 >
-                  <div className="flex flex-col sm:flex-row w-full gap-4 sm:gap-6 md:gap-8">
-
+                  <div className="flex w-full flex-col gap-4 sm:flex-row sm:gap-6 md:gap-8">
                     {/* Manga Cover and Details */}
-                    <div className="flex flex-row gap-4 sm:gap-6 md:gap-8 flex-1">
+                    <div className="flex flex-1 flex-row gap-4 sm:gap-6 md:gap-8">
                       {/* Manga Cover */}
                       <Link
                         href={Constants.Routes.nettrom.manga(manga.id)}
                         className="group block flex-shrink-0"
                       >
                         <div
-                          className="w-32 h-48 sm:w-40 sm:h-60 md:w-48 md:h-48 lg:w-56 lg:h-[200px] overflow-hidden transition-transform group-hover:scale-105 rounded-lg"
+                          className="h-48 w-32 overflow-hidden rounded-lg transition-transform group-hover:scale-105 sm:h-60 sm:w-40 md:h-48 md:w-48 lg:h-[200px] lg:w-56"
                           style={{
                             aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO,
                           }}
@@ -167,27 +166,26 @@ export default function PopularNewTitles() {
                             href={Constants.Routes.nettrom.manga(manga.id)}
                             className="group no-underline hover:no-underline"
                           >
-                            <h2 className="mb-3 sm:mb-4 md:mb-6 text-2xl font-bold leading-tight text-white line-clamp-2 sm:line-clamp-none">
+                            <h2 className="mb-3 line-clamp-2 text-2xl font-bold leading-tight text-white sm:mb-4 sm:line-clamp-none md:mb-6">
                               {mangaTitle}
                             </h2>
                           </Link>
-                          
-                          
-                          <div className="flex items-center gap-4 sm:gap-6 text-2xl text-white mb-3 sm:mb-4">
-                          <span className="flex items-center gap-2">
-                            <FaClock className="h-5 w-5 sm:h-6 sm:w-6" />
-                            {Utils.Date.formatNowDistance(
-                              new Date(manga.attributes.updatedAt),
-                            )}{" "}
-                            ago
-                          </span>
-                        </div>
+
+                          <div className="mb-3 flex items-center gap-4 text-2xl text-white sm:mb-4 sm:gap-6">
+                            <span className="flex items-center gap-2">
+                              <FaClock className="h-5 w-5 sm:h-6 sm:w-6" />
+                              {Utils.Date.formatNowDistance(
+                                new Date(manga.attributes.updatedAt),
+                              )}{" "}
+                              ago
+                            </span>
+                          </div>
                           {mangaTags.length > 0 && (
-                            <div className="mb-3 sm:mb-4 flex flex-wrap gap-2">
+                            <div className="mb-3 flex flex-wrap gap-2 sm:mb-4">
                               {mangaTags.map((tagName, index) => (
                                 <span
                                   key={index}
-                                  className="inline-block bg-neutral-800/90 px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 text-2xl font-medium uppercase text-white rounded"
+                                  className="inline-block rounded bg-neutral-800/90 px-2 py-1 text-2xl font-medium uppercase text-white sm:px-3 sm:py-1.5 md:px-4 md:py-2"
                                 >
                                   {tagName}
                                 </span>
@@ -197,12 +195,10 @@ export default function PopularNewTitles() {
                         </div>
 
                         {manga.author?.attributes?.name && (
-                            <p className="text-2xl text-white">
-                              {manga.author.attributes.name}
-                            </p>
-                          )}
-
-                        
+                          <p className="text-2xl text-white">
+                            {manga.author.attributes.name}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>

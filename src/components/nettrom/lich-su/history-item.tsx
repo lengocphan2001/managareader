@@ -41,7 +41,7 @@ export default function HistoryItem({
           ],
         });
         const extendedChapter = Utils.Mangadex.extendRelationship(
-          data.data
+          data.data,
         ) as ExtendChapter;
         setChapter(extendedChapter);
       } catch (error) {
@@ -57,10 +57,10 @@ export default function HistoryItem({
   if (loading) {
     return (
       <div className="flex items-center gap-4 border-b border-gray-700/50 py-4">
-        <div className="w-20 h-32 bg-gray-700/50 rounded animate-pulse" />
+        <div className="h-32 w-20 animate-pulse rounded bg-gray-700/50" />
         <div className="flex-1 space-y-2">
-          <div className="h-6 bg-gray-700/50 rounded w-1/3 animate-pulse" />
-          <div className="h-4 bg-gray-700/50 rounded w-1/4 animate-pulse" />
+          <div className="h-6 w-1/3 animate-pulse rounded bg-gray-700/50" />
+          <div className="h-4 w-1/4 animate-pulse rounded bg-gray-700/50" />
         </div>
       </div>
     );
@@ -77,8 +77,8 @@ export default function HistoryItem({
       ? `Vol. ${volume} Ch. ${chapterNum}`
       : `Vol. ${volume}`
     : chapterNum
-    ? `Ch. ${chapterNum}`
-    : "Oneshot";
+      ? `Ch. ${chapterNum}`
+      : "Oneshot";
 
   const readableAt = new Date(chapter.attributes.readableAt);
   const timeAgo = Utils.Date.formatNowDistance(readableAt, { addSuffix: true });
@@ -94,10 +94,16 @@ export default function HistoryItem({
     return (
       <div className="flex flex-row gap-4 rounded-lg bg-neutral-800 p-4 sm:p-5 md:p-6">
         {/* Cover Image */}
-        <Link href={Constants.Routes.nettrom.manga(mangaId)} className="shrink-0">
+        <Link
+          href={Constants.Routes.nettrom.manga(mangaId)}
+          className="shrink-0"
+        >
           <div
             className="relative overflow-hidden rounded"
-            style={{ width: "100px", aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO }}
+            style={{
+              width: "100px",
+              aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO,
+            }}
           >
             <img
               src={cover}
@@ -109,12 +115,15 @@ export default function HistoryItem({
         </Link>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           {/* Title and Language */}
-          <div className="mb-3 flex items-center gap-2 flex-wrap">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
             <LanguageIcon languageCode={originalLanguage} />
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white truncate flex-1 min-w-0">
-              <Link href={Constants.Routes.nettrom.manga(mangaId)} className="no-underline hover:no-underline">
+            <h2 className="min-w-0 flex-1 truncate text-xl font-semibold text-white sm:text-2xl md:text-3xl">
+              <Link
+                href={Constants.Routes.nettrom.manga(mangaId)}
+                className="no-underline hover:no-underline"
+              >
                 {mangaTitle}
               </Link>
             </h2>
@@ -124,31 +133,31 @@ export default function HistoryItem({
           <div className="mb-3">
             <Link
               href={Constants.Routes.nettrom.chapter(chapterId)}
-              className="inline-block bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded text-base sm:text-lg md:text-xl lg:text-2xl font-medium transition-colors no-underline hover:no-underline"
+              className="inline-block rounded bg-green-600 px-3 py-1.5 text-base font-medium text-white no-underline transition-colors hover:bg-green-700 hover:no-underline sm:text-lg md:text-xl lg:text-2xl"
             >
               {volumeChapterText}
             </Link>
           </div>
 
           {/* Metadata */}
-          <div className="mb-3 flex flex-wrap items-center gap-4 sm:gap-5 text-base sm:text-lg md:text-xl lg:text-2xl text-white">
-            <span className="flex items-center gap-2 shrink-0">
+          <div className="mb-3 flex flex-wrap items-center gap-4 text-base text-white sm:gap-5 sm:text-lg md:text-xl lg:text-2xl">
+            <span className="flex shrink-0 items-center gap-2">
               <Iconify icon="fa:clock" className="h-5 w-5" />
               {timeAgo}
             </span>
-            <span className="flex items-center gap-2 shrink-0">
+            <span className="flex shrink-0 items-center gap-2">
               <Iconify icon="fa:users" className="h-5 w-5" />
               {groupName}
             </span>
-            <span className="flex items-center gap-2 shrink-0">
+            <span className="flex shrink-0 items-center gap-2">
               <Iconify icon="fa:user" className="h-5 w-5" />
               <span className="text-blue-400">{uploader}</span>
             </span>
-            <span className="flex items-center gap-2 shrink-0">
+            <span className="flex shrink-0 items-center gap-2">
               <Iconify icon="fa:eye" className="h-5 w-5" />
               N/A
             </span>
-            <span className="flex items-center gap-2 shrink-0">
+            <span className="flex shrink-0 items-center gap-2">
               <Iconify icon="fa:comment" className="h-5 w-5" />
               {commentCount}
             </span>
@@ -162,12 +171,15 @@ export default function HistoryItem({
   return (
     <div className="flex flex-row gap-4 rounded-lg bg-neutral-800 p-4 sm:p-5 md:p-6">
       {/* Content - no image */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {/* Title and Language */}
-        <div className="mb-3 flex items-center gap-2 flex-wrap">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
           <LanguageIcon languageCode={originalLanguage} />
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white truncate flex-1 min-w-0">
-            <Link href={Constants.Routes.nettrom.manga(mangaId)} className="no-underline hover:no-underline">
+          <h2 className="min-w-0 flex-1 truncate text-xl font-semibold text-white sm:text-2xl md:text-3xl">
+            <Link
+              href={Constants.Routes.nettrom.manga(mangaId)}
+              className="no-underline hover:no-underline"
+            >
               {mangaTitle}
             </Link>
           </h2>
@@ -177,31 +189,31 @@ export default function HistoryItem({
         <div className="mb-3">
           <Link
             href={Constants.Routes.nettrom.chapter(chapterId)}
-            className="inline-block bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded text-base sm:text-lg md:text-xl lg:text-2xl font-medium transition-colors no-underline hover:no-underline"
+            className="inline-block rounded bg-green-600 px-3 py-1.5 text-base font-medium text-white no-underline transition-colors hover:bg-green-700 hover:no-underline sm:text-lg md:text-xl lg:text-2xl"
           >
             {volumeChapterText}
           </Link>
         </div>
 
         {/* Metadata */}
-        <div className="mb-3 flex flex-wrap items-center gap-4 sm:gap-5 text-base sm:text-lg md:text-xl lg:text-2xl text-white">
-          <span className="flex items-center gap-2 shrink-0">
+        <div className="mb-3 flex flex-wrap items-center gap-4 text-base text-white sm:gap-5 sm:text-lg md:text-xl lg:text-2xl">
+          <span className="flex shrink-0 items-center gap-2">
             <Iconify icon="fa:clock" className="h-5 w-5" />
             {timeAgo}
           </span>
-          <span className="flex items-center gap-2 shrink-0">
+          <span className="flex shrink-0 items-center gap-2">
             <Iconify icon="fa:users" className="h-5 w-5" />
             {groupName}
           </span>
-          <span className="flex items-center gap-2 shrink-0">
+          <span className="flex shrink-0 items-center gap-2">
             <Iconify icon="fa:user" className="h-5 w-5" />
             <span className="text-blue-400">{uploader}</span>
           </span>
-          <span className="flex items-center gap-2 shrink-0">
+          <span className="flex shrink-0 items-center gap-2">
             <Iconify icon="fa:eye" className="h-5 w-5" />
             N/A
           </span>
-          <span className="flex items-center gap-2 shrink-0">
+          <span className="flex shrink-0 items-center gap-2">
             <Iconify icon="fa:comment" className="h-5 w-5" />
             {commentCount}
           </span>
@@ -210,4 +222,3 @@ export default function HistoryItem({
     </div>
   );
 }
-

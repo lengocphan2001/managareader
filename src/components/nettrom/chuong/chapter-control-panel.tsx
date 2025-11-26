@@ -11,8 +11,6 @@ import Iconify from "@/components/iconify";
 import {
   FaTimes,
   FaExpand,
-  FaBookmark,
-  FaFileAlt,
   FaChevronLeft,
   FaChevronRight,
   FaFlag,
@@ -49,7 +47,7 @@ export default function ChapterControlPanel({
     group,
   } = useChapterContext();
   const { onToggleDrawer, dataSaver, maxImageWidth } = useSettingsContext();
-  
+
   // Get pages for current chapter
   const { pages } = useChapterPages(
     chapter?.attributes.externalUrl ? null : chapterId,
@@ -78,14 +76,17 @@ export default function ChapterControlPanel({
     const handleScroll = () => {
       const pageElements = document.querySelectorAll("[data-index]");
       let current = 1;
-      
+
       pageElements.forEach((el, index) => {
         const rect = el.getBoundingClientRect();
-        if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+        if (
+          rect.top <= window.innerHeight / 2 &&
+          rect.bottom >= window.innerHeight / 2
+        ) {
           current = index + 1;
         }
       });
-      
+
       setCurrentPage(current);
     };
 
@@ -93,7 +94,10 @@ export default function ChapterControlPanel({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pages]);
 
-  const mangaTitle = useMemo(() => Utils.Mangadex.getMangaTitle(manga), [manga]);
+  const mangaTitle = useMemo(
+    () => Utils.Mangadex.getMangaTitle(manga),
+    [manga],
+  );
   const chapterTitle = useMemo(
     () => Utils.Mangadex.getChapterTitle(chapter),
     [chapter],
@@ -109,9 +113,13 @@ export default function ChapterControlPanel({
   // Reader settings
   const [readerMode, setReaderMode] = useState<"single" | "double">("single");
   const [fitMode, setFitMode] = useState<"width" | "height" | "both">("both");
-  const [readingDirection, setReadingDirection] = useState<"ltr" | "rtl">("ltr");
+  const [readingDirection, setReadingDirection] = useState<"ltr" | "rtl">(
+    "ltr",
+  );
   const [headerHidden, setHeaderHidden] = useState(false);
-  const [progressMode, setProgressMode] = useState<"normal" | "webtoon">("normal");
+  const [progressMode, setProgressMode] = useState<"normal" | "webtoon">(
+    "normal",
+  );
 
   if (!isOpen) return null;
 
@@ -125,7 +133,7 @@ export default function ChapterControlPanel({
 
       {/* Control Panel */}
       <div
-        className={`fixed right-0 top-0 z-50 h-full w-full bg-neutral-900 shadow-2xl transition-transform duration-300 lg:w-96 lg:translate-x-0 ${
+        className={`fixed right-0 top-0 z-50 h-full w-1/2 bg-neutral-900 shadow-2xl transition-transform duration-300 lg:w-96 lg:translate-x-0 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -151,28 +159,33 @@ export default function ChapterControlPanel({
           </div>
 
           {/* Content */}
-          <div className="flex-1 space-y-4 sm:space-y-6 p-4 sm:p-6">
+          <div className="flex-1 space-y-4 p-4 sm:space-y-6 sm:p-6">
             {/* Manga Information */}
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Iconify icon="fa:bookmark" className="h-5 w-5 text-orange-500" />
+                <Iconify
+                  icon="fa:bookmark"
+                  className="h-6 w-6 text-orange-500"
+                />
                 <Link
                   href={Constants.Routes.nettrom.manga(manga?.id || "")}
-                  className="text-lg sm:text-xl font-semibold text-orange-500 hover:text-orange-400 line-clamp-2"
+                  className="line-clamp-2 text-xl font-semibold text-orange-500 hover:text-orange-400"
                 >
                   {mangaTitle}
                 </Link>
               </div>
               <div className="flex items-center gap-2">
-                <Iconify icon="fa:file-alt" className="h-4 w-4 text-gray-400" />
-                <p className="text-base sm:text-lg text-gray-300 line-clamp-2">{chapterTitle}</p>
+                <Iconify icon="fa:file-alt" className="h-5 w-5 text-gray-400" />
+                <p className="line-clamp-2 text-xl text-gray-300">
+                  {chapterTitle}
+                </p>
               </div>
             </div>
 
             {/* Progress Bar */}
             {totalPages > 1 && (
               <div className="space-y-1">
-                <div className="flex items-center justify-between text-sm text-gray-400">
+                <div className="flex items-center justify-between text-xl text-gray-400">
                   <span>Page {currentPage}</span>
                   <span>of {totalPages}</span>
                 </div>
@@ -188,7 +201,9 @@ export default function ChapterControlPanel({
             {/* Page Selector */}
             {totalPages > 1 && (
               <div className="space-y-2">
-                <label className="text-sm sm:text-base font-medium text-gray-400">Page</label>
+                <label className="text-xl font-medium text-gray-400">
+                  Page
+                </label>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => scrollToPage(Math.max(1, currentPage - 1))}
@@ -199,7 +214,7 @@ export default function ChapterControlPanel({
                   </button>
                   <Select
                     classNames={{
-                      trigger: "h-10 flex-1 rounded-lg text-sm sm:text-base",
+                      trigger: "h-10 flex-1 rounded-lg text-xl",
                       content: "max-h-[300px]",
                     }}
                     value={currentPage.toString()}
@@ -210,7 +225,9 @@ export default function ChapterControlPanel({
                     }))}
                   />
                   <button
-                    onClick={() => scrollToPage(Math.min(totalPages, currentPage + 1))}
+                    onClick={() =>
+                      scrollToPage(Math.min(totalPages, currentPage + 1))
+                    }
                     disabled={currentPage === totalPages}
                     className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-800 text-white transition-colors hover:bg-neutral-700 disabled:opacity-50"
                   >
@@ -222,7 +239,7 @@ export default function ChapterControlPanel({
 
             {/* Chapter Selector */}
             <div className="space-y-2">
-              <label className="text-sm sm:text-base font-medium text-gray-400">
+              <label className="text-xl font-medium text-gray-400">
                 Chapter
               </label>
               <div className="flex items-center gap-2">
@@ -235,7 +252,7 @@ export default function ChapterControlPanel({
                 </button>
                 <Select
                   classNames={{
-                    trigger: "h-10 flex-1 rounded-lg text-sm sm:text-base",
+                    trigger: "h-10 flex-1 rounded-lg text-xl",
                     content: "max-h-[500px]",
                   }}
                   value={chapterId || ""}
@@ -266,42 +283,44 @@ export default function ChapterControlPanel({
             <div className="space-y-2">
               <Button
                 variant="outline"
-                className="w-full justify-start border-neutral-700 text-sm sm:text-base text-white hover:bg-neutral-800"
+                className="w-full justify-start border-neutral-700 text-xl text-white hover:bg-neutral-800"
               >
-                <FaFlag className="mr-2 h-4 w-4" />
+                <FaFlag className="mr-2 h-5 w-5" />
                 Report Chapter
               </Button>
               <Button
                 variant="outline"
-                className="w-full justify-start border-neutral-700 text-sm sm:text-base text-white hover:bg-neutral-800"
+                className="w-full justify-start border-neutral-700 text-xl text-white hover:bg-neutral-800"
               >
-                <FaShare className="mr-2 h-4 w-4" />
+                <FaShare className="mr-2 h-5 w-5" />
                 Share Chapter
               </Button>
               <Button
                 variant="outline"
-                className="w-full justify-start border-neutral-700 text-sm sm:text-base text-white hover:bg-neutral-800"
+                className="w-full justify-start border-neutral-700 text-xl text-white hover:bg-neutral-800"
               >
-                <FaComment className="mr-2 h-4 w-4" />
+                <FaComment className="mr-2 h-5 w-5" />
                 {commentCount} comments
               </Button>
             </div>
 
             {/* Upload Information */}
             <div className="space-y-2 border-t border-neutral-700 pt-4">
-              <p className="text-sm sm:text-base font-medium text-gray-400">
+              <p className="text-xl font-medium text-gray-400">
                 Uploaded By
               </p>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Iconify icon="fa:user" className="h-4 w-4 text-gray-400" />
-                  <span className="text-base sm:text-lg text-gray-300 truncate">{groupName}</span>
+                  <Iconify icon="fa:user" className="h-5 w-5 text-gray-400" />
+                  <span className="truncate text-xl text-gray-300">
+                    {groupName}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Iconify icon="fa:user" className="h-4 w-4 text-blue-400" />
+                  <Iconify icon="fa:user" className="h-5 w-5 text-blue-400" />
                   <Link
                     href="#"
-                    className="text-base sm:text-lg text-blue-400 hover:text-blue-300 truncate"
+                    className="truncate text-xl text-blue-400 hover:text-blue-300"
                   >
                     {uploader}
                   </Link>
@@ -311,15 +330,15 @@ export default function ChapterControlPanel({
 
             {/* Reader Settings */}
             <div className="space-y-3 border-t border-neutral-700 pt-4">
-              <p className="text-sm sm:text-base font-medium text-gray-400">
+              <p className="text-xl font-medium text-gray-400">
                 Reader Settings
               </p>
 
               {/* Single Page / Double Page */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Iconify icon="fa:file" className="h-4 w-4 text-gray-400" />
-                  <span className="text-base sm:text-lg text-white">
+                  <Iconify icon="fa:file" className="h-5 w-5 text-gray-400" />
+                  <span className="text-xl text-white">
                     {readerMode === "single" ? "Single Page" : "Double Page"}
                   </span>
                 </div>
@@ -327,7 +346,7 @@ export default function ChapterControlPanel({
                   onClick={() =>
                     setReaderMode(readerMode === "single" ? "double" : "single")
                   }
-                  className="rounded-lg bg-neutral-800 px-3 py-1.5 text-xs sm:text-sm text-white hover:bg-neutral-700"
+                  className="rounded-lg bg-neutral-800 px-3 py-1.5 text-xl text-white hover:bg-neutral-700"
                 >
                   Switch
                 </button>
@@ -336,17 +355,16 @@ export default function ChapterControlPanel({
               {/* Fit Mode */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Iconify
-                    icon="fa:expand"
-                    className="h-4 w-4 text-gray-400"
-                  />
-                  <span className="text-base sm:text-lg text-white">Fit Both</span>
+                  <Iconify icon="fa:expand" className="h-5 w-5 text-gray-400" />
+                  <span className="text-xl text-white">
+                    Fit Both
+                  </span>
                 </div>
                 <button
                   onClick={onToggleDrawer}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-800 text-white hover:bg-neutral-700"
+                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-800 text-white hover:bg-neutral-700"
                 >
-                  <FaCog className="h-4 w-4" />
+                  <FaCog className="h-5 w-5" />
                 </button>
               </div>
 
@@ -355,9 +373,11 @@ export default function ChapterControlPanel({
                 <div className="flex items-center gap-2">
                   <Iconify
                     icon="fa:arrow-right"
-                    className="h-4 w-4 text-gray-400"
+                    className="h-5 w-5 text-gray-400"
                   />
-                  <span className="text-base sm:text-lg text-white">Left To Right</span>
+                  <span className="text-xl text-white">
+                    Left To Right
+                  </span>
                 </div>
                 <button
                   onClick={() =>
@@ -365,7 +385,7 @@ export default function ChapterControlPanel({
                       readingDirection === "ltr" ? "rtl" : "ltr",
                     )
                   }
-                  className="rounded-lg bg-neutral-800 px-3 py-1.5 text-xs sm:text-sm text-white hover:bg-neutral-700"
+                  className="rounded-lg bg-neutral-800 px-3 py-1.5 text-xl text-white hover:bg-neutral-700"
                 >
                   Switch
                 </button>
@@ -373,12 +393,14 @@ export default function ChapterControlPanel({
 
               {/* Header Hidden */}
               <div className="flex items-center justify-between">
-                <span className="text-base sm:text-lg text-white">Header Hidden</span>
+                <span className="text-xl text-white">
+                  Header Hidden
+                </span>
                 <input
                   type="checkbox"
                   checked={headerHidden}
                   onChange={(e) => setHeaderHidden(e.target.checked)}
-                  className="h-5 w-5 rounded border-neutral-700 bg-neutral-800 text-orange-500 focus:ring-orange-500"
+                  className="h-6 w-6 rounded border-neutral-700 bg-neutral-800 text-orange-500 focus:ring-orange-500"
                 />
               </div>
 
@@ -387,25 +409,27 @@ export default function ChapterControlPanel({
                 <div className="flex items-center gap-2">
                   <Iconify
                     icon="fa:chart-line"
-                    className="h-4 w-4 text-gray-400"
+                    className="h-5 w-5 text-gray-400"
                   />
-                  <span className="text-base sm:text-lg text-white">Normal Progress</span>
+                  <span className="text-xl text-white">
+                    Normal Progress
+                  </span>
                 </div>
                 <button
                   onClick={onToggleDrawer}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-800 text-white hover:bg-neutral-700"
+                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-800 text-white hover:bg-neutral-700"
                 >
-                  <FaCog className="h-4 w-4" />
+                  <FaCog className="h-5 w-5" />
                 </button>
               </div>
 
               {/* Reader Settings Button */}
               <Button
                 variant="outline"
-                className="w-full justify-start border-neutral-700 text-sm sm:text-base text-white hover:bg-neutral-800"
+                className="w-full justify-start border-neutral-700 text-xl text-white hover:bg-neutral-800"
                 onClick={onToggleDrawer}
               >
-                <FaCog className="mr-2 h-4 w-4" />
+                <FaCog className="mr-2 h-5 w-5" />
                 Reader Settings
               </Button>
             </div>
@@ -415,4 +439,3 @@ export default function ChapterControlPanel({
     </>
   );
 }
-

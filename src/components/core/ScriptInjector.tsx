@@ -10,7 +10,7 @@ interface ScriptInjectorProps {
 export default function ScriptInjector({ type }: ScriptInjectorProps) {
   const { settings } = useAdminSettings();
   const [scripts, setScripts] = useState<string>("");
-  
+
   useEffect(() => {
     // Get scripts from cached settings
     const scriptContent =

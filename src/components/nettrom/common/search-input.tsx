@@ -2,7 +2,14 @@
 
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
-import { MouseEvent, useCallback, useState, Suspense, useEffect, useRef } from "react";
+import {
+  MouseEvent,
+  useCallback,
+  useState,
+  Suspense,
+  useEffect,
+  useRef,
+} from "react";
 import { FaSearch } from "react-icons/fa";
 
 import { MangadexApi } from "@/api";
@@ -57,7 +64,10 @@ function SearchInputContent() {
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setIsFocused(false);
       }
     };
@@ -77,55 +87,65 @@ function SearchInputContent() {
       <button
         type="button"
         onClick={() => setIsMobileModalOpen(true)}
-        className="lg:hidden flex items-center justify-center w-12 h-12 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white transition-all duration-200 border border-neutral-700 hover:border-orange-500/50 shadow-lg hover:shadow-orange-500/20"
+        className="flex h-12 w-12 items-center justify-center rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-400 shadow-lg transition-all duration-200 hover:border-orange-500/50 hover:bg-neutral-700 hover:text-white hover:shadow-orange-500/20 lg:hidden"
         aria-label="Search"
       >
-        <FaSearch className="w-6 h-6" />
+        <FaSearch className="h-6 w-6" />
       </button>
 
       {/* Desktop: Full search input */}
-      <form 
-        ref={searchRef} 
-        onSubmit={handleSubmit} 
+      <form
+        ref={searchRef}
+        onSubmit={handleSubmit}
         className="relative hidden lg:block"
         style={{
-          width: isFocused ? '800px' : '100%',
-          maxWidth: isFocused ? '800px' : '28rem',
-          transition: 'width 150ms ease-out, max-width 150ms ease-out',
-          marginLeft: 'auto',
+          width: isFocused ? "800px" : "100%",
+          maxWidth: isFocused ? "800px" : "28rem",
+          transition: "width 150ms ease-out, max-width 150ms ease-out",
+          marginLeft: "auto",
           marginRight: 0,
-          transformOrigin: 'right center',
+          transformOrigin: "right center",
         }}
       >
-        <div className={`relative flex items-center bg-neutral-800 rounded-lg border border-neutral-700 transition-all duration-150 ${isFocused ? 'ring-2 ring-orange-500 border-transparent shadow-lg' : 'focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-transparent'}`}>
-        <input
-          type="text"
-            className="flex-1 px-4 py-3 bg-transparent text-white placeholder-neutral-400 rounded-l-lg focus:outline-none text-2xl"
-            placeholder="Enter a search query..."
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-            onFocus={() => setIsFocused(true)}
-        />
-          <div className="flex items-center gap-1 px-2 text-neutral-400 text-xl">
-            <span className="bg-neutral-700 px-2 py-1 rounded text-white text-base">Ctrl</span>
-            <span className="bg-neutral-700 px-2 py-1 rounded text-white text-base">K</span>
-          </div>
-        <button
-          type="submit"
-            className="p-3 text-neutral-400 hover:text-white transition-colors rounded-r-lg"
-          aria-label="Search"
+        <div
+          className={`relative flex items-center rounded-lg border border-neutral-700 bg-neutral-800 transition-all duration-150 ${isFocused ? "border-transparent shadow-lg ring-2 ring-orange-500" : "focus-within:border-transparent focus-within:ring-2 focus-within:ring-orange-500"}`}
         >
-            <FaSearch className="w-6 h-6" />
-        </button>
-      </div>
-      {(isFocused || title) && (
-        <div className="absolute left-0 top-full z-[100] mt-2 w-full overflow-visible border border-neutral-700 bg-neutral-800 rounded-lg shadow-2xl transition-all duration-300 ease-out">
+          <input
+            type="text"
+            className="flex-1 rounded-l-lg bg-transparent px-4 py-3 text-2xl text-white placeholder-neutral-400 focus:outline-none"
+            placeholder="Enter a search query..."
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            onFocus={() => setIsFocused(true)}
+          />
+          <div className="flex items-center gap-1 px-2 text-xl text-neutral-400">
+            <span className="rounded bg-neutral-700 px-2 py-1 text-base text-white">
+              Ctrl
+            </span>
+            <span className="rounded bg-neutral-700 px-2 py-1 text-base text-white">
+              K
+            </span>
+          </div>
+          <button
+            type="submit"
+            className="rounded-r-lg p-3 text-neutral-400 transition-colors hover:text-white"
+            aria-label="Search"
+          >
+            <FaSearch className="h-6 w-6" />
+          </button>
+        </div>
+        {(isFocused || title) && (
+          <div className="absolute left-0 top-full z-[100] mt-2 w-full overflow-visible rounded-lg border border-neutral-700 bg-neutral-800 shadow-2xl transition-all duration-300 ease-out">
             <div className="border-b border-neutral-700 bg-neutral-900 px-4 py-3">
               <h3 className="mb-1 text-2xl font-semibold text-white">
                 Search Results
               </h3>
               <p className="text-xl text-neutral-400">
-                {isLoading ? "Searching..." : title ? `${mangaList.length} results` : "Start typing to search..."}
+                {isLoading
+                  ? "Searching..."
+                  : title
+                    ? `${mangaList.length} results`
+                    : "Start typing to search..."}
               </p>
             </div>
 
@@ -145,11 +165,18 @@ function SearchInputContent() {
                         <li className="border-b border-neutral-700 transition-colors duration-150 last:border-b-0 hover:bg-neutral-700/50">
                           <Link
                             href={Constants.Routes.nettrom.manga(manga.id)}
-                            onClick={() => { clearTitle(); setIsFocused(false); }}
+                            onClick={() => {
+                              clearTitle();
+                              setIsFocused(false);
+                            }}
                             className="p-4 text-inherit no-underline hover:text-inherit focus:text-inherit active:text-inherit"
-                            style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              gap: "1rem",
+                            }}
                           >
-                            <div className="flex-shrink-0 h-32 w-24 overflow-hidden rounded shadow-sm">
+                            <div className="h-32 w-24 flex-shrink-0 overflow-hidden rounded shadow-sm">
                               <img
                                 className="h-full w-full object-cover"
                                 src={cover}
@@ -157,7 +184,7 @@ function SearchInputContent() {
                                 loading="lazy"
                               />
                             </div>
-                            <div className="flex-1 min-w-0 overflow-hidden">
+                            <div className="min-w-0 flex-1 overflow-hidden">
                               <h3 className="mb-1 overflow-hidden text-ellipsis whitespace-nowrap text-2xl font-semibold leading-tight text-white">
                                 <TooltipComponent
                                   size="xl"
@@ -236,8 +263,8 @@ function SearchInputContent() {
               </div>
             )}
           </div>
-      )}
-    </form>
+        )}
+      </form>
 
       {/* Mobile Search Modal */}
       <MobileSearchModal

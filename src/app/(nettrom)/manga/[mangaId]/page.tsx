@@ -23,29 +23,33 @@ export default async function MangaPage({
       ],
     });
 
-    const extendedManga = Utils.Mangadex.extendRelationship(manga) as ExtendManga;
+    const extendedManga = Utils.Mangadex.extendRelationship(
+      manga,
+    ) as ExtendManga;
     const coverArt = Utils.Mangadex.getCoverArt(extendedManga, 512);
     const title = Utils.Mangadex.getMangaTitle(extendedManga);
     const originalTitle = Utils.Mangadex.getOriginalMangaTitle(extendedManga);
     const author = extendedManga?.author?.attributes?.name || "N/A";
     const artist = extendedManga?.artist?.attributes?.name;
-    const description = Utils.Mangadex.transLocalizedStr(extendedManga.attributes.description);
+    const description = Utils.Mangadex.transLocalizedStr(
+      extendedManga.attributes.description,
+    );
     const tags = extendedManga.attributes.tags?.slice(0, 2) || [];
 
     return (
       <div className="relative w-full">
         {/* Background Image Section - chỉ nửa màn hình, sát mép trên */}
         {coverArt && coverArt !== "/images/truyendex-loading.jpg" && (
-          <div 
-            className="relative -mt-16 overflow-visible bg-neutral-800 h-[200px] sm:h-[250px] md:h-[300px]"
+          <div
+            className="relative -mt-16 h-[200px] overflow-visible bg-neutral-800 sm:h-[250px] md:h-[300px]"
             style={{
-              position: 'relative',
+              position: "relative",
               left: 0,
               right: 0,
             }}
           >
             {/* Background Image */}
-            <div 
+            <div
               className="absolute bg-cover bg-center bg-no-repeat"
               style={{
                 backgroundImage: `url(${coverArt})`,
@@ -62,8 +66,8 @@ export default async function MangaPage({
                 bottom: 0,
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-neutral-900/70 via-neutral-900/50 to-transparent overflow-hidden" />
-            
+            <div className="absolute inset-0 overflow-hidden bg-gradient-to-r from-neutral-900/70 via-neutral-900/50 to-transparent" />
+
             {/* Block chứa thumbnail, title, nội dung và action buttons - relative với background */}
             <MangaHeaderBlock
               mangaId={params.mangaId}
@@ -78,21 +82,15 @@ export default async function MangaPage({
             />
           </div>
         )}
-        
+
         {/* Info Block - căn giữa màn hình, nằm dưới background */}
         <div className="z-10">
-          <MangaInfoBlock
-            mangaId={params.mangaId}
-            manga={extendedManga}
-          />
+          <MangaInfoBlock mangaId={params.mangaId} manga={extendedManga} />
         </div>
-        
+
         {/* Content */}
         <div className="z-10 px-2 py-3 sm:px-4 sm:py-4 md:px-8 md:py-6 lg:px-24 lg:py-12">
-            <Manga
-              mangaId={params.mangaId}
-            prefetchedManga={extendedManga}
-            />
+          <Manga mangaId={params.mangaId} prefetchedManga={extendedManga} />
         </div>
       </div>
     );

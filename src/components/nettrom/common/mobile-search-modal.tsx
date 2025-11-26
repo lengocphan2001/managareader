@@ -17,12 +17,19 @@ interface MobileSearchModalProps {
   onClose: () => void;
 }
 
-export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModalProps) {
+export default function MobileSearchModal({
+  isOpen,
+  onClose,
+}: MobileSearchModalProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedQuery = useDebounce(searchQuery, 500);
 
-  const { mangaList, isLoading: isLoadingManga, error: mangaError } = useSearchManga(
+  const {
+    mangaList,
+    isLoading: isLoadingManga,
+    error: mangaError,
+  } = useSearchManga(
     {
       title: debouncedQuery,
       includes: [
@@ -35,7 +42,11 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
     { enable: !!debouncedQuery && isOpen },
   );
 
-  const { groupList, isLoading: isLoadingGroup, error: groupError } = useSearchGroup(
+  const {
+    groupList,
+    isLoading: isLoadingGroup,
+    error: groupError,
+  } = useSearchGroup(
     {
       name: debouncedQuery,
       limit: 3,
@@ -74,25 +85,28 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] bg-neutral-900 flex flex-col">
+    <div className="fixed inset-0 z-[200] flex flex-col bg-neutral-900">
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-4 border-b border-neutral-700">
-        <form onSubmit={handleSubmit} className="flex-1 flex items-center gap-3">
-          <div className="flex-1 relative">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-xl" />
+      <div className="flex items-center gap-3 border-b border-neutral-700 px-4 py-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-1 items-center gap-3"
+        >
+          <div className="relative flex-1">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-xl text-neutral-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search"
-              className="w-full pl-10 pr-4 py-3 bg-neutral-800 text-white placeholder-neutral-400 rounded-lg border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-orange-500 text-2xl"
+              className="w-full rounded-lg border border-neutral-700 bg-neutral-800 py-3 pl-10 pr-4 text-2xl text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
               autoFocus
             />
           </div>
           <button
             type="button"
             onClick={handleClose}
-            className="p-2 text-neutral-400 hover:text-white transition-colors"
+            className="p-2 text-neutral-400 transition-colors hover:text-white"
             aria-label="Close"
           >
             <FaTimes className="text-2xl" />
@@ -106,7 +120,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
           <>
             {/* Manga Results */}
             <div className="px-4 py-4">
-              <div className="flex items-center justify-between mb-4">
+              <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-white">Manga</h2>
                 {mangaList.length > 0 && (
                   <Link
@@ -114,7 +128,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                       title: debouncedQuery,
                     })}
                     onClick={handleClose}
-                    className="flex items-center gap-1 text-orange-500 hover:text-orange-400 text-xl"
+                    className="flex items-center gap-1 text-xl text-orange-500 hover:text-orange-400"
                   >
                     <span>View All</span>
                     <FaChevronRight className="text-lg" />
@@ -127,15 +141,17 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                     {mangaList.map((manga) => {
                       const title = Utils.Mangadex.getMangaTitle(manga);
                       const cover = Utils.Mangadex.getCoverArt(manga);
-                      const status = Utils.Mangadex.translateStatus(manga.attributes.status);
+                      const status = Utils.Mangadex.translateStatus(
+                        manga.attributes.status,
+                      );
                       const statusColor =
                         status === "Ongoing"
                           ? "bg-green-500"
                           : status === "Completed"
-                          ? "bg-blue-500"
-                          : status === "Hiatus"
-                          ? "bg-orange-500"
-                          : "bg-gray-500";
+                            ? "bg-blue-500"
+                            : status === "Hiatus"
+                              ? "bg-orange-500"
+                              : "bg-gray-500";
                       const mangaStatistic = manga.statistic;
 
                       return (
@@ -143,30 +159,35 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                           key={manga.id}
                           href={Constants.Routes.nettrom.manga(manga.id)}
                           onClick={handleClose}
-                          className="flex gap-4 p-3 bg-neutral-800 rounded-lg hover:bg-neutral-700 transition-colors"
+                          className="flex gap-4 rounded-lg bg-neutral-800 p-3 transition-colors hover:bg-neutral-700"
                         >
-                          <div className="shrink-0 w-20 h-28 overflow-hidden rounded">
+                          <div className="h-28 w-20 shrink-0 overflow-hidden rounded">
                             <img
                               src={cover}
                               alt={title}
-                              className="w-full h-full object-cover"
+                              className="h-full w-full object-cover"
                               loading="lazy"
                             />
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-xl font-semibold text-white mb-2 line-clamp-2">
+                          <div className="min-w-0 flex-1">
+                            <h3 className="mb-2 line-clamp-2 text-xl font-semibold text-white">
                               {title}
                             </h3>
-                            <div className="flex flex-wrap items-center gap-3 text-base text-neutral-400 mb-2">
+                            <div className="mb-2 flex flex-wrap items-center gap-3 text-base text-neutral-400">
                               <span className="flex items-center gap-1">
                                 <i className="fa fa-star text-yellow-400"></i>
                                 {Utils.Number.formatViews(
-                                  Math.round((mangaStatistic?.rating?.bayesian || 0) * 100) / 100
+                                  Math.round(
+                                    (mangaStatistic?.rating?.bayesian || 0) *
+                                      100,
+                                  ) / 100,
                                 )}
                               </span>
                               <span className="flex items-center gap-1">
                                 <i className="fa fa-bookmark"></i>
-                                {Utils.Number.formatViews(mangaStatistic?.follows || 0)}
+                                {Utils.Number.formatViews(
+                                  mangaStatistic?.follows || 0,
+                                )}
                               </span>
                               <span className="flex items-center gap-1">
                                 <i className="fa fa-eye"></i>
@@ -174,11 +195,13 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                               </span>
                               <span className="flex items-center gap-1">
                                 <i className="fa fa-comment"></i>
-                                {Utils.Number.formatViews(mangaStatistic?.comments?.repliesCount || 0)}
+                                {Utils.Number.formatViews(
+                                  mangaStatistic?.comments?.repliesCount || 0,
+                                )}
                               </span>
                             </div>
                             <span
-                              className={`inline-block px-3 py-1 rounded-full text-sm font-medium text-white ${statusColor}`}
+                              className={`inline-block rounded-full px-3 py-1 text-sm font-medium text-white ${statusColor}`}
                             >
                               {status}
                             </span>
@@ -188,14 +211,16 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                     })}
                   </div>
                 ) : !isLoadingManga ? (
-                  <p className="text-neutral-400 text-xl text-center py-8">No manga found</p>
+                  <p className="py-8 text-center text-xl text-neutral-400">
+                    No manga found
+                  </p>
                 ) : null}
               </DataLoader>
             </div>
 
             {/* Groups Results */}
-            <div className="px-4 py-4 border-t border-neutral-700">
-              <div className="flex items-center justify-between mb-4">
+            <div className="border-t border-neutral-700 px-4 py-4">
+              <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-white">Groups</h2>
                 {groupList.length > 0 && (
                   <Link
@@ -203,7 +228,7 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                       title: debouncedQuery,
                     })}
                     onClick={handleClose}
-                    className="flex items-center gap-1 text-orange-500 hover:text-orange-400 text-xl"
+                    className="flex items-center gap-1 text-xl text-orange-500 hover:text-orange-400"
                   >
                     <span>View All</span>
                     <FaChevronRight className="text-lg" />
@@ -214,32 +239,38 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                 {groupList.length > 0 ? (
                   <div className="space-y-3">
                     {groupList.map((group) => {
-                      const leaders = group.relationships?.filter(
-                        (r) => r.type === "leader"
-                      ) || [];
+                      const leaders =
+                        group.relationships?.filter(
+                          (r) => r.type === "leader",
+                        ) || [];
 
                       return (
                         <Link
                           key={group.id}
-                          href={Constants.Routes.nettrom.scanlationGroup(group.id)}
+                          href={Constants.Routes.nettrom.scanlationGroup(
+                            group.id,
+                          )}
                           onClick={handleClose}
-                          className="flex gap-4 p-3 bg-neutral-800 rounded-lg hover:bg-neutral-700 transition-colors"
+                          className="flex gap-4 rounded-lg bg-neutral-800 p-3 transition-colors hover:bg-neutral-700"
                         >
-                          <div className="shrink-0 w-16 h-16 rounded-full overflow-hidden bg-neutral-700 flex items-center justify-center relative">
+                          <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-700">
                             {/* Fox head avatar placeholder */}
-                            <div className="w-full h-full bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
-                              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                                <div className="w-8 h-8 bg-orange-500 rounded-full"></div>
+                            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-orange-500 to-orange-600">
+                              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
+                                <div className="h-8 w-8 rounded-full bg-orange-500"></div>
                               </div>
                             </div>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-xl font-semibold text-white mb-1">
+                          <div className="min-w-0 flex-1">
+                            <h3 className="mb-1 text-xl font-semibold text-white">
                               {group.attributes.name}
                             </h3>
                             <p className="text-base text-neutral-400">
-                              {leaders.length > 0 
-                                ? leaders.map((l: any) => l.attributes?.username).filter(Boolean).join(", ") || "No Leader"
+                              {leaders.length > 0
+                                ? leaders
+                                    .map((l: any) => l.attributes?.username)
+                                    .filter(Boolean)
+                                    .join(", ") || "No Leader"
                                 : "No Leader"}
                             </p>
                           </div>
@@ -248,18 +279,21 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
                     })}
                   </div>
                 ) : !isLoadingGroup ? (
-                  <p className="text-neutral-400 text-xl text-center py-8">No groups found</p>
+                  <p className="py-8 text-center text-xl text-neutral-400">
+                    No groups found
+                  </p>
                 ) : null}
               </DataLoader>
             </div>
           </>
         ) : (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-neutral-400 text-xl">Start typing to search...</p>
+          <div className="flex h-full items-center justify-center">
+            <p className="text-xl text-neutral-400">
+              Start typing to search...
+            </p>
           </div>
         )}
       </div>
     </div>
   );
 }
-

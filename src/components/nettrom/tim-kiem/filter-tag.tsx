@@ -95,7 +95,7 @@ export default function FilterTag({
             )}
           </div>
           <svg
-            className={`h-5 w-5 transition-transform absolute right-3 ${
+            className={`absolute right-3 h-5 w-5 transition-transform ${
               showTagFilter ? "rotate-180" : ""
             }`}
             xmlns="http://www.w3.org/2000/svg"

@@ -4,8 +4,9 @@ import dynamic from "next/dynamic";
 
 // Lazy load ToastContainer to avoid hydration issues
 const ToastContainer = dynamic(
-  () => import("react-toastify").then((mod) => ({ default: mod.ToastContainer })),
-  { ssr: false }
+  () =>
+    import("react-toastify").then((mod) => ({ default: mod.ToastContainer })),
+  { ssr: false },
 );
 
 export const metadata: Metadata = {

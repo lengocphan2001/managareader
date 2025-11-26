@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { Button } from "../Button";
 import { ExtendManga } from "@/types/mangadex";
 import { Utils } from "@/utils";
-import { MangadexApi, AppApi } from "@/api";
+import { AppApi } from "@/api";
 import Iconify from "@/components/iconify";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "react-toastify";
@@ -66,7 +66,6 @@ export default function AddToLibraryModal({
     }
   };
 
-
   const handleSubmit = async () => {
     if (!user) {
       toast.error("Please login to add manga to library");
@@ -81,16 +80,18 @@ export default function AddToLibraryModal({
       toast.success(
         selectedStatus
           ? `Added to library as "${READING_STATUS_OPTIONS.find((opt) => opt.value === selectedStatus)?.label}"`
-          : "Removed from library"
+          : "Removed from library",
       );
-      
+
       if (onSuccess) {
         onSuccess();
       }
       onClose();
     } catch (error: any) {
       console.error("Failed to update reading status:", error);
-      toast.error(error?.response?.data?.message || "Failed to update reading status");
+      toast.error(
+        error?.response?.data?.message || "Failed to update reading status",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -100,7 +101,9 @@ export default function AddToLibraryModal({
 
   const coverArt = Utils.Mangadex.getCoverArt(manga);
   const title = Utils.Mangadex.getMangaTitle(manga);
-  const selectedOption = READING_STATUS_OPTIONS.find((opt) => opt.value === selectedStatus);
+  const selectedOption = READING_STATUS_OPTIONS.find(
+    (opt) => opt.value === selectedStatus,
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -149,7 +152,9 @@ export default function AddToLibraryModal({
 
             {/* Reading Status */}
             <div className="mb-6">
-              <label className="mb-2 block text-2xl text-white">Reading Status</label>
+              <label className="mb-2 block text-2xl text-white">
+                Reading Status
+              </label>
               <div className="relative">
                 <button
                   type="button"
@@ -211,14 +216,14 @@ export default function AddToLibraryModal({
           <Button
             variant="outline"
             onClick={onClose}
-            className="border-white/20 text-white hover:bg-white/10 text-2xl px-6 py-3"
+            className="border-white/20 px-6 py-3 text-2xl text-white hover:bg-white/10"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="bg-orange-500 text-white hover:bg-orange-600 text-2xl px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-orange-500 px-6 py-3 text-2xl text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isSubmitting ? "Adding..." : "Add"}
           </Button>
@@ -227,4 +232,3 @@ export default function AddToLibraryModal({
     </div>
   );
 }
-

@@ -13,12 +13,11 @@ export default function MainContentWrapper({
   return (
     <div
       className={twMerge(
-        "flex-1 min-w-0 transition-all duration-300",
-        isOpen ? "lg:ml-96" : "lg:ml-0"
+        "min-w-0 flex-1 transition-all duration-300",
+        isOpen ? "lg:ml-96" : "lg:ml-0",
       )}
     >
       {children}
     </div>
   );
 }
-

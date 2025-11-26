@@ -83,107 +83,109 @@ export default async function ScanlationGroupPage({
     <div className="w-full px-24 py-12">
       <div className="row">
         <div id="ctl00_divCenter" className="center-side col-md-8">
-        <article id="item-detail">
-          <h1 className="title-detail">
-            Scanlation Group: {group.attributes.name}
-          </h1>
-          {group.attributes.focusedLanguages && (
-            <time className="small">
-              Languages:{" "}
-              {group.attributes.focusedLanguages
-                .map((l) => l.toUpperCase())
-                .join("; ")}
-            </time>
-          )}
-          <div className="detail-info md:ps-3">
-            <div className="row mx-0">
-              <ul className="list-info">
-                {leaders.length > 0 && (
-                  <li className="author row">
-                    <p className="name col-xs-4">
-                      <i className="fa fa-user"></i> Group Leader
-                    </p>
-                    <p className="col-xs-8">
-                      {leaders.map((l) => l.attributes.username).join("; ")}
-                    </p>
-                  </li>
-                )}
-                {members.length > 0 && (
-                  <li className="author row">
-                    <p className="name col-xs-4">
-                      <i className="fa fa-user"></i> Members
-                    </p>
-                    <p className="col-xs-8">
-                      {members.map((l) => l.attributes.username).join("; ")}
-                    </p>
-                  </li>
-                )}
-                {group.attributes.contactEmail && (
-                  <li className="author row">
-                    <p className="name col-xs-4">
-                      <i className="fa fa-envelope"></i> Email
-                    </p>
-                    <p className="col-xs-8">{group.attributes.contactEmail}</p>
-                  </li>
-                )}
-              </ul>
-            </div>
-            <div className="follow">
-              <a
-                className="btn btn-danger"
-                href={`https://mangadex.org/group/${group.id}`}
-                target="_blank"
-              >
-                <i className="fa fa-cat mr-2" />
-                <span>Link Mangadex</span>
-              </a>
-            </div>
-            <div className="read-action mrt10">
-              {group.attributes.website && (
+          <article id="item-detail">
+            <h1 className="title-detail">
+              Scanlation Group: {group.attributes.name}
+            </h1>
+            {group.attributes.focusedLanguages && (
+              <time className="small">
+                Languages:{" "}
+                {group.attributes.focusedLanguages
+                  .map((l) => l.toUpperCase())
+                  .join("; ")}
+              </time>
+            )}
+            <div className="detail-info md:ps-3">
+              <div className="row mx-0">
+                <ul className="list-info">
+                  {leaders.length > 0 && (
+                    <li className="author row">
+                      <p className="name col-xs-4">
+                        <i className="fa fa-user"></i> Group Leader
+                      </p>
+                      <p className="col-xs-8">
+                        {leaders.map((l) => l.attributes.username).join("; ")}
+                      </p>
+                    </li>
+                  )}
+                  {members.length > 0 && (
+                    <li className="author row">
+                      <p className="name col-xs-4">
+                        <i className="fa fa-user"></i> Members
+                      </p>
+                      <p className="col-xs-8">
+                        {members.map((l) => l.attributes.username).join("; ")}
+                      </p>
+                    </li>
+                  )}
+                  {group.attributes.contactEmail && (
+                    <li className="author row">
+                      <p className="name col-xs-4">
+                        <i className="fa fa-envelope"></i> Email
+                      </p>
+                      <p className="col-xs-8">
+                        {group.attributes.contactEmail}
+                      </p>
+                    </li>
+                  )}
+                </ul>
+              </div>
+              <div className="follow">
                 <a
-                  className="btn btn-warning mrb5 mr-2"
-                  href={group.attributes.website}
+                  className="btn btn-danger"
+                  href={`https://mangadex.org/group/${group.id}`}
                   target="_blank"
                 >
-                  {" "}
-                  Website
+                  <i className="fa fa-cat mr-2" />
+                  <span>Link Mangadex</span>
                 </a>
-              )}
-              {group.attributes.discord && (
-                <a
-                  className="btn btn-warning mrb5 mr-2"
-                  href={`https://discord.gg/${group.attributes.discord}`}
-                  target="_blank"
-                >
-                  {" "}
-                  Discord
-                </a>
-              )}
-              {group.attributes.twitter && (
-                <a
-                  className="btn btn-warning mrb5 mr-2"
-                  href={group.attributes.twitter}
-                  target="_blank"
-                >
-                  {" "}
-                  Twitter
-                </a>
-              )}
+              </div>
+              <div className="read-action mrt10">
+                {group.attributes.website && (
+                  <a
+                    className="btn btn-warning mrb5 mr-2"
+                    href={group.attributes.website}
+                    target="_blank"
+                  >
+                    {" "}
+                    Website
+                  </a>
+                )}
+                {group.attributes.discord && (
+                  <a
+                    className="btn btn-warning mrb5 mr-2"
+                    href={`https://discord.gg/${group.attributes.discord}`}
+                    target="_blank"
+                  >
+                    {" "}
+                    Discord
+                  </a>
+                )}
+                {group.attributes.twitter && (
+                  <a
+                    className="btn btn-warning mrb5 mr-2"
+                    href={group.attributes.twitter}
+                    target="_blank"
+                  >
+                    {" "}
+                    Twitter
+                  </a>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="detail-content">
-            <h3 className="list-title">
-              <i className="fa fa-file-text-o"></i> Group Introduction
-            </h3>
-            <div className="">
-              {group.attributes.description && (
-                <Markdown content={group.attributes.description} />
-              )}
+            <div className="detail-content">
+              <h3 className="list-title">
+                <i className="fa fa-file-text-o"></i> Group Introduction
+              </h3>
+              <div className="">
+                {group.attributes.description && (
+                  <Markdown content={group.attributes.description} />
+                )}
+              </div>
             </div>
-          </div>
-        </article>
-        <NewUpdates title="Latest Chapters" groupId={group.id} />
-      </div>
+          </article>
+          <NewUpdates title="Latest Chapters" groupId={group.id} />
+        </div>
         <div id="ctl00_divRight" className="right-side col-md-4 cmszone">
           <TopTitles groupId={group.id} />
         </div>

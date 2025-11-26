@@ -15,7 +15,7 @@ export default function RandomPage() {
       try {
         // Add timestamp to prevent any caching
         const timestamp = Date.now();
-        
+
         // Fetch random manga from Mangadex
         const {
           data: { data: manga },
@@ -58,9 +58,8 @@ export default function RandomPage() {
 
   // Show loading state while fetching
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="text-2xl text-white">Loading random manga...</div>
     </div>
   );
 }
-

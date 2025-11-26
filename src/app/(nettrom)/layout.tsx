@@ -11,10 +11,16 @@ import { DisplayModeProvider } from "@/contexts/display-mode";
 import MainContentWrapper from "@/components/nettrom/layout/main-content-wrapper";
 
 // Lazy load non-critical components
-const SidebarNav = lazy(() => import("@/components/nettrom/layout/sidebar-nav"));
+const SidebarNav = lazy(
+  () => import("@/components/nettrom/layout/sidebar-nav"),
+);
 const Header = lazy(() => import("@/components/nettrom/layout/header"));
-const SettingsDialog = lazy(() => import("@/components/nettrom/settings-dialog"));
-const VerifyMailAlert = lazy(() => import("@/components/nettrom/verify-mail-alert"));
+const SettingsDialog = lazy(
+  () => import("@/components/nettrom/settings-dialog"),
+);
+const VerifyMailAlert = lazy(
+  () => import("@/components/nettrom/verify-mail-alert"),
+);
 
 export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - High quality manga without ads`,
@@ -63,29 +69,29 @@ export default function NettromLayout({
             <Suspense fallback={<div className="w-96" />}>
               <SidebarNav />
             </Suspense>
-            
+
             {/* Main Content Area */}
             <MainContentWrapper>
-            <Suspense fallback={<div className="h-16" />}>
-        <Header />
-      </Suspense>
-            <Suspense fallback={null}>
-      <VerifyMailAlert />
-            </Suspense>
-      <main
-        className={twMerge(
-                "main bg-neutral-900 text-foreground min-h-screen overflow-x-hidden pt-16",
-          inter.className,
-        )}
-      >
-              <div className="w-full max-w-full">{children}</div>
-      </main>
-          </MainContentWrapper>
+              <Suspense fallback={<div className="h-16" />}>
+                <Header />
+              </Suspense>
+              <Suspense fallback={null}>
+                <VerifyMailAlert />
+              </Suspense>
+              <main
+                className={twMerge(
+                  "main min-h-screen overflow-x-hidden bg-neutral-900 pt-16 text-foreground",
+                  inter.className,
+                )}
+              >
+                <div className="w-full max-w-full">{children}</div>
+              </main>
+            </MainContentWrapper>
           </div>
         </DisplayModeProvider>
       </SidebarProvider>
       <Suspense fallback={null}>
-      <SettingsDialog />
+        <SettingsDialog />
       </Suspense>
     </LayoutWrapper>
   );

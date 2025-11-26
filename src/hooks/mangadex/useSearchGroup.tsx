@@ -3,8 +3,7 @@
 import useSWR from "swr/immutable";
 import { useMemo } from "react";
 import { MangadexApi } from "@/api";
-import { ScanlationGroup, ScanlationGroupList } from "@/types/mangadex";
-import { Utils } from "@/utils";
+import { ScanlationGroupList } from "@/types/mangadex";
 
 export default function useSearchGroup(
   options: MangadexApi.Group.GetSearchGroupRequestOptions,
@@ -34,4 +33,3 @@ export default function useSearchGroup(
 
   return { data: successData, error, isLoading, groupList, mutate };
 }
-

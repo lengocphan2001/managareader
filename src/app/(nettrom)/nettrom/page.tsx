@@ -7,19 +7,19 @@ import Skeleton from "react-loading-skeleton";
 // Lazy load các slider components
 const RecommendedSlider = dynamic(
   () => import("@/components/nettrom/trang-chu/recommended-slider"),
-  { ssr: false }
+  { ssr: false },
 );
 const SelfPublishedSlider = dynamic(
   () => import("@/components/nettrom/trang-chu/self-published-slider"),
-  { ssr: false }
+  { ssr: false },
 );
 const FeaturedSlider = dynamic(
   () => import("@/components/nettrom/trang-chu/featured-slider"),
-  { ssr: false }
+  { ssr: false },
 );
 const RecentlyAddedSlider = dynamic(
   () => import("@/components/nettrom/trang-chu/recently-added-slider"),
-  { ssr: false }
+  { ssr: false },
 );
 
 export default function HomePage() {

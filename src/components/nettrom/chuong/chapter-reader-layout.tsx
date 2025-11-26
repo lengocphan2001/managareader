@@ -2,16 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useChapterContext } from "@/contexts/chapter";
-import { useSettingsContext } from "@/contexts/settings";
 import ChapterPages from "./chapter-pages";
 import ChapterControlPanel from "./chapter-control-panel";
-import { FaTimes, FaExpand } from "react-icons/fa";
-import Link from "next/link";
-import { Constants } from "@/constants";
+import Iconify from "@/components/iconify";
 import { Utils } from "@/utils";
 
 export default function ChapterReaderLayout() {
-  const { manga, chapter } = useChapterContext();
+  const { manga, chapter, chapterId } = useChapterContext();
   const [isControlPanelOpen, setIsControlPanelOpen] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -55,21 +52,13 @@ export default function ChapterReaderLayout() {
     };
   }, []);
 
-  // Hide header when in chapter reader
+  // Auto-close menu when chapter changes
   useEffect(() => {
-    const header = document.getElementById("header");
-    if (header) {
-      header.style.display = "none";
-    }
-    return () => {
-      if (header) {
-        header.style.display = "";
-      }
-    };
-  }, []);
+    setIsControlPanelOpen(false);
+  }, [chapterId]);
 
   return (
-    <div className="fixed inset-0 flex h-screen w-screen overflow-hidden bg-neutral-900">
+    <div className="flex min-h-screen flex-col bg-neutral-900">
       {/* Manga Content - Left Side */}
       <div
         className={`flex-1 overflow-y-auto transition-all duration-300 ${
@@ -91,25 +80,13 @@ export default function ChapterReaderLayout() {
       {!isControlPanelOpen && (
         <button
           onClick={() => setIsControlPanelOpen(true)}
-          className="fixed right-4 top-20 z-50 flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-800 text-white transition-colors hover:bg-neutral-700 shadow-lg lg:top-24"
+          className="fixed right-4 top-24 z-[100] flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-800 text-white shadow-lg transition-colors hover:bg-neutral-700 lg:top-28"
           aria-label="Open control panel"
+          style={{ zIndex: 1000 }}
         >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+          <Iconify icon="fa:bars" className="h-6 w-6" />
         </button>
       )}
     </div>
   );
 }
-

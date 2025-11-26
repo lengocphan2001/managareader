@@ -19,7 +19,7 @@ export default function HistoryList() {
 
   const historyEntries = useMemo(
     () => Object.entries(history).reverse(), // Reverse to show newest first
-    [history]
+    [history],
   );
 
   const paginatedEntries = useMemo(() => {
@@ -32,7 +32,7 @@ export default function HistoryList() {
 
   if (historyEntries.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="py-12 text-center">
         <p className="text-2xl text-gray-400">No reading history found</p>
       </div>
     );
@@ -68,8 +68,14 @@ export default function HistoryList() {
     } else {
       // large-grid - chỉ ảnh và title overlay
       return (
-        <div key={mangaId} className="group relative overflow-hidden rounded-lg">
-          <Link href={Constants.Routes.nettrom.manga(mangaId)} className="block w-full h-full">
+        <div
+          key={mangaId}
+          className="group relative overflow-hidden rounded-lg"
+        >
+          <Link
+            href={Constants.Routes.nettrom.manga(mangaId)}
+            className="block h-full w-full"
+          >
             <div
               className="relative w-full overflow-hidden"
               style={{ aspectRatio: "3/4" }}
@@ -83,7 +89,7 @@ export default function HistoryList() {
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 to-transparent p-4">
                 <div className="flex items-center gap-2">
                   <LanguageIcon languageCode="ja" />
-                  <h3 className="text-2xl font-semibold text-white truncate">
+                  <h3 className="truncate text-2xl font-semibold text-white">
                     {manga.mangaTitle}
                   </h3>
                 </div>
@@ -98,9 +104,10 @@ export default function HistoryList() {
   return (
     <div className="w-full">
       {/* Display Mode Selector and Title Count */}
-      <div className="mb-6 sm:mb-8 md:mb-10 flex flex-row items-center justify-between w-full">
-        <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-semibold">
-          {historyEntries.length} {historyEntries.length === 1 ? "Item" : "Items"}
+      <div className="mb-6 flex w-full flex-row items-center justify-between sm:mb-8 md:mb-10">
+        <div className="text-xl font-semibold text-white sm:text-2xl md:text-3xl lg:text-4xl">
+          {historyEntries.length}{" "}
+          {historyEntries.length === 1 ? "Item" : "Items"}
         </div>
         <DisplayModeSelector />
       </div>
@@ -108,11 +115,21 @@ export default function HistoryList() {
       {/* History Items */}
       {displayMode === "list" ? (
         <div className="space-y-3 sm:space-y-4 md:space-y-6">
-          {paginatedEntries.map(([mangaId, manga]) => renderHistoryItem(mangaId, manga))}
+          {paginatedEntries.map(([mangaId, manga]) =>
+            renderHistoryItem(mangaId, manga),
+          )}
         </div>
       ) : (
-        <div className={displayMode === "compact-grid" ? "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4" : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4"}>
-          {paginatedEntries.map(([mangaId, manga]) => renderHistoryItem(mangaId, manga))}
+        <div
+          className={
+            displayMode === "compact-grid"
+              ? "grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4"
+              : "grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+          }
+        >
+          {paginatedEntries.map(([mangaId, manga]) =>
+            renderHistoryItem(mangaId, manga),
+          )}
         </div>
       )}
 

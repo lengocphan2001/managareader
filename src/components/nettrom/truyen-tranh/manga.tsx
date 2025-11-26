@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import Link from "next/link";
 import { useRouter } from "nextjs-toploader/app";
 import { FaExclamationTriangle } from "react-icons/fa";
 
@@ -13,17 +12,19 @@ import { useSeriesInfo } from "@/hooks/core";
 import { Utils } from "@/utils";
 import ChapterList from "./chapter-list";
 import { Constants } from "@/constants";
-import { AspectRatio } from "@/components/shadcn/aspect-ratio";
 import { Button } from "../Button";
 import { DataLoader } from "@/components/DataLoader";
 import { useChapterList } from "@/hooks/mangadex";
 import { useSettingsContext } from "@/contexts/settings";
 import { ExtendManga } from "@/types/mangadex";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shadcn/tabs";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/components/shadcn/tabs";
 import CommentSection from "../binh-luan/comment-section";
 
-import FirstChapterButton from "./first-chapter-button";
-import ExternalLinks from "./external-links";
 import Markdown from "../Markdown";
 
 export default function Manga({
@@ -113,10 +114,14 @@ export default function Manga({
   const isOngoing = status === "ongoing";
   const demographic = manga?.attributes.publicationDemographic;
   // Find format tag (4-Koma, Web Comic, etc.)
-  const formatTag = manga?.attributes.tags.find(tag => {
+  const formatTag = manga?.attributes.tags.find((tag) => {
     const name = tag.attributes.name.en?.toLowerCase() || "";
-    return name.includes("4-koma") || name.includes("4koma") || 
-           name.includes("web comic") || name.includes("oneshot");
+    return (
+      name.includes("4-koma") ||
+      name.includes("4koma") ||
+      name.includes("web comic") ||
+      name.includes("oneshot")
+    );
   });
   const format = formatTag?.attributes.name.en || "Manga";
 
@@ -132,7 +137,7 @@ export default function Manga({
 
         {/* Synopsis */}
         <div className="mb-4 sm:mb-6 md:mb-8">
-          <div className="text-xl sm:text-xl md:text-xl lg:text-2xl text-gray-300">
+          <div className="text-xl text-gray-300 sm:text-xl md:text-xl lg:text-2xl">
             <Markdown
               content={
                 manga?.attributes?.description.vi ||
@@ -145,35 +150,35 @@ export default function Manga({
 
         {/* Tabs Section */}
         <Tabs defaultValue="chapters" className="w-full">
-          <div className="overflow-x-auto mb-4 sm:mb-6">
-            <TabsList className="bg-transparent gap-2 !h-auto">
-              <TabsTrigger 
-                value="chapters" 
-                className="data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:font-bold data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 text-xl sm:text-xl md:text-xl lg:text-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded whitespace-nowrap shrink-0"
+          <div className="mb-4 overflow-x-auto sm:mb-6">
+            <TabsList className="!h-auto gap-2 bg-transparent">
+              <TabsTrigger
+                value="chapters"
+                className="shrink-0 whitespace-nowrap rounded px-3 py-2 text-xl data-[state=active]:bg-gray-700 data-[state=inactive]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-white data-[state=inactive]:text-gray-400 sm:px-4 sm:py-2.5 sm:text-xl md:px-6 md:py-3 md:text-xl lg:text-2xl"
               >
                 Chapters
               </TabsTrigger>
-              <TabsTrigger 
-                value="comments" 
-                className="data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:font-bold data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 text-xl sm:text-xl md:text-xl lg:text-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded whitespace-nowrap shrink-0"
+              <TabsTrigger
+                value="comments"
+                className="shrink-0 whitespace-nowrap rounded px-3 py-2 text-xl data-[state=active]:bg-gray-700 data-[state=inactive]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-white data-[state=inactive]:text-gray-400 sm:px-4 sm:py-2.5 sm:text-xl md:px-6 md:py-3 md:text-xl lg:text-2xl"
               >
                 Comments {commentCount > 0 && `(${commentCount})`}
               </TabsTrigger>
-              <TabsTrigger 
-                value="art" 
-                className="data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:font-bold data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 text-xl sm:text-xl md:text-xl lg:text-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded whitespace-nowrap shrink-0"
+              <TabsTrigger
+                value="art"
+                className="shrink-0 whitespace-nowrap rounded px-3 py-2 text-xl data-[state=active]:bg-gray-700 data-[state=inactive]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-white data-[state=inactive]:text-gray-400 sm:px-4 sm:py-2.5 sm:text-xl md:px-6 md:py-3 md:text-xl lg:text-2xl"
               >
                 Art
               </TabsTrigger>
-              <TabsTrigger 
-                value="related" 
-                className="data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:font-bold data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 text-xl sm:text-xl md:text-xl lg:text-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded whitespace-nowrap shrink-0"
+              <TabsTrigger
+                value="related"
+                className="shrink-0 whitespace-nowrap rounded px-3 py-2 text-xl data-[state=active]:bg-gray-700 data-[state=inactive]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-white data-[state=inactive]:text-gray-400 sm:px-4 sm:py-2.5 sm:text-xl md:px-6 md:py-3 md:text-xl lg:text-2xl"
               >
                 Related
               </TabsTrigger>
-              <TabsTrigger 
-                value="recommendations" 
-                className="data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:font-bold data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 text-xl sm:text-xl md:text-xl lg:text-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded whitespace-nowrap shrink-0"
+              <TabsTrigger
+                value="recommendations"
+                className="shrink-0 whitespace-nowrap rounded px-3 py-2 text-xl data-[state=active]:bg-gray-700 data-[state=inactive]:bg-transparent data-[state=active]:font-bold data-[state=active]:text-white data-[state=inactive]:text-gray-400 sm:px-4 sm:py-2.5 sm:text-xl md:px-6 md:py-3 md:text-xl lg:text-2xl"
               >
                 Recommendations
               </TabsTrigger>
@@ -182,24 +187,28 @@ export default function Manga({
 
           <TabsContent value="chapters" className="mt-0">
             {/* 2 Column Layout: Left (Metadata) and Right (Chapter List) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8 lg:grid-cols-3">
               {/* Left Panel - Metadata */}
-              <div className="lg:col-span-1 space-y-4 sm:space-y-5 md:space-y-6">
+              <div className="space-y-4 sm:space-y-5 md:space-y-6 lg:col-span-1">
                 {/* Authors/Artist */}
                 <div>
-                  <p className="mb-2 sm:mb-3 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium text-gray-400">Author</p>
+                  <p className="mb-2 text-xl font-medium text-gray-400 sm:mb-3 sm:text-xl md:text-xl lg:text-2xl">
+                    Author
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {manga?.author?.attributes && (
-                      <span className="rounded-full bg-gray-700/50 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-300">
+                      <span className="rounded-full bg-gray-700/50 px-2 py-1 text-xl text-gray-300 sm:px-3 sm:py-1.5 sm:text-xl md:px-4 md:py-2 md:text-xl lg:text-xl xl:text-2xl">
                         {manga.author.attributes.name}
                       </span>
                     )}
                   </div>
                   {manga?.artist?.attributes && (
                     <>
-                      <p className="mb-2 sm:mb-3 mt-3 sm:mt-4 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium text-gray-400">Artist</p>
+                      <p className="mb-2 mt-3 text-xl font-medium text-gray-400 sm:mb-3 sm:mt-4 sm:text-xl md:text-xl lg:text-2xl">
+                        Artist
+                      </p>
                       <div className="flex flex-wrap gap-2">
-                        <span className="rounded-full bg-gray-700/50 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-300">
+                        <span className="rounded-full bg-gray-700/50 px-2 py-1 text-xl text-gray-300 sm:px-3 sm:py-1.5 sm:text-xl md:px-4 md:py-2 md:text-xl lg:text-xl xl:text-2xl">
                           {manga.artist.attributes.name}
                         </span>
                       </div>
@@ -209,12 +218,14 @@ export default function Manga({
 
                 {/* Genres */}
                 <div>
-                  <p className="mb-2 sm:mb-3 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium text-gray-400">Genres</p>
+                  <p className="mb-2 text-xl font-medium text-gray-400 sm:mb-3 sm:text-xl md:text-xl lg:text-2xl">
+                    Genres
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {manga?.attributes.tags.slice(0, 10).map((tag) => (
                       <span
                         key={tag.id}
-                        className="rounded-full bg-gray-700/50 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-300"
+                        className="rounded-full bg-gray-700/50 px-2 py-1 text-xl text-gray-300 sm:px-3 sm:py-1.5 sm:text-xl md:px-4 md:py-2 md:text-xl lg:text-xl xl:text-2xl"
                       >
                         {tag.attributes.name.en}
                       </span>
@@ -225,8 +236,10 @@ export default function Manga({
                 {/* Demographic */}
                 {demographic && (
                   <div>
-                    <p className="mb-2 sm:mb-3 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium text-gray-400">Demographic</p>
-                    <span className="rounded-full bg-gray-700/50 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-300 capitalize">
+                    <p className="mb-2 text-xl font-medium text-gray-400 sm:mb-3 sm:text-xl md:text-xl lg:text-2xl">
+                      Demographic
+                    </p>
+                    <span className="rounded-full bg-gray-700/50 px-2 py-1 text-xl capitalize text-gray-300 sm:px-3 sm:py-1.5 sm:text-xl md:px-4 md:py-2 md:text-xl lg:text-xl xl:text-2xl">
                       {demographic}
                     </span>
                   </div>
@@ -235,20 +248,32 @@ export default function Manga({
                 {/* Alternative Titles */}
                 {altTitles.length > 0 && (
                   <div>
-                    <p className="mb-2 sm:mb-3 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium text-gray-400">Alternative Titles</p>
+                    <p className="mb-2 text-xl font-medium text-gray-400 sm:mb-3 sm:text-xl md:text-xl lg:text-2xl">
+                      Alternative Titles
+                    </p>
                     <div className="flex flex-wrap gap-2">
                       {altTitles.map((altTitle, idx) => {
-                        const isJapanese = idx === altTitles.length - 1 && altTitle.match(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/);
+                        const isJapanese =
+                          idx === altTitles.length - 1 &&
+                          altTitle.match(
+                            /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/,
+                          );
                         return (
                           <span
                             key={idx}
-                            className="flex items-center gap-2 rounded-full bg-gray-700/50 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-300"
+                            className="flex items-center gap-2 rounded-full bg-gray-700/50 px-2 py-1 text-xl text-gray-300 sm:px-3 sm:py-1.5 sm:text-xl md:px-4 md:py-2 md:text-xl lg:text-xl xl:text-2xl"
                           >
                             {altTitle}
                             {isJapanese ? (
-                              <Iconify icon="circle-flags:jp" className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                              <Iconify
+                                icon="circle-flags:jp"
+                                className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6"
+                              />
                             ) : (
-                              <Iconify icon="circle-flags:gb" className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                              <Iconify
+                                icon="circle-flags:gb"
+                                className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6"
+                              />
                             )}
                           </span>
                         );
@@ -276,15 +301,21 @@ export default function Manga({
           </TabsContent>
 
           <TabsContent value="art" className="mt-0">
-            <div className="text-center text-gray-400">Art section coming soon</div>
+            <div className="text-center text-gray-400">
+              Art section coming soon
+            </div>
           </TabsContent>
 
           <TabsContent value="related" className="mt-0">
-            <div className="text-center text-gray-400">Related titles coming soon</div>
+            <div className="text-center text-gray-400">
+              Related titles coming soon
+            </div>
           </TabsContent>
 
           <TabsContent value="recommendations" className="mt-0">
-            <div className="text-center text-gray-400">Recommendations coming soon</div>
+            <div className="text-center text-gray-400">
+              Recommendations coming soon
+            </div>
           </TabsContent>
         </Tabs>
       </article>

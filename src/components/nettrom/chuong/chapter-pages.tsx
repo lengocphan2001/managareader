@@ -4,8 +4,6 @@ import useWindowSize from "@/hooks/useWindowSize";
 import { useChapterContext } from "@/contexts/chapter";
 import { DataLoader } from "@/components/DataLoader";
 import { Button } from "../Button";
-import CommentSection from "../binh-luan/comment-section";
-import ScanlationGroupInformation from "./scanlation-group-information";
 import Link from "next/link";
 import Iconify from "@/components/iconify";
 import { Constants } from "@/constants";
@@ -46,7 +44,7 @@ export default function ChapterPages() {
           isLoading={isLoading}
           loadingText="Loading chapter content..."
         >
-          <div className="flex flex-col items-center bg-neutral-900 py-4">
+          <div className="flex min-h-screen flex-col items-center justify-center bg-neutral-900 py-4">
             <LazyImages images={pages} threshold={(height || 1000) * 3} />
           </div>
         </DataLoader>

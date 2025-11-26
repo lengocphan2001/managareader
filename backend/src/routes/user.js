@@ -317,7 +317,16 @@ router.post(
   auth,
   [
     body("series_uuid").isString(),
-    body("status").optional().isIn(["reading", "on_hold", "dropped", "plan_to_read", "completed", "re_reading"]),
+    body("status")
+      .optional()
+      .isIn([
+        "reading",
+        "on_hold",
+        "dropped",
+        "plan_to_read",
+        "completed",
+        "re_reading",
+      ]),
   ],
   async (req, res) => {
     try {
@@ -382,80 +391,72 @@ router.post(
 );
 
 // Get manga reading status from library
-router.get(
-  "/library/status/:series_uuid",
-  auth,
-  async (req, res) => {
-    try {
-      const { series_uuid } = req.params;
+router.get("/library/status/:series_uuid", auth, async (req, res) => {
+  try {
+    const { series_uuid } = req.params;
 
-      const libraryEntry = await prisma.library.findUnique({
-        where: {
-          user_id_series_id: {
-            user_id: req.user.id,
-            series_id: series_uuid,
-          },
+    const libraryEntry = await prisma.library.findUnique({
+      where: {
+        user_id_series_id: {
+          user_id: req.user.id,
+          series_id: series_uuid,
         },
-      });
+      },
+    });
 
-      res.json({
-        success: true,
-        status: libraryEntry?.status || null,
-      });
-    } catch (error) {
-      console.error("Get library status error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Internal server error",
-      });
-    }
-  },
-);
+    res.json({
+      success: true,
+      status: libraryEntry?.status || null,
+    });
+  } catch (error) {
+    console.error("Get library status error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
 
 // Get library manga list by status
-router.get(
-  "/library",
-  auth,
-  async (req, res) => {
-    try {
-      const { status, page = 1, limit = 12 } = req.query;
-      const offset = (page - 1) * limit;
+router.get("/library", auth, async (req, res) => {
+  try {
+    const { status, page = 1, limit = 12 } = req.query;
+    const offset = (page - 1) * limit;
 
-      const where = {
-        user_id: req.user.id,
-      };
+    const where = {
+      user_id: req.user.id,
+    };
 
-      if (status && status !== "null") {
-        where.status = status;
-      }
-
-      const libraryEntries = await prisma.library.findMany({
-        where,
-        orderBy: { updated_at: "desc" },
-        skip: offset,
-        take: parseInt(limit),
-      });
-
-      const total = await prisma.library.count({ where });
-
-      res.json({
-        success: true,
-        data: libraryEntries.map((entry) => entry.series_id),
-        pagination: {
-          current_page: parseInt(page),
-          per_page: parseInt(limit),
-          total,
-          last_page: Math.ceil(total / limit),
-        },
-      });
-    } catch (error) {
-      console.error("Get library error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Internal server error",
-      });
+    if (status && status !== "null") {
+      where.status = status;
     }
-  },
-);
+
+    const libraryEntries = await prisma.library.findMany({
+      where,
+      orderBy: { updated_at: "desc" },
+      skip: offset,
+      take: parseInt(limit),
+    });
+
+    const total = await prisma.library.count({ where });
+
+    res.json({
+      success: true,
+      data: libraryEntries.map((entry) => entry.series_id),
+      pagination: {
+        current_page: parseInt(page),
+        per_page: parseInt(limit),
+        total,
+        last_page: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Get library error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
 
 module.exports = router;

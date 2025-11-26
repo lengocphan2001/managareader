@@ -23,16 +23,20 @@ export default function useLibraryUpdates({
   const { user } = useAuth();
 
   // Get paginated manga from library (all statuses)
-  const { data: libraryData, error: libraryError, isLoading: libraryLoading } = useSWR(
+  const {
+    data: libraryData,
+    error: libraryError,
+    isLoading: libraryLoading,
+  } = useSWR(
     user ? ["user-library-updates", user.id, page, limit] : null,
     async () => {
       if (!user) return null;
       // Get paginated manga from library (no status filter)
-      const response = await AppApi.User.getLibrary({ 
-        limit: limit, 
-        page: page + 1 // Backend uses 1-based page
+      const response = await AppApi.User.getLibrary({
+        limit: limit,
+        page: page + 1, // Backend uses 1-based page
       });
-      
+
       if (!response.success || !response.data) {
         return {
           seriesIds: [],
@@ -44,16 +48,21 @@ export default function useLibraryUpdates({
         seriesIds: response.data,
         total: response.pagination?.total || 0,
       };
-    }
+    },
   );
 
   // Get latest chapters for each series
-  const { data: chaptersData, error: chaptersError, isLoading: chaptersLoading } = useSWR(
+  const {
+    data: chaptersData,
+    error: chaptersError,
+    isLoading: chaptersLoading,
+  } = useSWR(
     libraryData?.seriesIds && libraryData.seriesIds.length > 0
       ? ["library-updates-chapters", libraryData.seriesIds]
       : null,
     async () => {
-      if (!libraryData?.seriesIds || libraryData.seriesIds.length === 0) return null;
+      if (!libraryData?.seriesIds || libraryData.seriesIds.length === 0)
+        return null;
 
       // Fetch latest chapters for each series
       const allChapters: ExtendChapter[] = [];
@@ -79,17 +88,20 @@ export default function useLibraryUpdates({
 
           if (response.data.result === "ok") {
             const chapters = response.data.data.map((c) =>
-              Utils.Mangadex.extendRelationship(c)
+              Utils.Mangadex.extendRelationship(c),
             ) as ExtendChapter[];
             allChapters.push(...chapters);
           }
         } catch (error) {
-          console.error(`Error fetching chapters for series ${seriesId}:`, error);
+          console.error(
+            `Error fetching chapters for series ${seriesId}:`,
+            error,
+          );
         }
       }
 
       return allChapters;
-    }
+    },
   );
 
   // Group chapters by mangaId
@@ -116,4 +128,3 @@ export default function useLibraryUpdates({
     totalPages: Math.ceil((libraryData?.total || 0) / limit),
   };
 }
-

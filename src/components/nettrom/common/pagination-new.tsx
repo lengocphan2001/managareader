@@ -1,10 +1,6 @@
 "use client";
 
-import { useRouter } from "nextjs-toploader/app";
-import { useSearchParams } from "next/navigation";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { Utils } from "@/utils";
-import { MangadexApi } from "@/api";
 
 interface PaginationNewProps {
   currentPage: number;
@@ -71,7 +67,7 @@ export default function PaginationNew({
           }
         }}
         disabled={currentPage === 0}
-        className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-800 text-white transition-colors hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-800 text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
         aria-label="Previous page"
       >
         <FaChevronLeft className="h-5 w-5" />
@@ -82,7 +78,10 @@ export default function PaginationNew({
         {pages.map((page, index) => {
           if (page === "...") {
             return (
-              <span key={`ellipsis-${index}`} className="px-2 text-lg text-white">
+              <span
+                key={`ellipsis-${index}`}
+                className="px-2 text-lg text-white"
+              >
                 ...
               </span>
             );
@@ -117,7 +116,7 @@ export default function PaginationNew({
           }
         }}
         disabled={currentPage >= totalPages - 1}
-        className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-800 text-white transition-colors hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-800 text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
         aria-label="Next page"
       >
         <FaChevronRight className="h-5 w-5" />
@@ -125,4 +124,3 @@ export default function PaginationNew({
     </div>
   );
 }
-

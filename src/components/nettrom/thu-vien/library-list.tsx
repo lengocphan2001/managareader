@@ -11,7 +11,6 @@ import DisplayModeSelector from "../tim-kiem/display-mode-selector";
 import useLibraryManga from "@/hooks/mangadex/useLibraryManga";
 import PaginationNew from "../common/pagination-new";
 import Markdown from "../Markdown";
-import { FaClock } from "react-icons/fa";
 
 const LIMIT = 12;
 
@@ -43,17 +42,33 @@ export default function LibraryList({ status }: LibraryListProps) {
     const mangaStatistic = mangaStatistics[manga.id];
     const url = Constants.Routes.nettrom.manga(manga.id);
     const status = manga.attributes.status;
-    const statusColor = status === "ongoing" ? "bg-green-500" : status === "completed" ? "bg-blue-500" : "bg-gray-500";
-    const statusText = status === "ongoing" ? "Ongoing" : status === "completed" ? "Completed" : status;
+    const statusColor =
+      status === "ongoing"
+        ? "bg-green-500"
+        : status === "completed"
+          ? "bg-blue-500"
+          : "bg-gray-500";
+    const statusText =
+      status === "ongoing"
+        ? "Ongoing"
+        : status === "completed"
+          ? "Completed"
+          : status;
 
     if (displayMode === "list") {
       return (
-        <div key={manga.id} className="flex flex-row gap-4 rounded-lg bg-neutral-800 p-4 sm:p-5 md:p-6">
+        <div
+          key={manga.id}
+          className="flex flex-row gap-4 rounded-lg bg-neutral-800 p-4 sm:p-5 md:p-6"
+        >
           {/* Cover Image */}
           <Link href={url} className="shrink-0">
             <div
               className="relative overflow-hidden rounded"
-              style={{ width: "100px", aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO }}
+              style={{
+                width: "100px",
+                aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO,
+              }}
             >
               <img
                 src={coverArt}
@@ -65,38 +80,46 @@ export default function LibraryList({ status }: LibraryListProps) {
           </Link>
 
           {/* Content */}
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             {/* Title and Language */}
-            <div className="mb-3 flex items-center gap-2 flex-wrap">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
               <LanguageIcon languageCode={manga.attributes.originalLanguage} />
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white truncate flex-1 min-w-0">
+              <h2 className="min-w-0 flex-1 truncate text-xl font-semibold text-white sm:text-2xl md:text-3xl">
                 <Link href={url} className="no-underline hover:no-underline">
                   {mangaTitle}
                 </Link>
               </h2>
-              <div className={`h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full ${statusColor} shrink-0`} title={status} />
-              <span className="text-base sm:text-lg md:text-xl lg:text-2xl text-white shrink-0">{statusText}</span>
+              <div
+                className={`h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3 ${statusColor} shrink-0`}
+                title={status}
+              />
+              <span className="shrink-0 text-base text-white sm:text-lg md:text-xl lg:text-2xl">
+                {statusText}
+              </span>
             </div>
 
             {/* Metadata */}
-            <div className="mb-3 flex flex-wrap items-center gap-4 sm:gap-5 text-base sm:text-lg md:text-xl lg:text-2xl text-white">
-              <span className="flex items-center gap-2 shrink-0">
-                <i className="fa fa-star text-yellow-400 text-base sm:text-lg md:text-xl lg:text-2xl"></i>
+            <div className="mb-3 flex flex-wrap items-center gap-4 text-base text-white sm:gap-5 sm:text-lg md:text-xl lg:text-2xl">
+              <span className="flex shrink-0 items-center gap-2">
+                <i className="fa fa-star text-base text-yellow-400 sm:text-lg md:text-xl lg:text-2xl"></i>
                 {Utils.Number.formatViews(
-                  Math.round((mangaStatistic?.rating?.bayesian || 0) * 100) / 100
+                  Math.round((mangaStatistic?.rating?.bayesian || 0) * 100) /
+                    100,
                 )}
               </span>
-              <span className="flex items-center gap-2 shrink-0">
+              <span className="flex shrink-0 items-center gap-2">
                 <i className="fa fa-bookmark text-base sm:text-lg md:text-xl lg:text-2xl"></i>
                 {Utils.Number.formatViews(mangaStatistic?.follows || 0)}
               </span>
-              <span className="flex items-center gap-2 shrink-0">
+              <span className="flex shrink-0 items-center gap-2">
                 <i className="fa fa-eye text-base sm:text-lg md:text-xl lg:text-2xl"></i>
                 N/A
               </span>
-              <span className="flex items-center gap-2 shrink-0">
+              <span className="flex shrink-0 items-center gap-2">
                 <i className="fa fa-comment text-base sm:text-lg md:text-xl lg:text-2xl"></i>
-                {Utils.Number.formatViews(mangaStatistic?.comments?.repliesCount || 0)}
+                {Utils.Number.formatViews(
+                  mangaStatistic?.comments?.repliesCount || 0,
+                )}
               </span>
             </div>
 
@@ -108,7 +131,7 @@ export default function LibraryList({ status }: LibraryListProps) {
                 return (
                   <span
                     key={tag.id}
-                    className={`rounded px-2.5 py-1 sm:px-3 sm:py-1.5 text-sm sm:text-base md:text-lg lg:text-xl font-medium uppercase text-white shrink-0 ${
+                    className={`shrink-0 rounded px-2.5 py-1 text-sm font-medium uppercase text-white sm:px-3 sm:py-1.5 sm:text-base md:text-lg lg:text-xl ${
                       isSuggestive ? "bg-orange-500" : "bg-neutral-700"
                     }`}
                   >
@@ -117,14 +140,14 @@ export default function LibraryList({ status }: LibraryListProps) {
                 );
               })}
               {manga.attributes.tags.length > 10 && (
-                <span className="rounded bg-red-600 px-2.5 py-1 sm:px-3 sm:py-1.5 text-sm sm:text-base md:text-lg lg:text-xl font-medium text-white shrink-0">
+                <span className="shrink-0 rounded bg-red-600 px-2.5 py-1 text-sm font-medium text-white sm:px-3 sm:py-1.5 sm:text-base md:text-lg lg:text-xl">
                   MORE
                 </span>
               )}
             </div>
 
             {/* Description */}
-            <div className="text-base sm:text-lg md:text-xl lg:text-2xl text-white line-clamp-3 sm:line-clamp-4">
+            <div className="line-clamp-3 text-base text-white sm:line-clamp-4 sm:text-lg md:text-xl lg:text-2xl">
               <Markdown
                 content={
                   manga.attributes.description.vi ||
@@ -138,12 +161,18 @@ export default function LibraryList({ status }: LibraryListProps) {
       );
     } else if (displayMode === "compact-grid") {
       return (
-        <div key={manga.id} className="flex flex-row gap-3 rounded-lg bg-neutral-800 p-3 sm:p-4">
+        <div
+          key={manga.id}
+          className="flex flex-row gap-3 rounded-lg bg-neutral-800 p-3 sm:p-4"
+        >
           {/* Cover Image */}
           <Link href={url} className="shrink-0">
             <div
               className="relative overflow-hidden rounded"
-              style={{ width: "80px", aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO }}
+              style={{
+                width: "80px",
+                aspectRatio: Constants.Nettrom.MANGA_COVER_RATIO,
+              }}
             >
               <img
                 src={coverArt}
@@ -155,38 +184,46 @@ export default function LibraryList({ status }: LibraryListProps) {
           </Link>
 
           {/* Content */}
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             {/* Title and Language */}
-            <div className="mb-3 flex items-center gap-2 flex-wrap">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
               <LanguageIcon languageCode={manga.attributes.originalLanguage} />
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white truncate flex-1 min-w-0">
+              <h2 className="min-w-0 flex-1 truncate text-xl font-semibold text-white sm:text-2xl md:text-3xl">
                 <Link href={url} className="no-underline hover:no-underline">
                   {mangaTitle}
                 </Link>
               </h2>
-              <div className={`h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full ${statusColor} shrink-0`} title={status} />
-              <span className="text-base sm:text-lg md:text-xl lg:text-2xl text-white shrink-0">{statusText}</span>
+              <div
+                className={`h-2.5 w-2.5 rounded-full sm:h-3 sm:w-3 ${statusColor} shrink-0`}
+                title={status}
+              />
+              <span className="shrink-0 text-base text-white sm:text-lg md:text-xl lg:text-2xl">
+                {statusText}
+              </span>
             </div>
 
             {/* Metadata */}
-            <div className="mb-3 flex flex-wrap items-center gap-4 sm:gap-5 text-base sm:text-lg md:text-xl lg:text-2xl text-white">
-              <span className="flex items-center gap-2 shrink-0">
-                <i className="fa fa-star text-yellow-400 text-base sm:text-lg md:text-xl lg:text-2xl"></i>
+            <div className="mb-3 flex flex-wrap items-center gap-4 text-base text-white sm:gap-5 sm:text-lg md:text-xl lg:text-2xl">
+              <span className="flex shrink-0 items-center gap-2">
+                <i className="fa fa-star text-base text-yellow-400 sm:text-lg md:text-xl lg:text-2xl"></i>
                 {Utils.Number.formatViews(
-                  Math.round((mangaStatistic?.rating?.bayesian || 0) * 100) / 100
+                  Math.round((mangaStatistic?.rating?.bayesian || 0) * 100) /
+                    100,
                 )}
               </span>
-              <span className="flex items-center gap-2 shrink-0">
+              <span className="flex shrink-0 items-center gap-2">
                 <i className="fa fa-bookmark text-base sm:text-lg md:text-xl lg:text-2xl"></i>
                 {Utils.Number.formatViews(mangaStatistic?.follows || 0)}
               </span>
-              <span className="flex items-center gap-2 shrink-0">
+              <span className="flex shrink-0 items-center gap-2">
                 <i className="fa fa-eye text-base sm:text-lg md:text-xl lg:text-2xl"></i>
                 N/A
               </span>
-              <span className="flex items-center gap-2 shrink-0">
+              <span className="flex shrink-0 items-center gap-2">
                 <i className="fa fa-comment text-base sm:text-lg md:text-xl lg:text-2xl"></i>
-                {Utils.Number.formatViews(mangaStatistic?.comments?.repliesCount || 0)}
+                {Utils.Number.formatViews(
+                  mangaStatistic?.comments?.repliesCount || 0,
+                )}
               </span>
             </div>
 
@@ -198,7 +235,7 @@ export default function LibraryList({ status }: LibraryListProps) {
                 return (
                   <span
                     key={tag.id}
-                    className={`rounded px-2.5 py-1 sm:px-3 sm:py-1.5 text-sm sm:text-base md:text-lg lg:text-xl font-medium uppercase text-white shrink-0 ${
+                    className={`shrink-0 rounded px-2.5 py-1 text-sm font-medium uppercase text-white sm:px-3 sm:py-1.5 sm:text-base md:text-lg lg:text-xl ${
                       isSuggestive ? "bg-orange-500" : "bg-neutral-700"
                     }`}
                   >
@@ -207,14 +244,14 @@ export default function LibraryList({ status }: LibraryListProps) {
                 );
               })}
               {manga.attributes.tags.length > 5 && (
-                <span className="rounded bg-red-600 px-2.5 py-1 sm:px-3 sm:py-1.5 text-sm sm:text-base md:text-lg lg:text-xl font-medium text-white shrink-0">
+                <span className="shrink-0 rounded bg-red-600 px-2.5 py-1 text-sm font-medium text-white sm:px-3 sm:py-1.5 sm:text-base md:text-lg lg:text-xl">
                   MORE
                 </span>
               )}
             </div>
 
             {/* Description */}
-            <div className="text-base sm:text-lg md:text-xl lg:text-2xl text-white line-clamp-2">
+            <div className="line-clamp-2 text-base text-white sm:text-lg md:text-xl lg:text-2xl">
               <Markdown
                 content={
                   manga.attributes.description.vi ||
@@ -229,8 +266,11 @@ export default function LibraryList({ status }: LibraryListProps) {
     } else {
       // large-grid - chỉ ảnh và title overlay
       return (
-        <div key={manga.id} className="group relative overflow-hidden rounded-lg">
-          <Link href={url} className="block w-full h-full">
+        <div
+          key={manga.id}
+          className="group relative overflow-hidden rounded-lg"
+        >
+          <Link href={url} className="block h-full w-full">
             <div
               className="relative w-full overflow-hidden"
               style={{ aspectRatio: "3/4" }}
@@ -243,8 +283,10 @@ export default function LibraryList({ status }: LibraryListProps) {
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 to-transparent p-4">
                 <div className="flex items-center gap-2">
-                  <LanguageIcon languageCode={manga.attributes.originalLanguage} />
-                  <h3 className="text-2xl font-semibold text-white truncate">
+                  <LanguageIcon
+                    languageCode={manga.attributes.originalLanguage}
+                  />
+                  <h3 className="truncate text-2xl font-semibold text-white">
                     {mangaTitle}
                   </h3>
                 </div>
@@ -264,8 +306,8 @@ export default function LibraryList({ status }: LibraryListProps) {
   return (
     <div className="w-full">
       {/* Display Mode Selector and Title Count */}
-      <div className="mb-6 sm:mb-8 md:mb-10 flex flex-row items-center justify-between w-full">
-        <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-semibold">
+      <div className="mb-6 flex w-full flex-row items-center justify-between sm:mb-8 md:mb-10">
+        <div className="text-xl font-semibold text-white sm:text-2xl md:text-3xl lg:text-4xl">
           {total} {total === 1 ? "Title" : "Titles"}
         </div>
         <DisplayModeSelector />
@@ -273,15 +315,25 @@ export default function LibraryList({ status }: LibraryListProps) {
 
       {/* Manga Items */}
       {isLoading ? (
-        <div className="text-2xl text-white text-center py-12 bg-neutral-800 rounded-lg">Loading...</div>
+        <div className="rounded-lg bg-neutral-800 py-12 text-center text-2xl text-white">
+          Loading...
+        </div>
       ) : mangaList.length === 0 ? (
-        <div className="text-2xl text-white text-center py-12 bg-neutral-800 rounded-lg">No titles</div>
+        <div className="rounded-lg bg-neutral-800 py-12 text-center text-2xl text-white">
+          No titles
+        </div>
       ) : displayMode === "list" ? (
         <div className="space-y-3 sm:space-y-4 md:space-y-6">
           {mangaList.map(renderMangaItem)}
         </div>
       ) : (
-        <div className={displayMode === "compact-grid" ? "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4" : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4"}>
+        <div
+          className={
+            displayMode === "compact-grid"
+              ? "grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4"
+              : "grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+          }
+        >
           {mangaList.map(renderMangaItem)}
         </div>
       )}
@@ -299,4 +351,3 @@ export default function LibraryList({ status }: LibraryListProps) {
     </div>
   );
 }
-

@@ -21,10 +21,10 @@ export default function ChapterPages() {
   );
 
   return (
-    <div>
+    <div className="flex min-h-screen flex-col bg-neutral-900">
       {error ? (
-        <div className="container flex flex-col items-center justify-center gap-2">
-          <div className="text-2xl font-bold">
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8">
+          <div className="text-2xl font-bold text-white">
             This chapter has been deleted
           </div>
           <Link href={Constants.Routes.nettrom.manga(manga?.id || "")}>
@@ -34,7 +34,7 @@ export default function ChapterPages() {
           </Link>
         </div>
       ) : chapter?.attributes.externalUrl ? (
-        <div className="container flex justify-center">
+        <div className="flex flex-1 items-center justify-center p-8">
           <Link href={chapter.attributes.externalUrl} target="_blank">
             <Button icon={<Iconify icon="fa:external-link" />}>
               Read at {group?.attributes.name} website
@@ -46,32 +46,11 @@ export default function ChapterPages() {
           isLoading={isLoading}
           loadingText="Loading chapter content..."
         >
-          <div className="reading-detail box_doc">
+          <div className="flex flex-col items-center bg-neutral-900 py-4">
             <LazyImages images={pages} threshold={(height || 1000) * 3} />
           </div>
         </DataLoader>
       )}
-      <div className="container">
-        <div className="mb-2 mt-4 flex flex-col gap-2">
-          <Button disabled={!canNext} onClick={next}>
-            Next Chapter
-          </Button>
-          <Button disabled={!canPrev} onClick={prev}>
-            Previous Chapter
-          </Button>
-        </div>
-        <DataLoader
-          isLoading={!group}
-          loadingText="Loading scanlation group..."
-        >
-          {group && (
-            <ScanlationGroupInformation group={group} canNext={canNext} />
-          )}
-        </DataLoader>
-        <DataLoader isLoading={!chapter} loadingText="Loading comments...">
-          {chapterId && <CommentSection type="chapter" typeId={chapterId} />}
-        </DataLoader>
-      </div>
     </div>
   );
 }

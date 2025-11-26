@@ -47,7 +47,13 @@ module.exports = async (phase) => {
     // Performance optimizations
     experimental: {
       missingSuspenseWithCSRBailout: false,
-      optimizePackageImports: ["@iconify/react", "lucide-react"],
+      optimizePackageImports: [
+        "@iconify/react",
+        "lucide-react",
+        "react-hook-form",
+        "yup",
+        "@hookform/resolvers",
+      ],
     },
     // Enable compression
     compress: true,

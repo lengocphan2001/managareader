@@ -80,8 +80,9 @@ export default async function ScanlationGroupPage({
   ) as unknown as User[];
 
   return (
-    <div className="row">
-      <div id="ctl00_divCenter" className="center-side col-md-8">
+    <div className="w-full px-24 py-12">
+      <div className="row">
+        <div id="ctl00_divCenter" className="center-side col-md-8">
         <article id="item-detail">
           <h1 className="title-detail">
             Scanlation Group: {group.attributes.name}
@@ -183,8 +184,9 @@ export default async function ScanlationGroupPage({
         </article>
         <NewUpdates title="Latest Chapters" groupId={group.id} />
       </div>
-      <div id="ctl00_divRight" className="right-side col-md-4 cmszone">
-        <TopTitles groupId={group.id} />
+        <div id="ctl00_divRight" className="right-side col-md-4 cmszone">
+          <TopTitles groupId={group.id} />
+        </div>
       </div>
     </div>
   );

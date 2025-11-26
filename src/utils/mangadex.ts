@@ -201,8 +201,11 @@ export class MangaDexUtils {
     if (params.getAll("excludedTags").length > 0) {
       result.excludedTags = params.getAll("excludedTags");
     }
+    // Set default originalLanguage to "en" if not provided
     if (params.getAll("originalLanguage").length > 0) {
       result.originalLanguage = params.getAll("originalLanguage");
+    } else {
+      result.originalLanguage = ["en"];
     }
     if (params.getAll("publicationDemographic").length > 0) {
       result.publicationDemographic = params.getAll(
@@ -228,6 +231,7 @@ export class MangaDexUtils {
     if (params.get("title")) {
       result.title = params.get("title")!;
     }
+    // Set default availableTranslatedLanguage to ["en", "ja-ro"] if not provided
     const availableTranslatedLanguage = params.getAll(
       "availableTranslatedLanguage",
     );

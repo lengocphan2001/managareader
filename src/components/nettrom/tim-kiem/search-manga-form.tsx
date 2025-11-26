@@ -5,7 +5,7 @@ import { useRouter } from "nextjs-toploader/app";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, Suspense } from "react";
 import { twMerge } from "tailwind-merge";
-import { FaArrowDown, FaArrowUp, FaRedo, FaSearch } from "react-icons/fa";
+import { FaArrowDown, FaArrowUp, FaRedo, FaSearch, FaList, FaTh, FaThLarge } from "react-icons/fa";
 
 import { MangadexApi } from "@/api";
 import { Utils } from "@/utils";
@@ -124,29 +124,25 @@ function SearchMangaFormContent() {
 
   return (
     <>
-      <form className="mb-2 md:mb-4" onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-2 flex flex-col gap-2 md:flex-row">
-          <div className="w-full">
-            <label
-              htmlFor="default-search"
-              className="sr-only mb-2 font-medium text-neutral-900 dark:text-white"
-            >
-              Title
-            </label>
+      <form className="mb-6" onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-4 flex flex-col gap-3 md:flex-row">
+          <div className="flex-1">
             <Input
               type="search"
               id="default-search"
-              placeholder="Search manga"
+              placeholder="Search"
               icon={<FaSearch />}
+              {...register("title")}
+              className="bg-neutral-800 border-neutral-700 text-white placeholder-neutral-500"
             />
           </div>
           <Button
-            className="rounded-lg"
+            className="rounded-lg bg-neutral-700 hover:bg-neutral-600 text-white"
             type="button"
             onClick={toggle}
             icon={showFilter ? <FaArrowUp /> : <FaArrowDown />}
           >
-            Show Filters
+            Show filters
           </Button>
         </div>
         <div
@@ -298,21 +294,62 @@ function SearchMangaFormContent() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-baseline justify-between md:flex-row">
-          <div className="flex gap-2 md:justify-end">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex gap-3">
             <Button
-              className="rounded-lg"
+              className="rounded-lg bg-transparent text-red-500 hover:bg-neutral-800 border border-transparent hover:border-red-500"
               type="button"
               onClick={() => {
                 reset();
               }}
-              icon={<FaRedo />}
             >
-              Reset
+              Reset filters
             </Button>
-            <Button icon={<FaSearch />} className="rounded-lg" type="submit">
+            <Button
+              className="rounded-lg bg-neutral-700 hover:bg-neutral-600 text-white"
+              type="button"
+              onClick={() => {
+                // I'm feeling lucky - random search
+                const randomOptions = { random: true };
+                router.push(Utils.Url.getSearchNetTromUrl(randomOptions));
+              }}
+            >
+              I'm feeling lucky
+            </Button>
+            <Button
+              icon={<FaSearch />}
+              className="rounded-lg bg-orange-500 hover:bg-orange-600 text-white"
+              type="submit"
+            >
               Search
             </Button>
+          </div>
+          {/* Display Mode Icons */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="p-2 text-white hover:bg-neutral-700 rounded transition-colors"
+              title="List view"
+              aria-label="List view"
+            >
+              <FaList className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              className="p-2 text-white hover:bg-neutral-700 rounded transition-colors"
+              title="Compact grid view"
+              aria-label="Compact grid view"
+            >
+              <FaTh className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              className="p-2 text-white hover:bg-neutral-700 rounded transition-colors"
+              title="Large grid view"
+              aria-label="Large grid view"
+            >
+              <FaThLarge className="h-5 w-5" />
+            </button>
           </div>
         </div>
       </form>

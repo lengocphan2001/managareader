@@ -12,7 +12,12 @@ import { MangadexContextProvider } from "@/contexts/mangadex";
 import { Constants } from "@/constants";
 import { SettingsProvider } from "@/contexts/settings";
 import { SkeletonTheme } from "react-loading-skeleton";
-import ScriptInjector from "./core/ScriptInjector";
+import dynamic from "next/dynamic";
+
+// Dynamic import ScriptInjector to avoid SSR issues
+const ScriptInjector = dynamic(() => import("./core/ScriptInjector"), {
+  ssr: false,
+});
 
 // Remove server-side cookies usage - handle on client side
 export const LayoutWrapper = ({
@@ -37,10 +42,7 @@ export const LayoutWrapper = ({
         <link rel="dns-prefetch" href="https://www.google.com" />
         <link rel="dns-prefetch" href="https://www.gstatic.com" />
 
-        {/* Preload critical routes */}
-        <link rel="prefetch" href="/nettrom" />
-        <link rel="prefetch" href="/login" />
-        <link rel="prefetch" href="/profile" />
+        {/* Removed prefetch to reduce initial load */}
       </head>
       <body data-layout-id={props.id}>
         <SettingsProvider>

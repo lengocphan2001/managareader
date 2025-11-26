@@ -5,8 +5,12 @@ import { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 
 import { Constants } from "@/constants";
-import Footer from "@/components/core/Footer";
-import ScriptInjector from "@/components/core/ScriptInjector";
+import dynamic from "next/dynamic";
+
+// Dynamic import ScriptInjector to avoid SSR issues
+const ScriptInjector = dynamic(() => import("@/components/core/ScriptInjector"), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - Truyện tranh chất lượng cao`,
@@ -62,7 +66,6 @@ export default function CoreLayout({
   <div class="spinner text-indigo-500" role="spinner"><div class="spinner-icon"></div></div>`}
       />
       <main className="min-h-screen">{children}</main>
-      <Footer variant="minimal" />
     </LayoutWrapper>
   );
 }

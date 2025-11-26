@@ -19,6 +19,8 @@ import { DataLoader } from "@/components/DataLoader";
 import { useChapterList } from "@/hooks/mangadex";
 import { useSettingsContext } from "@/contexts/settings";
 import { ExtendManga } from "@/types/mangadex";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shadcn/tabs";
+import CommentSection from "../binh-luan/comment-section";
 
 import FirstChapterButton from "./first-chapter-button";
 import ExternalLinks from "./external-links";
@@ -102,313 +104,189 @@ export default function Manga({
       </div>
     );
 
+  const originalTitle = Utils.Mangadex.getOriginalMangaTitle(manga);
+  const rating = mangaStatistics[mangaId]?.rating.bayesian.toFixed(2) || "0.00";
+  const follows = mangaStatistics[mangaId]?.follows || 0;
+  const commentCount = seriesInfo?.comment_count || 0;
+  const status = manga?.attributes.status || "ongoing";
+  const year = manga?.attributes.year;
+  const isOngoing = status === "ongoing";
+  const demographic = manga?.attributes.publicationDemographic;
+  // Find format tag (4-Koma, Web Comic, etc.)
+  const formatTag = manga?.attributes.tags.find(tag => {
+    const name = tag.attributes.name.en?.toLowerCase() || "";
+    return name.includes("4-koma") || name.includes("4koma") || 
+           name.includes("web comic") || name.includes("oneshot");
+  });
+  const format = formatTag?.attributes.name.en || "Manga";
+
   return (
     <DataLoader
       isLoading={!manga}
       loadingText="Loading manga information..."
       error={error}
     >
-      <ul
-        className="mb-2 inline-flex items-center gap-4"
-        itemType="http://schema.org/BreadcrumbList"
-      >
-        {[
-          {
-            href: Constants.Routes.nettrom.index,
-            name: "Home",
-            position: 1,
-          },
-          {
-            href: Constants.Routes.nettrom.search,
-            name: "Manga",
-            position: 2,
-          },
-        ].map((item, index, arr) => {
-          const isLast = index === arr.length - 1;
-          return (
-            <React.Fragment key={index}>
-              <li
-                itemProp="itemListElement"
-                itemType="http://schema.org/ListItem"
-              >
-                <Link
-                  href={item.href}
-                  className="text-web-title transition hover:text-web-titleLighter"
-                >
-                  <span itemProp="name">{item.name}</span>
-                </Link>
-                <meta itemProp="position" content={item.position.toString()} />
-              </li>
-              {!isLast && <li className="text-muted-foreground">/</li>}
-            </React.Fragment>
-          );
-        })}
-        {/* <li itemProp="itemListElement" itemType="http://schema.org/ListItem">
-          <a
-            href={url}
-            className="itemcrumb active"
-            itemProp="item"
-            itemType="http://schema.org/Thing"
-          >
-            <span itemProp="name">{title}</span>
-          </a>
-          <meta itemProp="position" content={"3"} />
-        </li> */}
-      </ul>
-      <article id="" className="dark:text-foreground">
-        <div className="mb-[16px]">
-          <h1 className="my-0 mb-4 text-[32px] font-semibold leading-tight">
-            {title}
-          </h1>
-          <p className="inline-flex w-full gap-8 text-muted-foreground">
-            <span>
-              <i className="fa fa-star mr-2"></i>
-              <span className="block sm:inline">
-                <span className="text-foreground">
-                  {mangaStatistics[mangaId]?.rating.bayesian.toFixed(2) || 10}
-                </span>
-                <span className="mx-2">/</span>
-                <span itemProp="bestRating">10</span>
-              </span>
-            </span>
-            <span>
-              <i className="fa fa-heart mr-2" />
-              <span className="block text-foreground sm:inline">
-                {Utils.Number.formatViews(
-                  mangaStatistics[mangaId]?.follows || 0,
-                )}
-              </span>
-            </span>
-            <span>
-              <i className="fa fa-comment mr-2" />
-              <span className="block text-foreground sm:inline">
-                {Utils.Number.formatViews(seriesInfo?.comment_count || 0)}
-              </span>
-            </span>
-            <span className="lg:grow"></span>
-            <span className="text-muted-foreground">
-              <i className="fa fa-clock mr-2" />
-              <span className="block sm:inline">
-                <span className="hidden lg:inline">Updated: </span>
-                <span className="text-foreground">
-                  {manga?.attributes?.updatedAt
-                    ? Utils.Date.formatNowDistance(
-                        new Date(manga?.attributes?.updatedAt),
-                      )
-                    : ""}{" "}
-                  ago
-                </span>
-              </span>
-            </span>
-          </p>
+      <article className="dark:text-foreground">
+        {/* Cover, Title, Author đã được di chuyển lên background section */}
+        {/* Action Buttons, Tags, Publication Status, Stats đã được di chuyển vào MangaInfoBlock */}
+
+        {/* Synopsis */}
+        <div className="mb-4 sm:mb-6 md:mb-8">
+          <div className="text-xl sm:text-xl md:text-xl lg:text-2xl text-gray-300">
+            <Markdown
+              content={
+                manga?.attributes?.description.vi ||
+                manga?.attributes?.description.en ||
+                "No description available."
+              }
+            />
+          </div>
         </div>
-        <div className="detail-info mb-10">
-          <div className="grid grid-cols-[1fr_2fr] gap-10">
-            <div className="">
-              <div className="relative w-full">
-                <AspectRatio
-                  className="overflow-hidden rounded-lg shadow-lg"
-                  ratio={Constants.Nettrom.MANGA_COVER_RATIO}
-                >
-                  <img
-                    className="h-full w-full object-cover"
-                    src={Utils.Mangadex.getCoverArt(manga, 512)}
-                    alt={title}
-                  />
-                </AspectRatio>
+
+        {/* Tabs Section */}
+        <Tabs defaultValue="chapters" className="w-full">
+          <div className="overflow-x-auto mb-4 sm:mb-6">
+            <TabsList className="bg-transparent gap-2 !h-auto">
+              <TabsTrigger 
+                value="chapters" 
+                className="data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:font-bold data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 text-xl sm:text-xl md:text-xl lg:text-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded whitespace-nowrap shrink-0"
+              >
+                Chapters
+              </TabsTrigger>
+              <TabsTrigger 
+                value="comments" 
+                className="data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:font-bold data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 text-xl sm:text-xl md:text-xl lg:text-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded whitespace-nowrap shrink-0"
+              >
+                Comments {commentCount > 0 && `(${commentCount})`}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="art" 
+                className="data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:font-bold data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 text-xl sm:text-xl md:text-xl lg:text-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded whitespace-nowrap shrink-0"
+              >
+                Art
+              </TabsTrigger>
+              <TabsTrigger 
+                value="related" 
+                className="data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:font-bold data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 text-xl sm:text-xl md:text-xl lg:text-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded whitespace-nowrap shrink-0"
+              >
+                Related
+              </TabsTrigger>
+              <TabsTrigger 
+                value="recommendations" 
+                className="data-[state=active]:bg-gray-700 data-[state=active]:text-white data-[state=active]:font-bold data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 text-xl sm:text-xl md:text-xl lg:text-2xl px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded whitespace-nowrap shrink-0"
+              >
+                Recommendations
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent value="chapters" className="mt-0">
+            {/* 2 Column Layout: Left (Metadata) and Right (Chapter List) */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+              {/* Left Panel - Metadata */}
+              <div className="lg:col-span-1 space-y-4 sm:space-y-5 md:space-y-6">
+                {/* Authors/Artist */}
+                <div>
+                  <p className="mb-2 sm:mb-3 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium text-gray-400">Author</p>
+                  <div className="flex flex-wrap gap-2">
+                    {manga?.author?.attributes && (
+                      <span className="rounded-full bg-gray-700/50 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-300">
+                        {manga.author.attributes.name}
+                      </span>
+                    )}
+                  </div>
+                  {manga?.artist?.attributes && (
+                    <>
+                      <p className="mb-2 sm:mb-3 mt-3 sm:mt-4 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium text-gray-400">Artist</p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="rounded-full bg-gray-700/50 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-300">
+                          {manga.artist.attributes.name}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Genres */}
+                <div>
+                  <p className="mb-2 sm:mb-3 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium text-gray-400">Genres</p>
+                  <div className="flex flex-wrap gap-2">
+                    {manga?.attributes.tags.slice(0, 10).map((tag) => (
+                      <span
+                        key={tag.id}
+                        className="rounded-full bg-gray-700/50 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-300"
+                      >
+                        {tag.attributes.name.en}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Demographic */}
+                {demographic && (
+                  <div>
+                    <p className="mb-2 sm:mb-3 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium text-gray-400">Demographic</p>
+                    <span className="rounded-full bg-gray-700/50 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-300 capitalize">
+                      {demographic}
+                    </span>
+                  </div>
+                )}
+
+                {/* Alternative Titles */}
+                {altTitles.length > 0 && (
+                  <div>
+                    <p className="mb-2 sm:mb-3 text-xl sm:text-xl md:text-xl lg:text-2xl font-medium text-gray-400">Alternative Titles</p>
+                    <div className="flex flex-wrap gap-2">
+                      {altTitles.map((altTitle, idx) => {
+                        const isJapanese = idx === altTitles.length - 1 && altTitle.match(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/);
+                        return (
+                          <span
+                            key={idx}
+                            className="flex items-center gap-2 rounded-full bg-gray-700/50 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xl sm:text-xl md:text-xl lg:text-xl xl:text-2xl text-gray-300"
+                          >
+                            {altTitle}
+                            {isJapanese ? (
+                              <Iconify icon="circle-flags:jp" className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                            ) : (
+                              <Iconify icon="circle-flags:gb" className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                            )}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Right Panel - Chapter List */}
+              <div className="lg:col-span-2">
+                <ChapterList
+                  mangaId={mangaId}
+                  page={page}
+                  onPageChange={setPage}
+                  data={chapterListData}
+                  items={chapters}
+                />
               </div>
             </div>
-            <div>
-              <ul className="[&>li]:grid [&>li]:lg:grid-cols-[1fr_2fr]">
-                {altTitles.length > 0 && (
-                  <li className="">
-                    <p className="name mb-2 text-muted-foreground lg:mb-0">
-                      <i className="fa fa-plus-square mr-2"></i> Alternative
-                      Names
-                    </p>
-                    <p className="other-name inline-flex flex-wrap gap-4 pl-10 lg:pl-0">
-                      {altTitles.map((altTitle, idx) => {
-                        return <span key={idx}>{altTitle}</span>;
-                      })}
-                    </p>
-                  </li>
-                )}
-                <li className="author">
-                  <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-user mr-2"></i> Author
-                  </p>
-                  <p className="pl-10 lg:pl-0">
-                    {manga?.author?.attributes
-                      ? manga?.author?.attributes.name
-                      : "N/A"}{" "}
-                    <span className="text-muted-foreground">/</span>{" "}
-                    {manga?.artist?.attributes
-                      ? manga?.artist?.attributes.name
-                      : "N/A"}
-                  </p>
-                </li>
-                <li className="status">
-                  <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-rss mr-2"></i> Status
-                  </p>
-                  <p className="pl-10 lg:pl-0">
-                    {manga?.attributes.year
-                      ? `${manga.attributes.year} - `
-                      : ""}
-                    {Utils.Mangadex.translateStatus(manga?.attributes.status)}
-                  </p>
-                </li>
-                <li className="kind">
-                  <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-exclamation-triangle mr-2"></i> Content
-                  </p>
-                  <p className="pl-10 lg:pl-0">
-                    {Utils.Mangadex.translateContentRating(
-                      manga?.attributes.contentRating,
-                    )}
-                  </p>
-                </li>
-                <li className="kind">
-                  <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-tags mr-2"></i> Genres
-                  </p>
-                  <p className="pl-10 lg:pl-0">
-                    {manga?.attributes.tags.map((tag, idx) => (
-                      <>
-                        <Link
-                          key={tag.id}
-                          href={`${Constants.Routes.nettrom.search}?includedTags=${tag.id}`}
-                          className="text-web-title transition hover:text-web-titleLighter"
-                        >
-                          {tag.attributes.name.en}
-                        </Link>
-                        {idx !== manga?.attributes.tags.length - 1 && (
-                          <span
-                            key={"divider_" + idx}
-                            className="text-muted-foreground"
-                          >
-                            ,{" "}
-                          </span>
-                        )}
-                      </>
-                    ))}
-                  </p>
-                </li>
-                <li className="">
-                  <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-globe mr-2"></i> Original Language
-                  </p>
-                  <p className="flex items-center gap-2 pl-10 lg:pl-0">
-                    <Iconify
-                      icon={`circle-flags:lang-${manga.attributes.originalLanguage}`}
-                      className="inline-block"
-                    />
-                    <span>
-                      {Utils.Mangadex.translateISOLanguage(
-                        manga.attributes.originalLanguage,
-                      )}
-                    </span>
-                  </p>
-                </li>
-                <li className="">
-                  <p className="name mb-2 text-muted-foreground lg:mb-0">
-                    <i className="fa fa-chain mr-2"></i> Source
-                  </p>
-                  {manga && (
-                    <ExternalLinks
-                      links={manga.attributes.links}
-                      mangaId={manga.id}
-                    />
-                  )}
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-4 grid sm:grid-cols-[1fr_2fr] sm:gap-10">
-            <div></div>
-            <div className="grid flex-wrap gap-4 sm:flex sm:grid-cols-2">
-              <FirstChapterButton mangaId={mangaId} />
-              {seriesInfo &&
-                (seriesInfo.followed !== null ? (
-                  <Button
-                    className="w-full border-red-500 text-red-500 hover:bg-red-300/10 hover:text-red-500 sm:w-auto"
-                    icon={
-                      <Iconify
-                        icon={
-                          seriesInfo.followed ? "fa:times-circle" : "fa:heart"
-                        }
-                      />
-                    }
-                    variant={"outline"}
-                    onClick={followManga}
-                  >
-                    <span>{seriesInfo.followed ? "Unfollow" : "Follow"}</span>
-                  </Button>
-                ) : (
-                  <Button
-                    className="w-full sm:w-auto"
-                    icon={<Iconify icon="fa:heart" />}
-                    variant={"outline"}
-                    onClick={handleLogin}
-                  >
-                    Login to follow
-                  </Button>
-                ))}
-            </div>
-          </div>
-        </div>
-        <div className="detail-content mb-10">
-          <h2 className="mb-4 flex items-center gap-4 text-[20px] font-medium text-web-title">
-            <i className="fa fa-pen"></i>
-            <span>Content</span>
-          </h2>
-          <div className="w-full">
-            {
-              <Markdown
-                content={
-                  manga?.attributes?.description.vi ||
-                  manga?.attributes?.description.en ||
-                  ""
-                }
-              />
-            }
-            <p className="text-muted-foreground">
-              Manga{" "}
-              <Link
-                href={url}
-                className="text-web-title transition hover:text-web-titleLighter"
-              >
-                {title}
-              </Link>{" "}
-              is updated quickly and completely at{" "}
-              <Link
-                href={"/"}
-                className="text-web-title transition hover:text-web-titleLighter"
-              >
-                {Constants.APP_NAME}
-              </Link>
-              . Don't forget to leave comments and share, support{" "}
-              {Constants.APP_NAME} to release the latest chapters of{" "}
-              <Link
-                href={url}
-                className="text-web-title transition hover:text-web-titleLighter"
-              >
-                {title}
-              </Link>
-              .
-            </p>
-          </div>
-          {/* <a href="#" className="morelink less">
-                        <i className="fa fa-angle-left" /> Thu gọn
-                    </a> */}
-        </div>
-        <ChapterList
-          mangaId={mangaId}
-          page={page}
-          onPageChange={setPage}
-          data={chapterListData}
-          items={chapters}
-        />
+          </TabsContent>
+
+          <TabsContent value="comments" className="mt-0">
+            <CommentSection typeId={mangaId} type="series" />
+          </TabsContent>
+
+          <TabsContent value="art" className="mt-0">
+            <div className="text-center text-gray-400">Art section coming soon</div>
+          </TabsContent>
+
+          <TabsContent value="related" className="mt-0">
+            <div className="text-center text-gray-400">Related titles coming soon</div>
+          </TabsContent>
+
+          <TabsContent value="recommendations" className="mt-0">
+            <div className="text-center text-gray-400">Recommendations coming soon</div>
+          </TabsContent>
+        </Tabs>
       </article>
     </DataLoader>
   );

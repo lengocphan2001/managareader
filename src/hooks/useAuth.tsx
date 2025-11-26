@@ -14,10 +14,12 @@ export const useAuth = ({
   middleware,
   redirectIfAuthenticated,
   redirectIfNotAuthenticated,
+  skipUserFetch = false,
 }: {
   middleware?: string;
   redirectIfAuthenticated?: string;
   redirectIfNotAuthenticated?: string;
+  skipUserFetch?: boolean;
 } = {}) => {
   const router = useRouter();
 
@@ -26,7 +28,7 @@ export const useAuth = ({
   });
 
   const { data: user, mutate } = useSWR(
-    "/api/user",
+    skipUserFetch ? null : "/api/user",
     async () => {
       try {
         const { data } = await axios.get<GetUserResponse>("/api/user");

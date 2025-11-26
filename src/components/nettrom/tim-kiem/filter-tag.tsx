@@ -79,36 +79,23 @@ export default function FilterTag({
 
   return (
     <div>
-      <label>Genres</label>
-
       <div className="relative" ref={dropdownRef}>
         <button
           type="button"
           onClick={toggleShowTagFilter}
-          className="flex w-full items-center justify-between rounded-lg border-2 border-neutral-300 bg-neutral-50 p-4 text-neutral-900 focus:border-purple-500 focus:ring-purple-500 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white dark:placeholder-neutral-400 dark:focus:border-purple-500 dark:focus:ring-purple-500"
+          className="flex w-full items-center justify-between rounded-lg border-2 border-neutral-600 bg-neutral-800 px-4 py-3 pr-10 text-lg text-white focus:border-orange-500 focus:outline-none focus:ring-0"
         >
-          <div className="line-clamp-1 capitalize">
+          <div className="line-clamp-1">
             {values.includedTags?.length ? (
-              <span>select {values.includedTags.length} tags</span>
+              <span>Include {values.includedTags.length} tags</span>
+            ) : values.excludedTags?.length ? (
+              <span>Exclude {values.excludedTags.length} tags</span>
             ) : (
-              ""
-            )}
-            {values.includedTags?.length && values.excludedTags?.length ? (
-              <span> and </span>
-            ) : (
-              ""
-            )}
-            {values.excludedTags?.length ? (
-              <span>exclude {values.excludedTags.length} tags</span>
-            ) : (
-              ""
-            )}
-            {!values.includedTags?.length && !values.excludedTags?.length && (
-              <span>All</span>
+              <span>Include any</span>
             )}
           </div>
           <svg
-            className={`h-4 w-4 transition-transform ${
+            className={`h-5 w-5 transition-transform absolute right-3 ${
               showTagFilter ? "rotate-180" : ""
             }`}
             xmlns="http://www.w3.org/2000/svg"

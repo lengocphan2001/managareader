@@ -1,16 +1,12 @@
 "use client";
 
-import ChapterControl from "./chapter-control";
-import ChapterPages from "./chapter-pages";
+import ChapterReaderLayout from "./chapter-reader-layout";
 import OptimisticChapterView from "./optimistic-chapter-view";
 
 export default function ChapterView() {
   return (
     <OptimisticChapterView>
-      <div className="container">
-        <ChapterControl />
-      </div>
-      <ChapterPages />
+      <ChapterReaderLayout />
     </OptimisticChapterView>
   );
 }

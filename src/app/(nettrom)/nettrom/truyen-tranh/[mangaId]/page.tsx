@@ -18,18 +18,20 @@ export default async function TruyenTranh({
     } = await MangadexApi.Manga.getMangaId(params.mangaId);
 
     return (
-      <div className="grid grid-cols-1 gap-[40px] lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <Manga
-            mangaId={params.mangaId}
-            prefetchedManga={
-              Utils.Mangadex.extendRelationship(manga) as ExtendManga
-            }
-          />
-          <CommentSection typeId={params.mangaId} type="series" />
-        </div>
-        <div>
-          <TopTitles />
+      <div className="w-full px-24 py-12">
+        <div className="grid grid-cols-1 gap-[40px] lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <Manga
+              mangaId={params.mangaId}
+              prefetchedManga={
+                Utils.Mangadex.extendRelationship(manga) as ExtendManga
+              }
+            />
+            <CommentSection typeId={params.mangaId} type="series" />
+          </div>
+          <div>
+            <TopTitles />
+          </div>
         </div>
       </div>
     );

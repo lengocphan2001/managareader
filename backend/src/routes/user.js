@@ -311,4 +311,151 @@ router.post("/change-avatar", auth, async (req, res) => {
   }
 });
 
+// Update manga reading status in library
+router.post(
+  "/library/update-status",
+  auth,
+  [
+    body("series_uuid").isString(),
+    body("status").optional().isIn(["reading", "on_hold", "dropped", "plan_to_read", "completed", "re_reading"]),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          errors: errors.array(),
+        });
+      }
+
+      const { series_uuid, status } = req.body;
+
+      if (!status || status === null) {
+        // Remove from library
+        await prisma.library.deleteMany({
+          where: {
+            user_id: req.user.id,
+            series_id: series_uuid,
+          },
+        });
+
+        res.json({
+          success: true,
+          message: "Removed from library",
+          status: null,
+        });
+      } else {
+        // Update or create library entry
+        await prisma.library.upsert({
+          where: {
+            user_id_series_id: {
+              user_id: req.user.id,
+              series_id: series_uuid,
+            },
+          },
+          update: {
+            status: status,
+            updated_at: new Date(),
+          },
+          create: {
+            user_id: req.user.id,
+            series_id: series_uuid,
+            status: status,
+          },
+        });
+
+        res.json({
+          success: true,
+          message: "Reading status updated successfully",
+          status: status,
+        });
+      }
+    } catch (error) {
+      console.error("Update library status error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  },
+);
+
+// Get manga reading status from library
+router.get(
+  "/library/status/:series_uuid",
+  auth,
+  async (req, res) => {
+    try {
+      const { series_uuid } = req.params;
+
+      const libraryEntry = await prisma.library.findUnique({
+        where: {
+          user_id_series_id: {
+            user_id: req.user.id,
+            series_id: series_uuid,
+          },
+        },
+      });
+
+      res.json({
+        success: true,
+        status: libraryEntry?.status || null,
+      });
+    } catch (error) {
+      console.error("Get library status error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  },
+);
+
+// Get library manga list by status
+router.get(
+  "/library",
+  auth,
+  async (req, res) => {
+    try {
+      const { status, page = 1, limit = 12 } = req.query;
+      const offset = (page - 1) * limit;
+
+      const where = {
+        user_id: req.user.id,
+      };
+
+      if (status && status !== "null") {
+        where.status = status;
+      }
+
+      const libraryEntries = await prisma.library.findMany({
+        where,
+        orderBy: { updated_at: "desc" },
+        skip: offset,
+        take: parseInt(limit),
+      });
+
+      const total = await prisma.library.count({ where });
+
+      res.json({
+        success: true,
+        data: libraryEntries.map((entry) => entry.series_id),
+        pagination: {
+          current_page: parseInt(page),
+          per_page: parseInt(limit),
+          total,
+          last_page: Math.ceil(total / limit),
+        },
+      });
+    } catch (error) {
+      console.error("Get library error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  },
+);
+
 module.exports = router;

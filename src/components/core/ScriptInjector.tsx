@@ -1,38 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAdminSettings } from "@/hooks/useAdminSettings";
 
 interface ScriptInjectorProps {
   type: "header" | "footer";
 }
 
 export default function ScriptInjector({ type }: ScriptInjectorProps) {
+  const { settings } = useAdminSettings();
   const [scripts, setScripts] = useState<string>("");
   
   useEffect(() => {
-    // Load scripts from API
-    const loadScripts = async () => {
-      try {
-        const backendUrl =
-          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
-        const response = await fetch(`${backendUrl}/api/admin/get-settings`);
-
-        if (response.ok) {
-          const data = await response.json();
-          const scriptContent =
-            type === "header" ? data.headerScripts : data.footerScripts;
-
-          setScripts(scriptContent || "");
-        } else {
-          console.log(`Failed to load ${type} scripts from API`);
-        }
-      } catch (error) {
-        console.error("Error loading admin settings from API:", error);
-      }
-    };
-
-    loadScripts();
-  }, [type]);
+    // Get scripts from cached settings
+    const scriptContent =
+      type === "header" ? settings.headerScripts : settings.footerScripts;
+    setScripts(scriptContent || "");
+  }, [type, settings]);
 
   useEffect(() => {
     if (!scripts || scripts.trim() === "") {

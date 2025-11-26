@@ -1,17 +1,20 @@
 import { Inter } from "next/font/google";
-import MainNav from "@/components/nettrom/layout/main-nav";
-import Header from "@/components/nettrom/layout/header";
 import { Constants } from "@/constants";
 import "@/styles/nettrom/index.scss";
 import { twMerge } from "tailwind-merge";
 import { LayoutWrapper } from "@/components/LayoutWrapper";
 import { Metadata } from "next";
-import { Suspense } from "react";
+import { Suspense, lazy } from "react";
 import NextTopLoader from "nextjs-toploader";
-import SettingsDialog from "@/components/nettrom/settings-dialog";
-import VerifyMailAlert from "@/components/nettrom/verify-mail-alert";
-import Footer from "@/components/core/Footer";
-import ScriptInjector from "@/components/core/ScriptInjector";
+import { SidebarProvider } from "@/contexts/sidebar";
+import { DisplayModeProvider } from "@/contexts/display-mode";
+import MainContentWrapper from "@/components/nettrom/layout/main-content-wrapper";
+
+// Lazy load non-critical components
+const SidebarNav = lazy(() => import("@/components/nettrom/layout/sidebar-nav"));
+const Header = lazy(() => import("@/components/nettrom/layout/header"));
+const SettingsDialog = lazy(() => import("@/components/nettrom/settings-dialog"));
+const VerifyMailAlert = lazy(() => import("@/components/nettrom/verify-mail-alert"));
 
 export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - High quality manga without ads`,
@@ -43,7 +46,6 @@ export default function NettromLayout({
 }) {
   return (
     <LayoutWrapper id="nettrom">
-      <ScriptInjector type="header" />
       <NextTopLoader
         zIndex={1000}
         easing="ease-in-out"
@@ -54,29 +56,37 @@ export default function NettromLayout({
         <div class="bar bg-web-title" role="bar"><div class="peg"></div></div> 
   <div class="spinner text-web-title" role="spinner"><div class="spinner-icon"></div></div>`}
       />
-      <Suspense>
+      <SidebarProvider>
+        <DisplayModeProvider>
+          <div className="flex min-h-screen">
+            {/* Sidebar Navigation */}
+            <Suspense fallback={<div className="w-96" />}>
+              <SidebarNav />
+            </Suspense>
+            
+            {/* Main Content Area */}
+            <MainContentWrapper>
+            <Suspense fallback={<div className="h-16" />}>
         <Header />
       </Suspense>
+            <Suspense fallback={null}>
       <VerifyMailAlert />
-      <nav className="main-nav hidden-xs" id="mainNav">
-        <div className="inner bg-neutral-900">
-          <div className="container">
-            <div className="py-4">
-              <MainNav />
-            </div>
-          </div>
-        </div>
-      </nav>
+            </Suspense>
       <main
         className={twMerge(
-          "main bg-neutral-900 text-foreground",
+                "main bg-neutral-900 text-foreground min-h-screen overflow-x-hidden pt-16",
           inter.className,
         )}
       >
-        <div className="container">{children}</div>
+              <div className="w-full max-w-full">{children}</div>
       </main>
-      <Footer variant="default" />
+          </MainContentWrapper>
+          </div>
+        </DisplayModeProvider>
+      </SidebarProvider>
+      <Suspense fallback={null}>
       <SettingsDialog />
+      </Suspense>
     </LayoutWrapper>
   );
 }

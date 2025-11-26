@@ -9,6 +9,42 @@ export const getReadList = async (query: { page?: number } = {}) => {
   return data;
 };
 
+export const updateLibraryStatus = async (series_uuid: string, status: string | null) => {
+  const { data } = await axios({
+    method: "POST",
+    url: "/api/user/library/update-status",
+    data: {
+      series_uuid,
+      status,
+    },
+  });
+  return data;
+};
+
+export const getLibraryStatus = async (series_uuid: string) => {
+  const { data } = await axios<{ success: boolean; status: string | null }>({
+    url: `/api/user/library/status/${series_uuid}`,
+  });
+  return data;
+};
+
+export const getLibrary = async (query: { status?: string; page?: number; limit?: number } = {}) => {
+  const { data } = await axios<{
+    success: boolean;
+    data: string[];
+    pagination: {
+      current_page: number;
+      per_page: number;
+      total: number;
+      last_page: number;
+    };
+  }>({
+    url: "/api/user/library",
+    params: { ...query },
+  });
+  return data;
+};
+
 export const getFollows = async (query: { page?: number } = {}) => {
   const { data } = await axios<ReadListResponse>({
     url: "/api/user/follows",

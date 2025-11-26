@@ -1,63 +1,131 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
-
 import useReadingHistory from "@/hooks/useReadingHistory";
+import HistoryItem from "./history-item";
+import DisplayModeSelector from "../tim-kiem/display-mode-selector";
+import { useDisplayMode } from "@/contexts/display-mode";
+import Pagination from "../Pagination";
 import { Constants } from "@/constants";
+import { useState } from "react";
+import LanguageIcon from "@/components/language-icon";
+
 export default function HistoryList() {
   const { history, removeHistory } = useReadingHistory();
+  const { displayMode } = useDisplayMode();
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 12;
 
-  return (
-    <div className="items visited-comics-page Module Module-273">
-      <div className="row visited-list">
-        {Object.entries(history).map(([mangaId, manga]) => (
-          <div className="item" key={mangaId}>
-            <figure className="clearfix">
-              <div className="image">
-                <Link
-                  title={manga.mangaTitle}
-                  href={Constants.Routes.nettrom.manga(mangaId)}
-                >
-                  <img
-                    className="lazy center"
-                    alt={manga.mangaTitle}
-                    data-original={manga.cover}
-                    src={manga.cover}
-                  />
-                </Link>
-                <div className="view">
-                  <a
-                    className="visited-remove"
-                    onClick={() => removeHistory(mangaId)}
-                  >
-                    <i className="fa fa-times" /> Remove
-                  </a>
+  const historyEntries = useMemo(
+    () => Object.entries(history).reverse(), // Reverse to show newest first
+    [history]
+  );
+
+  const paginatedEntries = useMemo(() => {
+    const start = currentPage * itemsPerPage;
+    const end = start + itemsPerPage;
+    return historyEntries.slice(start, end);
+  }, [historyEntries, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(historyEntries.length / itemsPerPage);
+
+  if (historyEntries.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-2xl text-gray-400">No reading history found</p>
+      </div>
+    );
+  }
+
+  const renderHistoryItem = (mangaId: string, manga: any) => {
+    if (displayMode === "list") {
+      return (
+        <HistoryItem
+          key={mangaId}
+          mangaId={mangaId}
+          mangaTitle={manga.mangaTitle}
+          cover={manga.cover}
+          chapterId={manga.chapterId}
+          chapterTitle={manga.chapterTitle}
+          onRemove={() => removeHistory(mangaId)}
+          showImage={false}
+        />
+      );
+    } else if (displayMode === "compact-grid") {
+      return (
+        <HistoryItem
+          key={mangaId}
+          mangaId={mangaId}
+          mangaTitle={manga.mangaTitle}
+          cover={manga.cover}
+          chapterId={manga.chapterId}
+          chapterTitle={manga.chapterTitle}
+          onRemove={() => removeHistory(mangaId)}
+          showImage={true}
+        />
+      );
+    } else {
+      // large-grid - chỉ ảnh và title overlay
+      return (
+        <div key={mangaId} className="group relative overflow-hidden rounded-lg">
+          <Link href={Constants.Routes.nettrom.manga(mangaId)} className="block w-full h-full">
+            <div
+              className="relative w-full overflow-hidden"
+              style={{ aspectRatio: "3/4" }}
+            >
+              <img
+                src={manga.cover}
+                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                alt={manga.mangaTitle}
+                loading="lazy"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 to-transparent p-4">
+                <div className="flex items-center gap-2">
+                  <LanguageIcon languageCode="ja" />
+                  <h3 className="text-2xl font-semibold text-white truncate">
+                    {manga.mangaTitle}
+                  </h3>
                 </div>
               </div>
-              <figcaption>
-                <h3>
-                  <Link
-                    title={manga.mangaTitle}
-                    href={Constants.Routes.nettrom.manga(mangaId)}
-                  >
-                    {manga.mangaTitle}
-                  </Link>
-                </h3>
-                <ul>
-                  <li className="chapter clearfix">
-                    <Link
-                      href={Constants.Routes.nettrom.chapter(manga.chapterId)}
-                    >
-                      Continue reading {manga.chapterTitle}{" "}
-                      <i className="fa fa-angle-right" />
-                    </Link>
-                  </li>
-                </ul>
-              </figcaption>
-            </figure>
-          </div>
-        ))}
+            </div>
+          </Link>
+        </div>
+      );
+    }
+  };
+
+  return (
+    <div className="w-full">
+      {/* Display Mode Selector and Title Count */}
+      <div className="mb-6 sm:mb-8 md:mb-10 flex flex-row items-center justify-between w-full">
+        <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-semibold">
+          {historyEntries.length} {historyEntries.length === 1 ? "Item" : "Items"}
+        </div>
+        <DisplayModeSelector />
       </div>
+
+      {/* History Items */}
+      {displayMode === "list" ? (
+        <div className="space-y-3 sm:space-y-4 md:space-y-6">
+          {paginatedEntries.map(([mangaId, manga]) => renderHistoryItem(mangaId, manga))}
+        </div>
+      ) : (
+        <div className={displayMode === "compact-grid" ? "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4" : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4"}>
+          {paginatedEntries.map(([mangaId, manga]) => renderHistoryItem(mangaId, manga))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-8 flex justify-center">
+          <Pagination
+            onPageChange={(event) => setCurrentPage(event.selected)}
+            pageCount={totalPages}
+            forcePage={currentPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

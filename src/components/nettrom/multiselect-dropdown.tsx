@@ -92,7 +92,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between rounded-lg border-2 border-neutral-300 bg-neutral-50 p-4 text-left text-neutral-900 focus:border-purple-500 focus:ring-purple-500 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white dark:placeholder-neutral-400 dark:focus:border-purple-500 dark:focus:ring-purple-500"
+        className="flex w-full items-center justify-between rounded-lg border-2 border-neutral-600 bg-neutral-800 px-4 py-3 pr-10 text-lg text-left text-white focus:border-orange-500 focus:outline-none focus:ring-0"
       >
         <span className="line-clamp-1">
           {selectedValues.length > 0 ? (
@@ -117,7 +117,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
           )}
         </span>
         <svg
-          className={`h-4 w-4 transition-transform ${
+          className={`h-5 w-5 transition-transform absolute right-3 ${
             isOpen ? "rotate-180" : ""
           }`}
           xmlns="http://www.w3.org/2000/svg"

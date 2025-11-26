@@ -30,13 +30,14 @@ export default function FirstChapterButton({ mangaId }: { mangaId: string }) {
   return (
     <Button
       onClick={readFirstChapter}
-      className="w-full sm:w-auto"
+      variant="outline"
+      className="border-white/20 text-white hover:bg-white/10 whitespace-nowrap"
       icon={
-        loading ? <Iconify icon="uil:spinner" /> : <Iconify icon="fa:eye" />
+        loading ? <Iconify icon="uil:spinner" /> : <Iconify icon="fa:book" />
       }
       disabled={loading}
     >
-      Read Now
+      Start Reading
     </Button>
   );
 }

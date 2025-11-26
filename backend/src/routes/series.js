@@ -151,4 +151,8 @@ router.post(
   },
 );
 
+// Note: Reading status is managed directly via Mangadex API from frontend
+// These endpoints are kept for potential future use or proxy functionality
+// The frontend calls Mangadex API directly using user's Mangadex token stored in localStorage
+
 module.exports = router;

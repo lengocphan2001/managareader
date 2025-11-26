@@ -7,7 +7,6 @@ import { AdminAuthProvider } from "@/contexts/admin-auth";
 import { AdminSettingsProvider } from "@/contexts/admin-settings";
 import { AdminTitle } from "@/components/admin/AdminTitle";
 import { AdminGuard } from "@/components/admin/AdminGuard";
-import Footer from "@/components/core/Footer";
 import ScriptInjector from "@/components/core/ScriptInjector";
 import "./globals.css";
 
@@ -44,9 +43,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
                   {/* Page Content */}
                   <main className="flex-1 overflow-auto p-6">{children}</main>
-
-                  {/* Footer */}
-                  <Footer variant="admin" />
                 </div>
               </div>
             </AdminGuard>

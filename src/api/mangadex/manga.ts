@@ -8,6 +8,7 @@ import {
   ChapterList,
   MangaResponse,
   TagResponse,
+  UpdateMangaStatus,
 } from "../../types/mangadex";
 import {
   Order,
@@ -395,6 +396,45 @@ export const getMangaId = function (
 
 // Kenjugs (06/24/2022) TODO: Implement functionality for `POST /manga/{id}/follow`
 // export const followMangaId = function (id) { };
+
+/**
+ * Update reading status for a manga.
+ *
+ * @param {string} id UUID formatted string.
+ * @param {AuthenticationToken} token See {@link AuthenticationToken}
+ * @param {UpdateMangaStatus} body See {@link UpdateMangaStatus}
+ * @returns A promise that resolves to a response object.
+ * Will resolve to an {@link ErrorResponse} object on error.
+ */
+export const updateMangaIdStatus = function (
+  id: string,
+  token: AuthenticationToken,
+  body: UpdateMangaStatus,
+) {
+  if (id === undefined) {
+    return Promise.reject(
+      "ERROR - updateMangaIdStatus: Parameter `id` cannot be undefined",
+    );
+  } else if (id === "") {
+    return Promise.reject(
+      "ERROR - updateMangaIdStatus: Parameter `id` cannot be blank",
+    );
+  }
+
+  const path = `/manga/${id}/status`;
+
+  try {
+    const httpsRequestOptions = util.addTokenAuthorization(token);
+    httpsRequestOptions.headers = {
+      ...httpsRequestOptions.headers,
+      "Content-Type": "application/json",
+    };
+    httpsRequestOptions.data = body;
+    return util.createHttpsRequestPromise("PUT", path, httpsRequestOptions);
+  } catch (err: any) {
+    return Promise.reject(err);
+  }
+};
 
 /**
  * Get a list of chapters that have been marked as read for a given manga.

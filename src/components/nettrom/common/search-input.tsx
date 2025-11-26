@@ -2,7 +2,8 @@
 
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
-import { MouseEvent, useCallback, useState, Suspense } from "react";
+import { MouseEvent, useCallback, useState, Suspense, useEffect, useRef } from "react";
+import { FaSearch } from "react-icons/fa";
 
 import { MangadexApi } from "@/api";
 import { DataLoader } from "@/components/DataLoader";
@@ -12,12 +13,16 @@ import { useSearchManga } from "@/hooks/mangadex";
 import useDebounce from "@/hooks/useDebounce";
 import { Utils } from "@/utils";
 import Link from "next/link";
+import MobileSearchModal from "./mobile-search-modal";
 
 function SearchInputContent() {
   const params = useSearchParams();
   const router = useRouter();
   const [title, setTitle] = useState(params.get("title") || "");
+  const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const deboucedTitle = useDebounce(title, 500);
+  const searchRef = useRef<HTMLFormElement>(null);
   const { mangaList, isLoading, error } = useSearchManga(
     {
       title: deboucedTitle,
@@ -49,41 +54,82 @@ function SearchInputContent() {
     [clearTitle],
   );
 
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsFocused(false);
+      }
+    };
+
+    if (isFocused) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFocused]);
+
   return (
-    <form onSubmit={handleSubmit} className="input-group">
-      <input
-        type="text"
-        className="searchinput form-control"
-        placeholder="Search manga..."
-        value={title}
-        onChange={(event) => setTitle(event.target.value)}
-      />
-      <div className="input-group-btn z-2">
+    <>
+      {/* Mobile: Only show icon */}
+      <button
+        type="button"
+        onClick={() => setIsMobileModalOpen(true)}
+        className="lg:hidden flex items-center justify-center w-12 h-12 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white transition-all duration-200 border border-neutral-700 hover:border-orange-500/50 shadow-lg hover:shadow-orange-500/20"
+        aria-label="Search"
+      >
+        <FaSearch className="w-6 h-6" />
+      </button>
+
+      {/* Desktop: Full search input */}
+      <form 
+        ref={searchRef} 
+        onSubmit={handleSubmit} 
+        className="relative hidden lg:block"
+        style={{
+          width: isFocused ? '800px' : '100%',
+          maxWidth: isFocused ? '800px' : '28rem',
+          transition: 'width 150ms ease-out, max-width 150ms ease-out',
+          marginLeft: 'auto',
+          marginRight: 0,
+          transformOrigin: 'right center',
+        }}
+      >
+        <div className={`relative flex items-center bg-neutral-800 rounded-lg border border-neutral-700 transition-all duration-150 ${isFocused ? 'ring-2 ring-orange-500 border-transparent shadow-lg' : 'focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-transparent'}`}>
         <input
-          type="submit"
-          value=""
-          className="searchbutton btn btn-default"
-          onClick={handleSubmit}
+          type="text"
+            className="flex-1 px-4 py-3 bg-transparent text-white placeholder-neutral-400 rounded-l-lg focus:outline-none text-2xl"
+            placeholder="Enter a search query..."
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+            onFocus={() => setIsFocused(true)}
         />
+          <div className="flex items-center gap-1 px-2 text-neutral-400 text-xl">
+            <span className="bg-neutral-700 px-2 py-1 rounded text-white text-base">Ctrl</span>
+            <span className="bg-neutral-700 px-2 py-1 rounded text-white text-base">K</span>
+          </div>
+        <button
+          type="submit"
+            className="p-3 text-neutral-400 hover:text-white transition-colors rounded-r-lg"
+          aria-label="Search"
+        >
+            <FaSearch className="w-6 h-6" />
+        </button>
       </div>
-      {title && (
-        <>
-          <div
-            id="suggest-backdrop"
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm"
-            onClick={handleBackdropClick}
-          ></div>
-          <div className="absolute left-0 top-full z-[1000] max-h-[350px] w-full overflow-hidden border border-gray-200 bg-white shadow-lg transition-all duration-300 ease-out md:max-h-[400px] md:w-[295px] lg:w-[455px]">
-            <div className="border-b border-gray-100 bg-gray-50 px-4 py-3">
-              <h3 className="mb-1 text-xl font-semibold text-gray-700">
+      {(isFocused || title) && (
+        <div className="absolute left-0 top-full z-[100] mt-2 w-full overflow-visible border border-neutral-700 bg-neutral-800 rounded-lg shadow-2xl transition-all duration-300 ease-out">
+            <div className="border-b border-neutral-700 bg-neutral-900 px-4 py-3">
+              <h3 className="mb-1 text-2xl font-semibold text-white">
                 Search Results
               </h3>
-              <p className="text-lg text-gray-500">
-                {isLoading ? "Searching..." : `${mangaList.length} results`}
+              <p className="text-xl text-neutral-400">
+                {isLoading ? "Searching..." : title ? `${mangaList.length} results` : "Start typing to search..."}
               </p>
             </div>
 
-            <div className="max-h-[270px] overflow-y-auto md:max-h-[320px]">
+            <div className="max-h-[600px] overflow-y-auto">
               <DataLoader isLoading={isLoading} error={error}>
                 {mangaList.length > 0 ? (
                   <ul className="m-0 list-none p-0">
@@ -96,13 +142,14 @@ function SearchInputContent() {
                       );
 
                       return (
-                        <li className="border-b border-gray-100 transition-colors duration-150 last:border-b-0 hover:bg-gray-50">
+                        <li className="border-b border-neutral-700 transition-colors duration-150 last:border-b-0 hover:bg-neutral-700/50">
                           <Link
                             href={Constants.Routes.nettrom.manga(manga.id)}
-                            onClick={clearTitle}
-                            className="block p-4 text-inherit no-underline hover:text-inherit focus:text-inherit active:text-inherit"
+                            onClick={() => { clearTitle(); setIsFocused(false); }}
+                            className="p-4 text-inherit no-underline hover:text-inherit focus:text-inherit active:text-inherit"
+                            style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}
                           >
-                            <div className="float-left mr-3 h-32 w-24 overflow-hidden rounded shadow-sm">
+                            <div className="flex-shrink-0 h-32 w-24 overflow-hidden rounded shadow-sm">
                               <img
                                 className="h-full w-full object-cover"
                                 src={cover}
@@ -110,24 +157,24 @@ function SearchInputContent() {
                                 loading="lazy"
                               />
                             </div>
-                            <div className="overflow-hidden">
-                              <h3 className="mb-1 overflow-hidden text-ellipsis whitespace-nowrap text-xl font-semibold leading-tight text-gray-900">
+                            <div className="flex-1 min-w-0 overflow-hidden">
+                              <h3 className="mb-1 overflow-hidden text-ellipsis whitespace-nowrap text-2xl font-semibold leading-tight text-white">
                                 <TooltipComponent
                                   size="xl"
                                   content={title}
                                   side="top"
                                 >
-                                  <span className="text-xl font-semibold leading-tight text-gray-900">
+                                  <span className="text-2xl font-semibold leading-tight text-white">
                                     {title}
                                   </span>
                                 </TooltipComponent>
                               </h3>
                               {altTitles.length > 0 && (
-                                <p className="mb-1.5 overflow-hidden text-ellipsis whitespace-nowrap text-base text-gray-500">
+                                <p className="mb-1.5 overflow-hidden text-ellipsis whitespace-nowrap text-xl text-neutral-400">
                                   {altTitles.join(", ")}
                                 </p>
                               )}
-                              <div className="mb-1.5 text-[11px] text-gray-500">
+                              <div className="mb-1.5 text-lg text-neutral-400">
                                 {manga.author?.attributes?.name && (
                                   <span className="mb-0.5 block overflow-hidden text-ellipsis whitespace-nowrap">
                                     Tác giả: {manga.author.attributes.name}
@@ -144,7 +191,7 @@ function SearchInputContent() {
                                   {tags.map((tag, index) => (
                                     <span
                                       key={index}
-                                      className="whitespace-nowrap rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700"
+                                      className="whitespace-nowrap rounded-full bg-blue-100 px-2 py-1 text-sm font-medium text-blue-700"
                                     >
                                       {tag}
                                     </span>
@@ -157,14 +204,24 @@ function SearchInputContent() {
                       );
                     })}
                   </ul>
-                ) : !isLoading ? (
+                ) : !isLoading && title ? (
                   <div className="px-4 py-8 text-center">
-                    <div className="mb-3 text-3xl">📚</div>
-                    <h3 className="mb-1 text-sm font-semibold text-gray-700">
+                    <div className="mb-3 text-4xl">📚</div>
+                    <h3 className="mb-1 text-xl font-semibold text-white">
                       No manga found
                     </h3>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-lg text-neutral-400">
                       Try searching with different keywords
+                    </p>
+                  </div>
+                ) : !title && isFocused ? (
+                  <div className="px-4 py-8 text-center">
+                    <div className="mb-3 text-4xl">🔍</div>
+                    <h3 className="mb-1 text-xl font-semibold text-white">
+                      Start typing to search
+                    </h3>
+                    <p className="text-lg text-neutral-400">
+                      Enter keywords to find manga
                     </p>
                   </div>
                 ) : null}
@@ -172,16 +229,22 @@ function SearchInputContent() {
             </div>
 
             {mangaList.length > 0 && (
-              <div className="border-t border-gray-100 bg-gray-50 px-4 py-2 text-center">
-                <p className="text-[11px] text-gray-500">
+              <div className="border-t border-neutral-700 bg-neutral-900 px-4 py-2 text-center">
+                <p className="text-lg text-neutral-400">
                   Press Enter for advanced search
                 </p>
               </div>
             )}
           </div>
-        </>
       )}
     </form>
+
+      {/* Mobile Search Modal */}
+      <MobileSearchModal
+        isOpen={isMobileModalOpen}
+        onClose={() => setIsMobileModalOpen(false)}
+      />
+    </>
   );
 }
 

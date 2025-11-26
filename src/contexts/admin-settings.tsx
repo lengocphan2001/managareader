@@ -62,7 +62,7 @@ export function AdminSettingsProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load settings from API
+    // Load settings from API (only for admin context, other components use useAdminSettings hook)
     const loadSettings = async () => {
       try {
         const backendUrl =

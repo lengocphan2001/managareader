@@ -31,11 +31,10 @@ export default function NotFound() {
       <div className="mb-8">
         <div className="mb-4 text-8xl font-bold text-red-500">404</div>
         <h1 className="mb-4 text-3xl font-bold text-gray-500">
-          Manga/Chapter Not Found
+          Page Not Found
         </h1>
         <p className="mb-6 max-w-md text-gray-200">
-          The page you are looking for does not exist or has been moved. This
-          manga/chapter may have been removed from MangaDex.
+          The page you are looking for does not exist or has been moved.
         </p>
       </div>
 

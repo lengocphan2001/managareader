@@ -1,6 +1,7 @@
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
-// Redirect /nettrom to / for backward compatibility
-export default async function NettromRedirect() {
-  redirect("/");
+// /nettrom route no longer exists - show 404
+export default function NettromNotFound() {
+  notFound();
 }
+

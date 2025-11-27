@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - High quality manga without ads`,
   description: `Read manga for free, high quality and support scanlation groups on ${Constants.APP_NAME}`,
   applicationName: Constants.APP_NAME,
-  authors: [{ name: "TruyenDex", url: "https://github.com/zennomi/truyendex" }],
+  authors: [{ name: "WowManga", url: "https://github.com/lengocphan2001/managareader" }],
   keywords: [
     "manga",
     "manga",
@@ -38,6 +38,28 @@ export const metadata: Metadata = {
     "truyendex",
   ],
   metadataBase: new URL(Constants.APP_URL),
+  openGraph: {
+    title: `${Constants.APP_NAME} - High quality manga without ads`,
+    description: `Read manga for free, high quality and support scanlation groups on ${Constants.APP_NAME}`,
+    url: Constants.APP_URL,
+    siteName: Constants.APP_NAME,
+    images: [
+      {
+        url: `${Constants.APP_URL}/images/opengraph.jpg`,
+        width: 1200,
+        height: 630,
+        alt: `${Constants.APP_NAME} - High quality manga without ads`,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${Constants.APP_NAME} - High quality manga without ads`,
+    description: `Read manga for free, high quality and support scanlation groups on ${Constants.APP_NAME}`,
+    images: [`${Constants.APP_URL}/twitter.jpg`],
+  },
   other: {
     referrer: "same-origin",
   },

@@ -1,11 +1,13 @@
-# TruyenDex Deployment Guide (PM2 + Nginx)
+# WowManga Deployment Guide (PM2 + Nginx)
 
-This guide will help you deploy TruyenDex to your VPS at `/var/www/xklduyenviet.net` using PM2 for process management and Nginx as a reverse proxy.
+This guide will help you deploy WowManga to your VPS at `/var/www/wowmanga.uk` using PM2 for process management and Nginx as a reverse proxy.
+
+**Note:** This configuration uses different ports (3001 for frontend, 8001 for backend) to avoid conflicts with existing `nettruyen-vn.com` deployment (port 3000).
 
 ## Prerequisites
 
 - Ubuntu/Debian VPS with root access
-- Domain `xklduyenviet.net` pointing to your VPS IP
+- Domain `wowmanga.uk` pointing to your VPS IP
 - At least 2GB RAM and 20GB storage
 - Basic knowledge of Linux commands
 
@@ -41,12 +43,12 @@ apt install -y curl wget git unzip software-properties-common
 
 ```bash
 # Create main application directory
-mkdir -p /var/www/xklduyenviet.net
-cd /var/www/xklduyenviet.net
+mkdir -p /var/www/wowmanga.uk
+cd /var/www/wowmanga.uk
 
 # Set proper permissions
-chown -R www-data:www-data /var/www/xklduyenviet.net
-chmod -R 755 /var/www/xklduyenviet.net
+chown -R www-data:www-data /var/www/wowmanga.uk
+chmod -R 755 /var/www/wowmanga.uk
 ```
 
 ---
@@ -145,7 +147,7 @@ ALTER USER mangareader_user CREATEDB;
 
 ```bash
 # Test connection
-sudo -u postgres psql -d truyendex -c "SELECT version();"
+sudo -u postgres psql -d mangareader -c "SELECT version();"
 ```
 
 ---
@@ -156,36 +158,40 @@ sudo -u postgres psql -d truyendex -c "SELECT version();"
 
 ```bash
 # If using Git (replace with your repository URL)
-cd /var/www/xklduyenviet.net
-git clone https://github.com/yourusername/truyendex.git .
+cd /var/www/wowmanga.uk
+git clone https://github.com/yourusername/managareader.git .
 
-# Or upload your files using SCP/SFTP to /var/www/xklduyenviet.net
+# Or upload your files using SCP/SFTP to /var/www/wowmanga.uk
 ```
 
 ### 4.2 Install Frontend Dependencies
 
 ```bash
 # Navigate to frontend directory
-cd /var/www/xklduyenviet.net
+cd /var/www/wowmanga.uk
 
 # Install dependencies
 npm install
 
-# Install production dependencies only
-npm ci --only=production
+# Set proper permissions for node_modules
+chmod -R +x node_modules/.bin
+chown -R www-data:www-data node_modules
 ```
 
 ### 4.3 Install Backend Dependencies
 
 ```bash
 # Navigate to backend directory
-cd /var/www/xklduyenviet.net/backend
+cd /var/www/wowmanga.uk/backend
 
 # Install dependencies
 npm install
 
-# Install production dependencies only
-npm ci --only=production
+# Set proper permissions for node_modules and Prisma
+chmod -R +x node_modules/.bin
+chmod +x node_modules/.bin/prisma
+chown -R www-data:www-data node_modules
+chown -R www-data:www-data node_modules/.bin
 ```
 
 ---
@@ -196,19 +202,19 @@ npm ci --only=production
 
 ```bash
 # Create frontend environment file
-cd /var/www/xklduyenviet.net
+cd /var/www/wowmanga.uk
 cat > .env.production << 'EOF'
 # Frontend Environment Variables
 NODE_ENV=production
-NEXT_PUBLIC_API_URL=https://xklduyenviet.net
-NEXT_PUBLIC_BACKEND_URL=https://xklduyenviet.net
-NEXT_PUBLIC_APP_URL=https://xklduyenviet.net
-NEXT_PUBLIC_CORS_URL=https://proxy.xklduyenviet.net
-NEXT_PUBLIC_CORS_V2_URL=https://proxy.xklduyenviet.net
+NEXT_PUBLIC_API_URL=https://wowmanga.uk
+NEXT_PUBLIC_BACKEND_URL=https://wowmanga.uk
+NEXT_PUBLIC_APP_URL=https://wowmanga.uk
+NEXT_PUBLIC_CORS_URL=https://proxy.wowmanga.uk
+NEXT_PUBLIC_CORS_V2_URL=https://proxy.wowmanga.uk
 NEXT_PUBLIC_GTM_ID="GTM-T8T8T8KF"
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
 # Other frontend variables
-NEXT_PUBLIC_APP_NAME=TruyenDex
+NEXT_PUBLIC_APP_NAME=WowManga
 NEXT_PUBLIC_APP_VERSION=1.0.0
 EOF
 ```
@@ -217,11 +223,11 @@ EOF
 
 ```bash
 # Create backend environment file
-cd /var/www/xklduyenviet.net/backend
+cd /var/www/wowmanga.uk/backend
 cat > .env << 'EOF'
 # Backend Environment Variables
 NODE_ENV=production
-PORT=8000
+PORT=8001
 
 # Database Configuration
 DATABASE_URL="postgresql://mangareader_user:password@localhost:5432/mangareader"
@@ -231,7 +237,7 @@ JWT_SECRET=your_jwt_secret_key_here
 JWT_EXPIRES_IN=7d
 
 # CORS Configuration
-CORS_ORIGIN=https://xklduyenviet.net
+CORS_ORIGIN=https://wowmanga.uk
 CORS_CREDENTIALS=true
 
 # Rate Limiting
@@ -252,7 +258,7 @@ SMTP_PASS=your_app_password
 
 # File Upload Configuration
 MAX_FILE_SIZE=10485760
-UPLOAD_PATH=/var/www/xklduyenviet.net/uploads
+UPLOAD_PATH=/var/www/wowmanga.uk/uploads
 
 # Security
 BCRYPT_ROUNDS=12
@@ -263,11 +269,11 @@ EOF
 
 ```bash
 # Set permissions for environment files
-chmod 600 /var/www/xklduyenviet.net/.env.production
-chmod 600 /var/www/xklduyenviet.net/backend/.env
+chmod 600 /var/www/wowmanga.uk/.env.production
+chmod 600 /var/www/wowmanga.uk/backend/.env
 
 # Set ownership
-chown -R www-data:www-data /var/www/xklduyenviet.net
+chown -R www-data:www-data /var/www/wowmanga.uk
 ```
 
 ---
@@ -278,7 +284,11 @@ chown -R www-data:www-data /var/www/xklduyenviet.net
 
 ```bash
 # Navigate to backend directory
-cd /var/www/xklduyenviet.net/backend
+cd /var/www/wowmanga.uk/backend
+
+# Ensure Prisma has execution permissions
+chmod +x node_modules/.bin/prisma
+chmod -R +x node_modules/.bin
 
 # Generate Prisma client
 npx prisma generate
@@ -287,6 +297,8 @@ npx prisma generate
 npx prisma db push
 
 # Seed database (if you have seed data)
+# Note: Make sure package.json has "prisma.seed" configuration
+# See Troubleshooting section 6 if you encounter errors
 npx prisma db seed
 ```
 
@@ -294,32 +306,41 @@ npx prisma db seed
 
 ```bash
 # Navigate to frontend directory
-cd /var/www/xklduyenviet.net
+cd /var/www/wowmanga.uk
+
+# IMPORTANT: Make sure .env.production has the correct values before building
+# The build process embeds environment variables, so you must rebuild after changing them
+cat .env.production
 
 # Build the application with increased memory
 NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # Verify build
 ls -la .next/
+
+# Note: If you change environment variables after building, you MUST rebuild:
+# 1. Update .env.production
+# 2. Run: NODE_OPTIONS="--max-old-space-size=4096" npm run build
+# 3. Restart PM2: pm2 restart wowmanga-frontend
 ```
 
 ### 6.3 Create PM2 Configuration
 
 ```bash
 # Create PM2 ecosystem file
-cd /var/www/xklduyenviet.net
+cd /var/www/wowmanga.uk
 cat > ecosystem.config.js << 'EOF'
 module.exports = {
   apps: [
     {
-      name: "truyendex-backend",
+      name: "wowmanga-backend",
       script: "src/server.js",
-      cwd: "/var/www/xklduyenviet.net/backend",
+      cwd: "/var/www/wowmanga.uk/backend",
       instances: 1,
       exec_mode: "fork",
       env: {
         NODE_ENV: "production",
-        PORT: 8000,
+        PORT: 8001,
       },
       error_file: "./logs/backend-error.log",
       out_file: "./logs/backend-out.log",
@@ -331,15 +352,15 @@ module.exports = {
       min_uptime: "10s",
     },
     {
-      name: "truyendex-frontend",
+      name: "wowmanga-frontend",
       script: "npm",
       args: "start",
-      cwd: "/var/www/xklduyenviet.net",
+      cwd: "/var/www/wowmanga.uk",
       instances: 1,
       exec_mode: "fork",
       env: {
         NODE_ENV: "production",
-        PORT: 3000,
+        PORT: 3001,
       },
       error_file: "./logs/frontend-error.log",
       out_file: "./logs/frontend-out.log",
@@ -355,7 +376,7 @@ module.exports = {
 EOF
 
 # Create logs directory
-mkdir -p /var/www/xklduyenviet.net/logs
+mkdir -p /var/www/wowmanga.uk/logs
 ```
 
 ### 6.4 Start Applications with PM2
@@ -382,34 +403,34 @@ pm2 logs
 
 ```bash
 # Create Nginx site configuration
-cat > /etc/nginx/sites-available/xklduyenviet.net << 'EOF'
-# Rate limiting
-limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
-limit_req_zone $binary_remote_addr zone=login:10m rate=5r/m;
+cat > /etc/nginx/sites-available/wowmanga.uk << 'EOF'
+# Rate limiting (using unique zone names to avoid conflicts with other sites)
+limit_req_zone $binary_remote_addr zone=wowmanga_api:10m rate=10r/s;
+limit_req_zone $binary_remote_addr zone=wowmanga_login:10m rate=5r/m;
 
 # No cache zones needed - always fresh load
 
 # Upstream servers
-upstream backend {
-    server 127.0.0.1:8000;
+upstream wowmanga_backend {
+    server 127.0.0.1:8001;
 }
 
-upstream frontend {
-    server 127.0.0.1:3000;
+upstream wowmanga_frontend {
+    server 127.0.0.1:3001;
 }
 
 # Main server block
 server {
     listen 80;
     listen [::]:80;
-    server_name xklduyenviet.net www.xklduyenviet.net;
+    server_name wowmanga.uk www.wowmanga.uk;
 
     # Security headers with proper CSP for Cloudflare Turnstile and Google Tag Manager
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header X-XSS-Protection "1; mode=block" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "no-referrer-when-downgrade" always;
-    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.mangadex.org https://proxy.xklduyenviet.net https://api.iconify.design https://challenges.cloudflare.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https: data: https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://challenges.cloudflare.com https://www.googletagmanager.com; img-src 'self' data: https: blob: https://resizer.f-ck.me https://mangadex.org https://www.googletagmanager.com; font-src 'self' data: https: https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'self';" always;
+    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://wowmanga.uk https://www.wowmanga.uk https://api.mangadex.org https://proxy.wowmanga.uk https://api.iconify.design https://challenges.cloudflare.com https://www.googletagmanager.com https://*.wowmanga.uk wss://wowmanga.uk wss://www.wowmanga.uk; style-src 'self' 'unsafe-inline' https: data: https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://challenges.cloudflare.com https://www.googletagmanager.com; img-src 'self' data: https: blob: https://resizer.f-ck.me https://mangadex.org https://www.googletagmanager.com; font-src 'self' data: https: https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'self';" always;
 
     # Gzip compression
     gzip on;
@@ -430,9 +451,9 @@ server {
 
     # API routes - proxy to backend
     location /api/ {
-        limit_req zone=api burst=20 nodelay;
+        limit_req zone=wowmanga_api burst=20 nodelay;
 
-        proxy_pass http://backend;
+        proxy_pass http://wowmanga_backend;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -448,7 +469,7 @@ server {
 
     # Health check endpoint
     location /health {
-        proxy_pass http://backend/health;
+        proxy_pass http://wowmanga_backend/health;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -458,7 +479,7 @@ server {
 
     # Static files with caching
     location /_next/static/ {
-        proxy_pass http://frontend;
+        proxy_pass http://wowmanga_frontend;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -472,7 +493,7 @@ server {
 
     # Manga cover images - NO CACHING (always fresh load)
     location ~* /covers/.*\.(jpg|jpeg|png|gif|webp)$ {
-        proxy_pass http://frontend;
+        proxy_pass http://wowmanga_frontend;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -488,7 +509,7 @@ server {
 
     # External manga cover images (MangaDex, resizer) - NO CACHING
     location ~* ^/.*/covers/.*\.(jpg|jpeg|png|gif|webp)$ {
-        proxy_pass http://frontend;
+        proxy_pass http://wowmanga_frontend;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -504,7 +525,7 @@ server {
 
     # Other images - NO CACHING
     location ~* \.(jpg|jpeg|png|gif|webp)$ {
-        proxy_pass http://frontend;
+        proxy_pass http://wowmanga_frontend;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -520,7 +541,7 @@ server {
 
     # Other static files
     location ~* \.(js|css|ico|svg|woff|woff2|ttf|eot)$ {
-        proxy_pass http://frontend;
+        proxy_pass http://wowmanga_frontend;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -534,7 +555,7 @@ server {
 
     # Service Worker - no caching
     location /sw.js {
-        proxy_pass http://frontend;
+        proxy_pass http://wowmanga_frontend;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -548,7 +569,7 @@ server {
 
     # Frontend - proxy to Next.js
     location / {
-        proxy_pass http://frontend;
+        proxy_pass http://wowmanga_frontend;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -569,11 +590,10 @@ EOF
 
 ```bash
 # Enable the site
-ln -s /etc/nginx/sites-available/xklduyenviet.net /etc/nginx/sites-enabled/
-ln -s /etc/nginx/sites-available/proxy.xklduyenviet.net /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/wowmanga.uk /etc/nginx/sites-enabled/
 
-# Remove default site
-rm -f /etc/nginx/sites-enabled/default
+# Note: Do not remove default site if other sites are using it
+# Only remove if you're sure no other sites need it
 
 # Test Nginx configuration
 nginx -t
@@ -597,8 +617,8 @@ apt install -y certbot python3-certbot-nginx
 
 ```bash
 # Get SSL certificate
-certbot --nginx -d xklduyenviet.net -d www.xklduyenviet.net --non-interactive --agree-tos --email lengocphan503@gmail.com
-certbot --nginx -d proxy.xklduyenviet.net --non-interactive --agree-tos --email lengocphan503@gmail.com
+certbot --nginx -d wowmanga.uk -d www.wowmanga.uk --non-interactive --agree-tos --email lengocphan503@gmail.com
+certbot --nginx -d proxy.wowmanga.uk --non-interactive --agree-tos --email lengocphan503@gmail.com
 # Test automatic renewal
 certbot renew --dry-run
 ```
@@ -621,7 +641,7 @@ crontab -e
 
 ```bash
 # Navigate to backend directory
-cd /var/www/ninetails.site/backend
+cd /var/www/wowmanga.uk/backend
 
 # Check if CORS is already configured in your backend
 grep -r "cors" src/ || echo "CORS not found in backend"
@@ -642,10 +662,10 @@ const cors = require('cors');
 // Enable CORS for all routes
 app.use(cors({
   origin: [
-    'https://xklduyenviet.net',
-    'https://www.xklduyenviet.net',
-    'http://localhost:3000', // For development
-    'http://localhost:3001'  // For development
+    'https://wowmanga.uk',
+    'https://www.wowmanga.uk',
+    'http://localhost:3001', // For development
+    'http://localhost:3002'  // For development
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
@@ -667,7 +687,7 @@ EOF
 
 ```bash
 # Navigate to frontend directory
-cd /var/www/ninetails.site
+cd /var/www/wowmanga.uk
 
 # Create or update next.config.js to handle CORS
 cat >> next.config.js << 'EOF'
@@ -697,18 +717,18 @@ EOF
 
 ```bash
 # Update Nginx configuration to add CORS headers
-cat >> /etc/nginx/sites-available/ninetails.site << 'EOF'
+cat >> /etc/nginx/sites-available/wowmanga.uk << 'EOF'
 
 # Add CORS headers for API routes
 location /api/ {
     # Add CORS headers
-    add_header Access-Control-Allow-Origin "https://xklduyenviet.net" always;
+    add_header Access-Control-Allow-Origin "https://wowmanga.uk" always;
     add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
     add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization" always;
 
     # Handle preflight requests
     if ($request_method = 'OPTIONS') {
-        add_header Access-Control-Allow-Origin "https://xklduyenviet.net";
+        add_header Access-Control-Allow-Origin "https://wowmanga.uk";
         add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
         add_header Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization";
         add_header Access-Control-Max-Age 1728000;
@@ -727,13 +747,13 @@ EOF
 
 ```bash
 # Update backend environment variables
-cd /var/www/ninetails.site/backend
+cd /var/www/wowmanga.uk/backend
 
 # Add CORS configuration to .env
 cat >> .env << 'EOF'
 
 # CORS Configuration
-CORS_ORIGIN=https://xklduyenviet.net,https://www.xklduyenviet.net
+CORS_ORIGIN=https://wowmanga.uk,https://www.wowmanga.uk
 CORS_CREDENTIALS=true
 CORS_METHODS=GET,POST,PUT,DELETE,OPTIONS
 CORS_ALLOWED_HEADERS=Content-Type,Authorization,X-Requested-With
@@ -745,12 +765,12 @@ EOF
 
 ```bash
 # Restart backend to apply CORS changes
-pm2 restart truyendex-backend
+pm2 restart wowmanga-backend
 
 # Rebuild and restart frontend
-cd /var/www/ninetails.site
+cd /var/www/wowmanga.uk
 npm run build
-pm2 restart truyendex-frontend
+pm2 restart wowmanga-frontend
 
 # Test and reload Nginx
 nginx -t
@@ -765,40 +785,40 @@ systemctl reload nginx
 
 ```bash
 # Test backend health
-curl -I http://localhost:8000/health
+curl -I http://localhost:8001/health
 
 # Test backend API
-curl -I http://localhost:8000/api/health
+curl -I http://localhost:8001/api/health
 ```
 
 ### 10.2 Test Frontend
 
 ```bash
 # Test frontend
-curl -I http://localhost:3000
+curl -I http://localhost:3001
 
 # Test through Nginx
-curl -I https://xklduyenviet.net
+curl -I https://wowmanga.uk
 ```
 
 ### 10.3 Test CORS Configuration
 
 ```bash
 # Test CORS headers
-curl -H "Origin: https://xklduyenviet.net" -H "Access-Control-Request-Method: GET" -H "Access-Control-Request-Headers: X-Requested-With" -X OPTIONS https://xklduyenviet.net/api/health
+curl -H "Origin: https://wowmanga.uk" -H "Access-Control-Request-Method: GET" -H "Access-Control-Request-Headers: X-Requested-With" -X OPTIONS https://wowmanga.uk/api/health
 
 # Test API with CORS
-curl -H "Origin: https://xklduyenviet.net" https://xklduyenviet.net/api/health
+curl -H "Origin: https://wowmanga.uk" https://wowmanga.uk/api/health
 ```
 
 ### 10.4 Test Full Application
 
 ```bash
 # Test main site
-curl -I https://xklduyenviet.net
+curl -I https://wowmanga.uk
 
 # Test API endpoints
-curl -I https://xklduyenviet.net/api/health
+curl -I https://wowmanga.uk/api/health
 ```
 
 ---
@@ -849,8 +869,8 @@ systemctl status redis-server
 
 ```bash
 # View application logs
-tail -f /var/www/xklduyenviet.net/logs/backend-combined.log
-tail -f /var/www/xklduyenviet.net/logs/frontend-combined.log
+tail -f /var/www/wowmanga.uk/logs/backend-combined.log
+tail -f /var/www/wowmanga.uk/logs/frontend-combined.log
 
 # View Nginx logs
 tail -f /var/log/nginx/access.log
@@ -867,16 +887,16 @@ journalctl -u postgresql -f
 # Create backup script
 cat > /var/www/backup.sh << 'EOF'
 #!/bin/bash
-BACKUP_DIR="/var/backups/truyendex"
+BACKUP_DIR="/var/backups/wowmanga"
 DATE=$(date +%Y%m%d_%H%M%S)
 
 mkdir -p $BACKUP_DIR
 
 # Backup database
-pg_dump -h localhost -U truyendex_user truyendex > $BACKUP_DIR/database_$DATE.sql
+pg_dump -h localhost -U mangareader_user mangareader > $BACKUP_DIR/database_$DATE.sql
 
 # Backup application files
-tar -czf $BACKUP_DIR/application_$DATE.tar.gz /var/www/xklduyenviet.net
+tar -czf $BACKUP_DIR/application_$DATE.tar.gz /var/www/wowmanga.uk
 
 # Keep only last 7 days of backups
 find $BACKUP_DIR -name "*.sql" -mtime +7 -delete
@@ -905,8 +925,8 @@ crontab -e
 pm2 logs
 
 # Check application logs
-pm2 logs truyendex-backend
-pm2 logs truyendex-frontend
+pm2 logs wowmanga-backend
+pm2 logs wowmanga-frontend
 
 # Restart applications
 pm2 restart all
@@ -919,10 +939,10 @@ pm2 restart all
 systemctl status postgresql
 
 # Check database connection
-sudo -u postgres psql -d truyendex -c "SELECT version();"
+sudo -u postgres psql -d mangareader -c "SELECT version();"
 
 # Check environment variables
-cat /var/www/xklduyenviet.net/backend/.env
+cat /var/www/wowmanga.uk/backend/.env
 ```
 
 #### 3. Nginx Configuration Issues
@@ -948,7 +968,7 @@ certbot certificates
 certbot renew
 
 # Check certificate expiration
-openssl x509 -in /etc/letsencrypt/live/xklduyenviet.net/cert.pem -text -noout | grep "Not After"
+openssl x509 -in /etc/letsencrypt/live/wowmanga.uk/cert.pem -text -noout | grep "Not After"
 ```
 
 #### 5. Memory Issues
@@ -963,6 +983,157 @@ pm2 restart all
 
 # Increase memory limits in ecosystem.config.js if needed
 ```
+
+#### 6. Prisma Seed Configuration Error
+
+If you encounter the error: "To configure seeding in your project you need to add a 'prisma.seed' property in your package.json":
+
+```bash
+# Navigate to backend directory
+cd /var/www/wowmanga.uk/backend
+
+# Ensure package.json has prisma.seed configuration
+# It should look like this:
+# "prisma": {
+#   "seed": "node scripts/seed.js"
+# }
+
+# If the seed script doesn't exist, create it:
+cat > scripts/seed.js << 'EOF'
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+async function main() {
+  // Your seed data here
+  console.log('Seeding database...');
+  // Example: Create roles, admin user, etc.
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+EOF
+
+# Make sure the script is executable
+chmod +x scripts/seed.js
+
+# Now try seeding again
+npx prisma db seed
+```
+
+#### 7. Permission Denied for Prisma
+
+If you get `Permission denied` errors when running Prisma commands:
+
+```bash
+# Navigate to backend directory
+cd /var/www/wowmanga.uk/backend
+
+# Fix permissions for node_modules
+chmod -R +x node_modules/.bin
+chmod +x node_modules/.bin/prisma
+
+# Fix ownership
+chown -R www-data:www-data node_modules
+chown -R www-data:www-data node_modules/.bin
+
+# Try again
+npx prisma generate
+npx prisma db push
+```
+
+#### 8. Port Already in Use (EADDRINUSE)
+
+If you get `EADDRINUSE: address already in use :::3001` or similar errors:
+
+```bash
+# Check which process is using the port
+lsof -i :3001
+# Or
+netstat -tulpn | grep :3001
+
+# Kill the process using the port (replace PID with actual process ID)
+kill -9 <PID>
+
+# Or kill all processes on that port
+kill -9 $(lsof -t -i:3001)
+
+# If it's a PM2 process, stop it first
+pm2 stop wowmanga-frontend
+pm2 delete wowmanga-frontend
+
+# Then restart
+pm2 start ecosystem.config.js
+```
+
+#### 9. Content Security Policy (CSP) Errors
+
+If you get errors like "Refused to connect because it violates the document's Content Security Policy":
+
+```bash
+# Edit the Nginx configuration
+nano /etc/nginx/sites-available/wowmanga.uk
+
+# Find the Content-Security-Policy header and ensure it includes:
+# - 'self' (allows same-origin requests)
+# - https://wowmanga.uk and https://www.wowmanga.uk (explicit domain)
+# - All required external domains (api.mangadex.org, proxy.wowmanga.uk, etc.)
+
+# The connect-src directive should look like:
+# connect-src 'self' https://wowmanga.uk https://www.wowmanga.uk https://api.mangadex.org ...
+
+# After updating, test and reload Nginx
+nginx -t
+systemctl reload nginx
+
+# If the issue persists, you can temporarily make CSP more permissive for debugging:
+# connect-src 'self' https: wss: http: ws:
+# (Remember to tighten it back after identifying the issue)
+```
+
+#### 10. Application Still Using Old Domain/Proxy URL
+
+If the application is still using the old domain (e.g., `proxy.nettruyen-vn.com` instead of `proxy.wowmanga.uk`):
+
+```bash
+# 1. Check environment variables are set correctly
+cd /var/www/wowmanga.uk
+cat .env.production | grep CORS
+
+# Should show:
+# NEXT_PUBLIC_CORS_URL=https://proxy.wowmanga.uk
+# NEXT_PUBLIC_CORS_V2_URL=https://proxy.wowmanga.uk
+# NEXT_PUBLIC_APP_URL=https://wowmanga.uk
+
+# 2. If incorrect, update .env.production
+nano .env.production
+# Update the values to use wowmanga.uk
+
+# 3. IMPORTANT: Rebuild the frontend (env vars are embedded at build time)
+cd /var/www/wowmanga.uk
+NODE_OPTIONS="--max-old-space-size=4096" npm run build
+
+# 4. Restart PM2 to load the new build
+pm2 restart wowmanga-frontend
+
+# 5. Clear browser cache or test in incognito mode
+# The old domain might be cached in the browser
+
+# 6. Verify the build includes correct values
+# Check the built files (optional, for debugging)
+grep -r "proxy.wowmanga.uk" .next/ || echo "Not found - may need rebuild"
+```
+
+**Important Notes:**
+- Next.js embeds environment variables at **build time**, not runtime
+- Changing `.env.production` requires a **rebuild** (`npm run build`)
+- Simply restarting PM2 is **not enough** - you must rebuild
+- The CSP in `next.config.js` now uses environment variables dynamically
 
 ---
 
@@ -990,10 +1161,10 @@ ufw enable
 apt update && apt upgrade -y
 
 # Update Node.js packages
-cd /var/www/xklduyenviet.net
+cd /var/www/wowmanga.uk
 npm audit fix
 
-cd /var/www/xklduyenviet.net/backend
+cd /var/www/wowmanga.uk/backend
 npm audit fix
 ```
 
@@ -1001,8 +1172,8 @@ npm audit fix
 
 ```bash
 # Secure environment files
-chmod 600 /var/www/ninetails.site/.env.production
-chmod 600 /var/www/ninetails.site/backend/.env
+chmod 600 /var/www/wowmanga.uk/.env.production
+chmod 600 /var/www/wowmanga.uk/backend/.env
 
 # Use strong passwords
 # Generate strong JWT secrets
@@ -1052,10 +1223,10 @@ nano /etc/postgresql/*/main/postgresql.conf
 
 ## Conclusion
 
-Your TruyenDex application should now be fully deployed and running on your VPS. The setup includes:
+Your WowManga application should now be fully deployed and running on your VPS. The setup includes:
 
-- ✅ Frontend (Next.js) running on port 3000
-- ✅ Backend (Node.js/Express) running on port 8000
+- ✅ Frontend (Next.js) running on port 3001 (to avoid conflict with nettruyen-vn.com on port 3000)
+- ✅ Backend (Node.js/Express) running on port 8001 (to avoid conflicts)
 - ✅ Database (PostgreSQL) configured and running
 - ✅ Reverse proxy (Nginx) handling SSL and routing
 - ✅ Process management (PM2) for reliability
@@ -1086,4 +1257,6 @@ pm2 restart all
 systemctl restart nginx
 ```
 
-Your TruyenDex application is now live at `https://xklduyenviet.net`! 🎉
+Your WowManga application is now live at `https://wowmanga.uk`! 🎉
+
+**Note:** This deployment uses ports 3001 (frontend) and 8001 (backend) to avoid conflicts with the existing `nettruyen-vn.com` deployment on port 3000.

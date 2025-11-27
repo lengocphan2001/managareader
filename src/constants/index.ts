@@ -23,7 +23,7 @@ export class Constants {
   };
   static readonly Routes = {
     nettrom: {
-      index: "/nettrom",
+      index: "/",
       manga: (id: string) => `/manga/${id}`,
       chapter: (id: string) => `/chapter/${id}`,
       search: `/advanced-search`,

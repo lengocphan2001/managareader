@@ -133,7 +133,7 @@ export default function Footer({
                   <ul className="list-unstyled">
                     <li className="mb-2">
                       <Link
-                        href="/nettrom"
+                        href={Constants.Routes.nettrom.index}
                         className="text-gray-300 transition-colors hover:text-white"
                       >
                         Home
@@ -141,7 +141,7 @@ export default function Footer({
                     </li>
                     <li className="mb-2">
                       <Link
-                        href="/nettrom/advanced-search"
+                        href={Constants.Routes.nettrom.search}
                         className="text-gray-300 transition-colors hover:text-white"
                       >
                         Advanced Search
@@ -149,7 +149,7 @@ export default function Footer({
                     </li>
                     <li className="mb-2">
                       <Link
-                        href="/nettrom/following"
+                        href={Constants.Routes.nettrom.following}
                         className="text-gray-300 transition-colors hover:text-white"
                       >
                         Following
@@ -157,7 +157,7 @@ export default function Footer({
                     </li>
                     <li className="mb-2">
                       <Link
-                        href="/nettrom/history"
+                        href={Constants.Routes.nettrom.history}
                         className="text-gray-300 transition-colors hover:text-white"
                       >
                         Reading History

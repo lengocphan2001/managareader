@@ -69,28 +69,42 @@ export default function ChapterControlPanel({
     }
   };
 
-  // Listen to scroll to update current page
+  // Listen to scroll to update current page (throttled for performance)
   useEffect(() => {
     if (!pages || pages.length === 0) return;
 
+    let ticking = false;
+    let lastPage = 1;
+
     const handleScroll = () => {
-      const pageElements = document.querySelectorAll("[data-index]");
-      let current = 1;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const pageElements = document.querySelectorAll("[data-index]");
+          let current = 1;
 
-      pageElements.forEach((el, index) => {
-        const rect = el.getBoundingClientRect();
-        if (
-          rect.top <= window.innerHeight / 2 &&
-          rect.bottom >= window.innerHeight / 2
-        ) {
-          current = index + 1;
-        }
-      });
+          pageElements.forEach((el, index) => {
+            const rect = el.getBoundingClientRect();
+            if (
+              rect.top <= window.innerHeight / 2 &&
+              rect.bottom >= window.innerHeight / 2
+            ) {
+              current = index + 1;
+            }
+          });
 
-      setCurrentPage(current);
+          // Only update state if page actually changed to avoid unnecessary re-renders
+          if (current !== lastPage) {
+            lastPage = current;
+            setCurrentPage(current);
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pages]);
 
@@ -306,9 +320,7 @@ export default function ChapterControlPanel({
 
             {/* Upload Information */}
             <div className="space-y-2 border-t border-neutral-700 pt-4">
-              <p className="text-xl font-medium text-gray-400">
-                Uploaded By
-              </p>
+              <p className="text-xl font-medium text-gray-400">Uploaded By</p>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Iconify icon="fa:user" className="h-5 w-5 text-gray-400" />
@@ -356,9 +368,7 @@ export default function ChapterControlPanel({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Iconify icon="fa:expand" className="h-5 w-5 text-gray-400" />
-                  <span className="text-xl text-white">
-                    Fit Both
-                  </span>
+                  <span className="text-xl text-white">Fit Both</span>
                 </div>
                 <button
                   onClick={onToggleDrawer}
@@ -375,9 +385,7 @@ export default function ChapterControlPanel({
                     icon="fa:arrow-right"
                     className="h-5 w-5 text-gray-400"
                   />
-                  <span className="text-xl text-white">
-                    Left To Right
-                  </span>
+                  <span className="text-xl text-white">Left To Right</span>
                 </div>
                 <button
                   onClick={() =>
@@ -393,9 +401,7 @@ export default function ChapterControlPanel({
 
               {/* Header Hidden */}
               <div className="flex items-center justify-between">
-                <span className="text-xl text-white">
-                  Header Hidden
-                </span>
+                <span className="text-xl text-white">Header Hidden</span>
                 <input
                   type="checkbox"
                   checked={headerHidden}
@@ -411,9 +417,7 @@ export default function ChapterControlPanel({
                     icon="fa:chart-line"
                     className="h-5 w-5 text-gray-400"
                   />
-                  <span className="text-xl text-white">
-                    Normal Progress
-                  </span>
+                  <span className="text-xl text-white">Normal Progress</span>
                 </div>
                 <button
                   onClick={onToggleDrawer}

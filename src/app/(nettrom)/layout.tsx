@@ -26,7 +26,9 @@ export const metadata: Metadata = {
   title: `${Constants.APP_NAME} - High quality manga without ads`,
   description: `Read manga for free, high quality and support scanlation groups on ${Constants.APP_NAME}`,
   applicationName: Constants.APP_NAME,
-  authors: [{ name: "WowManga", url: "https://github.com/lengocphan2001/managareader" }],
+  authors: [
+    { name: "WowManga", url: "https://github.com/lengocphan2001/managareader" },
+  ],
   keywords: [
     "manga",
     "manga",

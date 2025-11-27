@@ -35,15 +35,10 @@ export default function MangaImage({
   const handleRetry = useCallback(() => {
     setError(false);
     setRetryCount((prev) => prev + 1);
-    // Force reload by changing the src slightly
-    if (other.src) {
-      const separator = other.src.includes("?") ? "&" : "&";
-      const timestamp = Date.now();
-      const newSrc = `${other.src}${separator}_retry=${timestamp}`;
-      // Force a complete reload by updating the key
-      window.location.reload();
-    }
-  }, [other.src]);
+    setLoaded(false);
+    // Just increment retryCount to trigger re-render with new key
+    // Don't reload the entire page
+  }, []);
 
   const handleDataSaverToggle = useCallback(() => {
     onDataSaverChange();
@@ -81,6 +76,9 @@ export default function MangaImage({
       </div>
     );
 
+  // Use stable key based on src and retryCount only (not Date.now() to avoid constant reloads)
+  const imageKey = `${other.src}_${retryCount}`;
+
   return (
     <span
       className={`block overflow-hidden ${loaded ? "min-h-0" : "min-h-[100vh]"} ${className}`}
@@ -98,8 +96,8 @@ export default function MangaImage({
         // Simple attributes - no complex caching
         loading: "lazy",
         decoding: "async",
-        // Force fresh load each time
-        key: `${other.src}_${retryCount}_${Date.now()}`,
+        // Stable key to prevent unnecessary reloads
+        key: imageKey,
         ...(other as any),
       })}
     </span>

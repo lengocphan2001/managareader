@@ -1130,6 +1130,7 @@ grep -r "proxy.wowmanga.uk" .next/ || echo "Not found - may need rebuild"
 ```
 
 **Important Notes:**
+
 - Next.js embeds environment variables at **build time**, not runtime
 - Changing `.env.production` requires a **rebuild** (`npm run build`)
 - Simply restarting PM2 is **not enough** - you must rebuild

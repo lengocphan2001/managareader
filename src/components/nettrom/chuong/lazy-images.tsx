@@ -1,6 +1,6 @@
 import MangaImage from "@/components/manga-image";
 import { useSettingsContext } from "@/contexts/settings";
-import { useCallback } from "react";
+import { useCallback, memo } from "react";
 import {
   ScrollPosition,
   trackWindowScroll,
@@ -12,7 +12,7 @@ interface GalleryProps {
   threshold: number;
 }
 
-const Gallery = ({ images, threshold, scrollPosition }: GalleryProps) => {
+const Gallery = memo(({ images, threshold, scrollPosition }: GalleryProps) => {
   const { dataSaver, maxImageWidth, onUpdateField } = useSettingsContext();
 
   const toggleDataServer = useCallback(() => {
@@ -24,11 +24,10 @@ const Gallery = ({ images, threshold, scrollPosition }: GalleryProps) => {
       {images.map((image, index) => (
         <div className="sm:mx-auto" key={image}>
           <MangaImage
-            key={image}
             // Make sure to pass down the scrollPosition,
             // this will be used by the component to know
             // whether it must track the scroll position or not
-            alt={`Trang ${index}`}
+            alt={`Trang ${index + 1}`}
             data-index={index}
             scrollPosition={scrollPosition}
             src={image}
@@ -42,7 +41,9 @@ const Gallery = ({ images, threshold, scrollPosition }: GalleryProps) => {
       ))}
     </div>
   );
-};
+});
+
+Gallery.displayName = "Gallery";
 
 const LazyImages = trackWindowScroll(Gallery) as any;
 
